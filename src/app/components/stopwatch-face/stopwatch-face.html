@@ -1,0 +1,24 @@
+<div class="dial">
+    @for (tick of fractionTicks; track tick) {
+        <div class="fraction-tick" [style.rotate]="`${tick * 1.2}deg`"></div>
+    }
+    @for (tick of secondTicks; track tick) {
+        <div class="second-tick" [class.major]="tick%5===0" [style.rotate]="`${tick * 6}deg`"></div>
+    }
+    @for (label of secondLabels; track label.value) {
+        <div class="second-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
+    }
+    <div class="second-hand" [style.rotate]="`${secondHandAngle()}deg`"></div>
+    <div class="center-dot"></div>
+
+    <div class="minute-dial">
+        @for (tick of minuteTicks; track tick) {
+            <div class="minute-tick" [class.major]="tick%5===0" [style.rotate]="`${tick * 6}deg`"></div>
+        }
+        @for (label of minuteLabels; track label.value) {
+            <div class="minute-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
+        }
+        <div class="minute-hand" [style.rotate]="`${minuteHandleAngle()}deg`"></div>
+        <div class="minute-center"></div>
+    </div>
+</div>
