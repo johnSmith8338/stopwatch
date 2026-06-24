@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { StopwatchEngine } from '../../services/stopwatch-engine';
+import { ClockEngine } from '../../models/clock-engine.interface';
 
 @Component({
   selector: 'app-controls',
@@ -9,18 +10,18 @@ import { StopwatchEngine } from '../../services/stopwatch-engine';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Controls {
-  readonly engineSvc = inject(StopwatchEngine);
+  readonly engine = input.required<ClockEngine>();
 
   start() {
-    this.engineSvc.start();
+    this.engine().start();
   }
   pause() {
-    this.engineSvc.pause();
+    this.engine().pause();
   }
   stop() {
-    this.engineSvc.stop();
+    this.engine().stop();
   }
   reset() {
-    this.engineSvc.reset();
+    this.engine().reset();
   }
 }

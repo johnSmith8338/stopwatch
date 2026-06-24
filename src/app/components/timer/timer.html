@@ -1,0 +1,18 @@
+<h2>timer</h2>
+
+<div class="timer-settings">
+    <input type="number" min="0" [value]="hours()" (input)="updateValue('hours',$event)">
+    <span>:</span>
+    <input type="number" min="0" max="59" [value]="minutes()" (input)="updateValue('minutes',$event)">
+    <span>:</span>
+    <input type="number" min="0" max="59" [value]="seconds()" (input)="updateValue('seconds',$event)">
+</div>
+
+<app-digital-display [engine]="engineSvc" />
+
+<app-controls [engine]="engineSvc" />
+<button (click)="resetDefault()">default</button>
+
+<app-wheel-picker name="hours" [items]="hoursItems" [value]="hours()" (valueChange)="updateHours($event)" />
+<app-wheel-picker name="minutes" [items]="minuteItems" [value]="minutes()" (valueChange)="updateMinutes($event)" />
+<app-wheel-picker name="seconds" [items]="secondItems" [value]="seconds()" (valueChange)="updateSeconds($event)" />

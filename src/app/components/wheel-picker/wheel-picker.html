@@ -1,0 +1,10 @@
+<div class="wheel" #wheel (scroll)="onScroll()">
+    @for (item of items(); track item) {
+        <button class="item"
+            [class.selected]="item===value()"
+            (click)="valueChange.emit(item)">
+            {{item.toString().padStart(2,'0')}}
+        </button>
+    }
+</div>
+<div class="selection-window"></div>

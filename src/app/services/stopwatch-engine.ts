@@ -1,9 +1,10 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { ClockEngine } from '../models/clock-engine.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StopwatchEngine {
+export class StopwatchEngine implements ClockEngine {
   readonly elapsedMs = signal(0);
   readonly running = signal(false);
   readonly stopped = signal(false);

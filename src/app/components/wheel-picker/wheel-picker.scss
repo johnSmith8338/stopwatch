@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  position: relative;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+// item height = 40px
+// wheel height = 200px
+// whell center - 200 / 2 = 100
+// item center - 40 / 2 = 20
+// padding-block - 100 - 20 = 80
+
+.wheel {
+  block-size: var(--wheel-height);
+  overflow-y: auto;
+  padding-block: calc(var(--item-height) * 2);
+  border-block: 4px solid green;
+
+  scroll-snap-type: y mandatory;
+}
+
+.item {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--item-height);
+
+  scroll-snap-align: center;
+  // scroll-snap-stop: always;
+}
+
+.selection-window {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  block-size: var(--item-height);
+  translate: 0 -50%;
+  border-block: 1px solid red;
+  pointer-events: none;
+}

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { StopwatchEngine } from '../../services/stopwatch-engine';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ClockEngine } from '../../models/clock-engine.interface';
 
 @Component({
   selector: 'app-digital-display',
@@ -9,7 +9,5 @@ import { StopwatchEngine } from '../../services/stopwatch-engine';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DigitalDisplay {
-  readonly engineSvc = inject(StopwatchEngine);
-
-  readonly displayTime = this.engineSvc.displayTime;
+  readonly engine = input.required<ClockEngine>();
 }

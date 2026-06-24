@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { StopwatchFace } from "../stopwatch-face/stopwatch-face";
 import { DigitalDisplay } from "../digital-display/digital-display";
 import { Controls } from "../controls/controls";
+import { StopwatchEngine } from '../../services/stopwatch-engine';
 
 @Component({
   selector: 'app-stopwatch',
@@ -10,4 +11,6 @@ import { Controls } from "../controls/controls";
   styleUrl: './stopwatch.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Stopwatch { }
+export class Stopwatch {
+  engineSvc = inject(StopwatchEngine);
+}

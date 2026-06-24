@@ -1,1 +1,14 @@
-<app-stopwatch />
+<header>
+    <button [class.active]="mode()===ClockMode.Stopwatch" (click)="mode.set(ClockMode.Stopwatch)">stopwatch</button>
+    <button [class.active]="mode()===ClockMode.Timer" (click)="mode.set(ClockMode.Timer)">timer</button>
+</header>
+<main>
+    @if (mode()==='stopwatch') {
+        <app-stopwatch />
+    }
+    @if (mode()==='timer') {
+        <app-timer />
+    }
+</main>
+<footer></footer>
+
