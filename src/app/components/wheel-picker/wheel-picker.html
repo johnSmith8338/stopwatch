@@ -1,6 +1,7 @@
 <div class="wheel" #wheel (scroll)="onScroll()">
-    @for (item of items(); track item) {
+    @for (item of displayItems(); track $index) {
         <button class="item"
+            [class]="getItemClass($index)"
             [class.selected]="item===value()"
             (click)="valueChange.emit(item)">
             {{item.toString().padStart(2,'0')}}

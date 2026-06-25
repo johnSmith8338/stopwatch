@@ -19,7 +19,9 @@
   padding-block: calc(var(--item-height) * 2);
   border-block: 4px solid green;
 
+  perspective: 800px;
   scroll-snap-type: y mandatory;
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
 }
 
 .item {
@@ -29,6 +31,42 @@
 
   scroll-snap-align: center;
   // scroll-snap-stop: always;
+  transform-style: preserve-3d;
+  transition: transform 0.15s, opacity 0.15s;
+
+  &.center {
+    scale: 1;
+    opacity: 1;
+    font-weight: 700;
+  }
+
+  &.near-top,
+  &.near-bottom {
+    scale: 0.9;
+    opacity: 0.8;
+  }
+
+  &.far-top,
+  &.far-bottom {
+    scale: 0.8;
+    opacity: 0.4;
+  }
+
+  &.near-top {
+    transform: rotateX(24deg) translateZ(-5px);
+  }
+
+  &.near-bottom {
+    transform: rotateX(-24deg) translateZ(-5px);
+  }
+
+  &.far-top {
+    transform: rotateX(36deg) translateZ(-10px);
+  }
+
+  &.far-bottom {
+    transform: rotateX(-36deg) translateZ(-10px);
+  }
 }
 
 .selection-window {
