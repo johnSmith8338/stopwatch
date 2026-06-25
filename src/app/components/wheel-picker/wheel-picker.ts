@@ -25,6 +25,7 @@ export class WheelPicker {
   private scrollTimer?: number;
 
   readonly centerIndex = signal(0);
+  readonly scrolling = signal(false);
 
   readonly displayItems = computed(() => {
     const items = this.items();
@@ -54,9 +55,11 @@ export class WheelPicker {
   }
 
   onScroll() {
+    this.scrolling.set(true);
     window.clearTimeout(this.scrollTimer);
     this.scrollTimer = window.setTimeout(() => {
-      this.snapToNearest()
+      this.snapToNearest();
+      this.scrolling.set(false);
     }, 100)
   }
 
