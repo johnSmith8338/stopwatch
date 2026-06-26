@@ -5,7 +5,7 @@
     @for (tick of secondTicks; track tick) {
         <div class="second-tick" [class.major]="tick%5===0" [style.rotate]="`${tick*6}deg`"></div>
     }
-    <div class="second-sector" [style.--angle.deg]="progressAngle()"></div>
+    <div class="second-sector" [style.--angle.deg]="secondProgressAngle()"></div>
 
     <div class="minute-dial">
         @for (tick of minuteTicks; track tick) {

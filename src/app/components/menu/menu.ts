@@ -17,13 +17,13 @@ export class Menu {
   private readonly router = inject(Router);
   private readonly menuSvc = inject(MenuSvc);
 
-  readonly collapsed = input(true);
+  readonly alwaysOpen = input(false);
 
   readonly menuItems = this.menuSvc.items;
 
   private readonly opened = signal(false);
 
-  readonly menuOpened = computed(() => !this.collapsed() || this.opened());
+  readonly menuOpened = computed(() => this.alwaysOpen() || this.opened());
 
   constructor() {
     this.router.events.pipe(
@@ -32,7 +32,7 @@ export class Menu {
   }
 
   toggle() {
-    if (this.collapsed()) this.opened.update(v => !v);
+    if (!this.alwaysOpen()) this.opened.update(v => !v);
   }
 
   close() {

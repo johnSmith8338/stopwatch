@@ -18,7 +18,7 @@
         @for (label of minuteLabels; track label.value) {
             <div class="minute-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
         }
-        <div class="minute-hand" [style.rotate]="`${minuteHandleAngle()}deg`"></div>
+        <div class="minute-hand" [style.rotate]="`${minuteHandAngle()}deg`"></div>
         <div class="minute-center"></div>
     </div>
 </div>

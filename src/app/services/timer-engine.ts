@@ -1,4 +1,4 @@
-import { computed, Injectable, Signal, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { ClockEngine } from '../models/clock-engine.interface';
 
 @Injectable({
@@ -19,6 +19,20 @@ export class TimerEngine implements ClockEngine {
   private stopped = false;
 
   readonly displayTime = computed(() => this.formatTime(this.remainingMs()));
+
+  readonly secondProgressAngle = computed(() => {
+    const remainingSeconds = (this.remainingMs() % 60_000) / 1000;
+    return remainingSeconds * 6;
+  })
+
+  readonly minuteProgressAngle = computed(() => {
+    const remainingMinutes = this.remainingMs() / 60_000;
+    return remainingMinutes * 6;
+  })
+
+  readonly remainingHours = computed(() => Math.floor(this.remainingMs() / 3_600_000));
+  readonly remainingMinutes = computed(() => Math.floor(this.remainingMs() / 60_000) % 60);
+  readonly remainingSeconds = computed(() => Math.floor(this.remainingMs() / 1000) % 60);
 
   getDefaults() {
     return {

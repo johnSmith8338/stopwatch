@@ -1,4 +1,4 @@
-@if (collapsed()) {
+@if (!alwaysOpen()) {
     <button class="menu-button" (click)="toggle()">
         @for (_ of [].constructor(3); track $index) {
             <span class="dash"></span>
@@ -7,7 +7,7 @@
 }
 @if(menuOpened()){
     <nav [class.opened]="menuOpened()">
-        @if (collapsed()) {
+        @if (!alwaysOpen()) {
             <button (click)="close()">close</button>
         }
         @for (item of menuItems(); track item.link) {

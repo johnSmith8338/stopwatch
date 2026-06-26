@@ -21,7 +21,7 @@
 
   perspective: 800px;
   scroll-snap-type: y mandatory;
-  mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
 }
 
 .item {
