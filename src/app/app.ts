@@ -1,21 +1,39 @@
-import { Component, signal } from '@angular/core';
-import { Stopwatch } from "./components/stopwatch/stopwatch";
-import { Timer } from './components/timer/timer';
-
-export enum ClockMode {
-  Stopwatch = 'stopwatch',
-  Timer = 'timer',
-}
+import { Component, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Header } from "./components/header/header";
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [Stopwatch, Timer],
+  imports: [
+    RouterOutlet,
+    Header
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('stopwatch');
+  private router = inject(Router);
 
-  readonly ClockMode = ClockMode;
-  readonly mode = signal(ClockMode.Stopwatch);
+  protected readonly title = signal('stopwatch');
+  readonly hasHeader = signal(true);
+
+  constructor() {
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updHasHeader();
+    });
+  }
+
+  updHasHeader() {
+    const url = this.currentPath();
+    this.hasHeader.set(
+      url !== '/'
+    )
+  }
+
+  private currentPath(): string {
+    return this.router.url.split('?')[0]?.split('#')[0] ?? this.router.url;
+  }
 }

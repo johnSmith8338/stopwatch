@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.menu-button {
+  display: grid;
+  gap: 4px;
+}
+
+.dash {
+  inline-size: 24px;
+  block-size: 4px;
+  background-color: black;
+}

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { StopwatchEngine } from '../../services/stopwatch-engine';
+import { SCALE_CENTER, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../constants/scale.constants';
 
 @Component({
   selector: 'app-stopwatch-face',
@@ -7,15 +8,25 @@ import { StopwatchEngine } from '../../services/stopwatch-engine';
   templateUrl: './stopwatch-face.html',
   styleUrl: './stopwatch-face.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[style.--scale-size.px]': 'mainSize',
+    '[style.--scale-center.px]': 'mainCenter',
+    '[style.--scale-label-radius.px]': 'mainRadius',
+    '[style.--scale-minute-size.px]': 'minuteSize',
+    '[style.--scale-minute-center.px]': 'minuteCenterX',
+    '[style.--scale-minute-label-radius.px]': 'minuteRadius'
+  }
 })
 export class StopwatchFace {
   private engineSvc = inject(StopwatchEngine);
 
-  private readonly mainCenter = 144;
-  private readonly mainRadius = 110;
-  private readonly minuteCenterX = 45;
-  private readonly minuteCenterY = 45;
-  private readonly minuteRadius = 28;
+  readonly mainSize = SCALE_SIZE;
+  readonly mainCenter = SCALE_CENTER;
+  readonly mainRadius = 110;
+  readonly minuteSize = SCALE_MINUTE_SIZE;
+  readonly minuteCenterX = SCALE_MINUTE_CENTER;
+  readonly minuteCenterY = SCALE_MINUTE_CENTER;
+  readonly minuteRadius = SCALE_MINUTE_LABEL_RADIUS;
 
   readonly fractionTicks = Array.from(
     { length: 300 },

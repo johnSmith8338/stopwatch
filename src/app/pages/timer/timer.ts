@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TimerEngine } from '../../services/timer-engine';
-import { Controls } from "../controls/controls";
-import { DigitalDisplay } from "../digital-display/digital-display";
-import { WheelPicker } from "../wheel-picker/wheel-picker";
+import { Controls } from "../../components/controls/controls";
+import { DigitalDisplay } from "../../components/digital-display/digital-display";
+import { WheelPicker } from "../../components/wheel-picker/wheel-picker";
+import { TimerFace } from "../../components/timer-face/timer-face";
 
 @Component({
   selector: 'app-timer',
-  imports: [Controls, DigitalDisplay, WheelPicker],
+  imports: [Controls, DigitalDisplay, WheelPicker, TimerFace],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

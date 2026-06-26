@@ -1,0 +1,22 @@
+@if (collapsed()) {
+    <button class="menu-button" (click)="toggle()">
+        @for (_ of [].constructor(3); track $index) {
+            <span class="dash"></span>
+        }
+    </button>
+}
+@if(menuOpened()){
+    <nav [class.opened]="menuOpened()">
+        @if (collapsed()) {
+            <button (click)="close()">close</button>
+        }
+        @for (item of menuItems(); track item.link) {
+            <a 
+                [routerLink]="item.link" 
+                routerLinkActive="active"
+                (click)="close()">
+                {{item.title}}
+            </a>
+        }
+    </nav>
+}

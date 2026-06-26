@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+.dial {
+  position: relative;
+  inline-size: var(--scale-size);
+  block-size: var(--scale-size);
+  border: 4px solid black;
+  border-radius: 50%;
+}
+
+.second-label {
+  position: absolute;
+  translate: -50% -50%;
+}
+
+.second-tick {
+  position: absolute;
+  inset-inline-start: calc(50% - 1px);
+  inset-block-start: 0;
+  inline-size: 2px;
+  block-size: 8px;
+  background-color: black;
+  transform-origin: center var(--scale-center);
+
+  &.major {
+    block-size: 16px;
+  }
+}
+
+.second-sector {
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
+  // mask: radial-gradient(circle, transparent 55%, black 56%);
+  opacity: 0.6;
+}
+
+.minute-dial {
+  position: absolute;
+  inline-size: var(--scale-minute-size);
+  block-size: var(--scale-minute-size);
+  inset-inline-start: calc(50% - var(--scale-minute-center));
+  inset-block-start: 40px;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+.minute-tick {
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 0;
+  inline-size: 2px;
+  block-size: 4px;
+  background: black;
+  transform-origin: center var(--scale-minute-center);
+
+  &.major {
+    block-size: 8px;
+  }
+}
+
+.minute-label {
+  position: absolute;
+  translate: -50% -50%;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.minute-sector {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
+  opacity: .6;
+}

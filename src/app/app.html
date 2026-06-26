@@ -1,14 +1,10 @@
 <header>
-    <button [class.active]="mode()===ClockMode.Stopwatch" (click)="mode.set(ClockMode.Stopwatch)">stopwatch</button>
-    <button [class.active]="mode()===ClockMode.Timer" (click)="mode.set(ClockMode.Timer)">timer</button>
+    @if (hasHeader()) {
+        <app-header />
+    }
 </header>
 <main>
-    @if (mode()==='stopwatch') {
-        <app-stopwatch />
-    }
-    @if (mode()==='timer') {
-        <app-timer />
-    }
+    <router-outlet />
 </main>
 <footer></footer>
 

@@ -1,0 +1,7 @@
+export const SCALE_SIZE = 288;
+export const SCALE_CENTER = SCALE_SIZE / 2;
+export const SCALE_LABEL_RADIUS = SCALE_SIZE * 0.4;
+
+export const SCALE_MINUTE_SIZE = 80;
+export const SCALE_MINUTE_CENTER = SCALE_MINUTE_SIZE / 2;
+export const SCALE_MINUTE_LABEL_RADIUS = SCALE_MINUTE_SIZE * 0.3;

@@ -1,0 +1,19 @@
+<div class="dial">
+    @for (label of secondLabels; track label.value) {
+        <div class="second-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
+    }
+    @for (tick of secondTicks; track tick) {
+        <div class="second-tick" [class.major]="tick%5===0" [style.rotate]="`${tick*6}deg`"></div>
+    }
+    <div class="second-sector" [style.--angle.deg]="progressAngle()"></div>
+
+    <div class="minute-dial">
+        @for (tick of minuteTicks; track tick) {
+            <div class="minute-tick" [class.major]="tick%5===0" [style.rotate]="`${tick*6}deg`"></div>
+        }
+        @for (label of minuteLabels; track label.value) {
+            <div class="minute-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
+        }
+        <div class="minute-sector" [style.--angle.deg]="minuteProgressAngle()"></div>
+    </div>
+</div>
