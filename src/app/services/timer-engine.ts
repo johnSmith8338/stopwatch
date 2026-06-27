@@ -85,17 +85,12 @@ export class TimerEngine implements ClockEngine {
   }
 
   reset(): void {
-    this.running.set(false);
-    cancelAnimationFrame(this.frameId);
-    this.stopped = true;
+    this.stop();
     this.remainingMs.set(this.totalMs());
   }
 
   resetDefault() {
-    this.running.set(false);
-    cancelAnimationFrame(this.frameId);
-    this.stopped = true;
-
+    this.stop();
     const ms = (this.defaultHours * 3600 + this.defaultMinutes * 60 + this.defaultSeconds) * 1000;
     this.totalMs.set(ms);
     this.remainingMs.set(ms);

@@ -1,10 +1,11 @@
-<div class="wheel" #wheel (scroll)="onScroll()">
+<div class="wheel" #wheel (scroll)="onScroll()" [class.disabled]="disabled()">
     @for (item of displayItems(); track $index) {
         <button class="item"
             [class.scrolling]="scrolling()"
             [class]="scrolling() ? '' : getItemClass($index)"
             [class.selected]="item===value()"
-            (click)="valueChange.emit(item)">
+            (click)="valueChange.emit(item)"
+            [disabled]="disabled()">
             {{item.toString().padStart(2,'0')}}
         </button>
     }

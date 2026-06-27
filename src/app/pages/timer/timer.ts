@@ -4,6 +4,7 @@ import { Controls } from "../../components/controls/controls";
 import { DigitalDisplay } from "../../components/digital-display/digital-display";
 import { WheelPicker } from "../../components/wheel-picker/wheel-picker";
 import { TimerFace } from "../../components/timer-face/timer-face";
+import { StorageSvc } from '../../services/storage-svc';
 
 @Component({
   selector: 'app-timer',
@@ -14,6 +15,7 @@ import { TimerFace } from "../../components/timer-face/timer-face";
 })
 export class Timer {
   readonly engineSvc = inject(TimerEngine);
+  private readonly storageSvc = inject(StorageSvc);
 
   readonly hours = signal(this.engineSvc.defaultHours);
   readonly minutes = signal(this.engineSvc.defaultMinutes);
@@ -22,6 +24,21 @@ export class Timer {
   readonly hoursItems = Array.from({ length: 24 }, (_, i) => i);
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);
   readonly secondItems = Array.from({ length: 60 }, (_, i) => i);
+
+  constructor() {
+    const timer = this.storageSvc.getTimer();
+    if (!timer) return;
+
+    this.hours.set(timer.hours);
+    this.minutes.set(timer.minutes);
+    this.seconds.set(timer.seconds);
+
+    this.engineSvc.setDuration(
+      timer.hours,
+      timer.minutes,
+      timer.seconds
+    )
+  }
 
   updateValue(type: 'hours' | 'minutes' | 'seconds', event: Event) {
     const value = Number((event.target as HTMLInputElement).value);
@@ -80,6 +97,11 @@ export class Timer {
       this.hours(),
       this.minutes(),
       this.seconds()
+    )
+    this.storageSvc.saveTimer(
+      this.hours(),
+      this.minutes(),
+      this.seconds(),
     )
   }
 }

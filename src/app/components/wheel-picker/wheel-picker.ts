@@ -17,6 +17,7 @@ export class WheelPicker {
   readonly value = input.required<number>();
   readonly valueChange = output<number>();
   readonly name = input('');
+  readonly disabled = input(false);
 
   readonly wheelRef = viewChild<ElementRef<HTMLDivElement>>('wheel');
 
@@ -55,6 +56,8 @@ export class WheelPicker {
   }
 
   onScroll() {
+    if (this.disabled()) return;
+
     this.scrolling.set(true);
     window.clearTimeout(this.scrollTimer);
     this.scrollTimer = window.setTimeout(() => {
