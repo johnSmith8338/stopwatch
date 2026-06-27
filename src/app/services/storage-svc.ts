@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { ThemeTYpe } from './theme-svc';
+import { TIMER_DEFAULT_HOUR, TIMER_DEFAULT_MINUTE, TIMER_DEFAULT_SECOND } from '../constants/timer.constants';
 
 export interface AppState {
   timer: {
     hours: number;
     minutes: number;
     seconds: number;
-  }
+  };
+  theme: ThemeTYpe;
 }
 
 @Injectable({
@@ -30,10 +33,11 @@ export class StorageSvc {
   saveTimer(hours: number, minutes: number, seconds: number) {
     const state = this.load() ?? {
       timer: {
-        hours: 0,
-        minutes: 0,
-        seconds: 0
-      }
+        hours: TIMER_DEFAULT_HOUR,
+        minutes: TIMER_DEFAULT_MINUTE,
+        seconds: TIMER_DEFAULT_SECOND
+      },
+      theme: 'light'
     }
 
     state.timer = { hours, minutes, seconds };
@@ -42,5 +46,22 @@ export class StorageSvc {
 
   getTimer() {
     return this.load()?.timer;
+  }
+
+  getTheme(): ThemeTYpe {
+    return this.load()?.theme ?? 'light';
+  }
+
+  saveTheme(theme: ThemeTYpe) {
+    const state = this.load() ?? {
+      timer: {
+        hours: TIMER_DEFAULT_HOUR,
+        minutes: TIMER_DEFAULT_MINUTE,
+        seconds: TIMER_DEFAULT_SECOND,
+      },
+      theme: 'light'
+    }
+    state.theme = theme;
+    this.save(state);
   }
 }

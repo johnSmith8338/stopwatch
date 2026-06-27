@@ -1,1 +1,5 @@
 <app-menu [alwaysOpen]="false" />
+<app-toggle [checked]="themeSvc.theme()==='dark'" (checkedChange)="changeTheme()">
+    <span left>l</span>
+    <span right>d</span>
+</app-toggle>

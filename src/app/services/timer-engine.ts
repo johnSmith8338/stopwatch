@@ -1,13 +1,14 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { ClockEngine } from '../models/clock-engine.interface';
+import { TIMER_DEFAULT_HOUR, TIMER_DEFAULT_MINUTE, TIMER_DEFAULT_SECOND } from '../constants/timer.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimerEngine implements ClockEngine {
-  readonly defaultHours = 0;
-  readonly defaultMinutes = 5;
-  readonly defaultSeconds = 0;
+  readonly defaultHours = TIMER_DEFAULT_HOUR;
+  readonly defaultMinutes = TIMER_DEFAULT_MINUTE;
+  readonly defaultSeconds = TIMER_DEFAULT_SECOND;
 
   readonly running = signal(false);
   readonly totalMs = signal(5 * 60_000);

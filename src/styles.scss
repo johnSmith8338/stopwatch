@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root[data-theme='light'] {
+    --bg: #ffffff;
+    --text: #111111;
+    --primary: #2979ff;
+}
+
+:root[data-theme='dark'] {
+    --bg: #171717;
+    --text: #ffffff;
+    --primary: #80b3ff;
+}
