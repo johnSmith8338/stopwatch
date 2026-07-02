@@ -1,0 +1,19 @@
+<h2>History</h2>
+<button (click)="clear()">clear history</button>
+@for (session of sessions(); track session.id) {
+    <section class="session">
+        <header>
+            <strong>{{session.startedAt|date:'dd.MM.yyyy HH:mm'}}</strong>
+            <button (click)="delete(session.id)">delete</button>
+        </header>
+        <div>duration: {{format(session.duration)}}</div>
+        <ul>
+            @for (lap of session.laps; track lap.id) {
+                <li>
+                    #{{lap.index}}
+                    lap: {{format(lap.lapTime)}} | total: {{format(lap.totalTime)}}
+                </li>
+            }
+        </ul>
+    </section>
+}

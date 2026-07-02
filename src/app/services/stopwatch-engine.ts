@@ -9,6 +9,8 @@ export class StopwatchEngine implements ClockEngine {
   readonly running = signal(false);
   readonly stopped = signal(false);
 
+  private lastLapMs = 0;
+
   readonly formatedTime = computed(() => this.formatTime(this.elapsedMs()));
   readonly displayTime = computed(() => {
     const ms = this.elapsedMs();
@@ -51,6 +53,7 @@ export class StopwatchEngine implements ClockEngine {
     this.stopped.set(true);
     cancelAnimationFrame(this.frameId);
     this.pauseElapsed = this.elapsedMs();
+    this.lastLapMs = 0;
   }
 
   reset() {
@@ -58,6 +61,17 @@ export class StopwatchEngine implements ClockEngine {
     cancelAnimationFrame(this.frameId);
     this.elapsedMs.set(0);
     this.pauseElapsed = 0;
+    this.lastLapMs = 0;
+  }
+
+  lap() {
+    const total = this.elapsedMs();
+    const lap = total - this.lastLapMs;
+    this.lastLapMs = total;
+    return {
+      lapTime: lap,
+      totalTime: total
+    }
   }
 
   private formatTime(milliseconds: number): string {
