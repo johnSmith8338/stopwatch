@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { TimerEngine } from '../../services/timer-engine';
 import { Controls } from "../../components/controls/controls";
 import { DigitalDisplay } from "../../components/digital-display/digital-display";
 import { WheelPicker } from "../../components/wheel-picker/wheel-picker";
 import { TimerFace } from "../../components/timer-face/timer-face";
-import { StorageSvc } from '../../services/storage-svc';
+import { TimerSvc } from '../../services/timer-svc';
 
 @Component({
   selector: 'app-timer',
@@ -15,7 +15,7 @@ import { StorageSvc } from '../../services/storage-svc';
 })
 export class Timer {
   readonly engineSvc = inject(TimerEngine);
-  private readonly storageSvc = inject(StorageSvc);
+  private readonly timerSvc = inject(TimerSvc);
 
   readonly hours = signal(this.engineSvc.defaultHours);
   readonly minutes = signal(this.engineSvc.defaultMinutes);
@@ -25,19 +25,22 @@ export class Timer {
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);
   readonly secondItems = Array.from({ length: 60 }, (_, i) => i);
 
+  private restored = false;
+
   constructor() {
-    const timer = this.storageSvc.getTimer();
-    if (!timer) return;
+    effect(() => {
+      if (!this.restored) return;
 
-    this.hours.set(timer.hours);
-    this.minutes.set(timer.minutes);
-    this.seconds.set(timer.seconds);
+      const hours = this.hours();
+      const minutes = this.minutes();
+      const seconds = this.seconds();
 
-    this.engineSvc.setDuration(
-      timer.hours,
-      timer.minutes,
-      timer.seconds
-    )
+      this.engineSvc.setDuration(hours, minutes, seconds)
+
+      void this.timerSvc.save(hours, minutes, seconds)
+    })
+
+    void this.restore();
   }
 
   updateValue(type: 'hours' | 'minutes' | 'seconds', event: Event) {
@@ -55,16 +58,6 @@ export class Timer {
         this.seconds.set(Math.min(59, safeValue));
         break;
     }
-
-    this.updateTimer();
-  }
-
-  private updateTimer() {
-    this.engineSvc.setDuration(
-      this.hours(),
-      this.minutes(),
-      this.seconds()
-    )
   }
 
   resetDefault() {
@@ -79,29 +72,35 @@ export class Timer {
 
   updateHours(value: number) {
     this.hours.set(value);
-    this.updateDuration();
+    this.applyTimer();
   }
 
   updateMinutes(value: number) {
     this.minutes.set(value);
-    this.updateDuration();
+    this.applyTimer();
   }
 
   updateSeconds(value: number) {
     this.seconds.set(value);
-    this.updateDuration();
+    this.applyTimer();
   }
 
-  private updateDuration() {
-    this.engineSvc.setDuration(
-      this.hours(),
-      this.minutes(),
-      this.seconds()
-    )
-    this.storageSvc.saveTimer(
-      this.hours(),
-      this.minutes(),
-      this.seconds(),
-    )
+  private applyTimer() {
+    const hours = this.hours();
+    const minutes = this.minutes();
+    const seconds = this.seconds();
+
+    this.engineSvc.setDuration(hours, minutes, seconds);
+
+    void this.timerSvc.save(hours, minutes, seconds);
+  }
+
+  private async restore() {
+    const timer = await this.timerSvc.restore();
+    if (timer) {
+      this.hours.set(timer.hours);
+      this.minutes.set(timer.minutes);
+      this.seconds.set(timer.seconds);
+    }
   }
 }

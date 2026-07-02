@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Header } from "./components/header/header";
 import { filter } from 'rxjs';
+import { AppInitializerSvc } from './services/app-initializer-svc';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +15,14 @@ import { filter } from 'rxjs';
 })
 export class App {
   private router = inject(Router);
+  private readonly initializer = inject(AppInitializerSvc);
 
   protected readonly title = signal('stopwatch');
   readonly hasHeader = signal(true);
 
   constructor() {
+    this.updHasHeader();
+
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)
     ).subscribe(() => {

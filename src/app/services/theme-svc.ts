@@ -1,27 +1,31 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { StorageSvc } from './storage-svc';
-
-export type ThemeTYpe = 'light' | 'dark';
+import { effect, inject, Injectable, signal } from '@angular/core';
+import { ThemeRepository, ThemeTYpe } from '../core/repositories/theme.repository';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeSvc {
-  readonly storage = inject(StorageSvc);
+  private readonly repository = inject(ThemeRepository);
 
   readonly theme = signal<ThemeTYpe>('light');
 
   constructor() {
-    this.setTheme(this.storage.getTheme());
+    effect(() => {
+      document.documentElement.setAttribute(
+        'data-theme',
+        this.theme()
+      );
+    })
   }
 
-  setTheme(theme: ThemeTYpe) {
-    this.theme.set(theme);
-    document.documentElement.dataset['theme'] = theme;
-    this.storage.saveTheme(theme);
+  async toggle() {
+    const next = this.theme() === 'light' ? 'dark' : 'light';
+    await this.repository.save(next);
+    this.theme.set(next);
   }
 
-  toggle() {
-    this.setTheme(this.theme() === 'light' ? 'dark' : 'light');
+  async restore() {
+    const theme = await this.repository.load();
+    if (theme) this.theme.set(theme);
   }
 }
