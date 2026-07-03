@@ -5,10 +5,14 @@ import { DigitalDisplay } from "../../components/digital-display/digital-display
 import { WheelPicker } from "../../components/wheel-picker/wheel-picker";
 import { TimerFace } from "../../components/timer-face/timer-face";
 import { TimerSvc } from '../../services/timer-svc';
+import { TimerPresetList } from "../../components/timer-preset-list/timer-preset-list";
+import { TimerPresetsSvc } from '../../services/timer-presets-svc';
+import { TimerPreset } from '../../core/repositories/timer.repository';
+import { TimerPresetEditor } from "../../components/timer-preset-editor/timer-preset-editor";
 
 @Component({
   selector: 'app-timer',
-  imports: [Controls, DigitalDisplay, WheelPicker, TimerFace],
+  imports: [Controls, DigitalDisplay, WheelPicker, TimerFace, TimerPresetList, TimerPresetEditor],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,10 +20,13 @@ import { TimerSvc } from '../../services/timer-svc';
 export class Timer {
   readonly engineSvc = inject(TimerEngine);
   private readonly timerSvc = inject(TimerSvc);
+  private readonly presetsSvc = inject(TimerPresetsSvc);
 
   readonly hours = signal(this.engineSvc.defaultHours);
   readonly minutes = signal(this.engineSvc.defaultMinutes);
   readonly seconds = signal(this.engineSvc.defaultSeconds);
+  readonly editing = signal<TimerPreset | null>(null);
+  readonly presets = signal<TimerPreset[]>([]);
 
   readonly hoursItems = Array.from({ length: 24 }, (_, i) => i);
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);
@@ -102,5 +109,41 @@ export class Timer {
       this.minutes.set(timer.minutes);
       this.seconds.set(timer.seconds);
     }
+    await this.reloadPresets();
+    this.restored = true;
+  }
+
+  private async reloadPresets() {
+    this.presets.set(await this.presetsSvc.getAll());
+  }
+
+  createPreset() {
+    this.editing.set(this.presetsSvc.create());
+  }
+
+  editPreset(timer: TimerPreset) {
+    this.editing.set(structuredClone(timer));
+  }
+
+  cancelEditing() {
+    this.editing.set(null);
+  }
+
+  async savePreset(timer: TimerPreset) {
+    await this.presetsSvc.save(timer);
+    await this.reloadPresets();
+    this.editing.set(null);
+  }
+
+  async deletePreset(id: string) {
+    await this.presetsSvc.delete(id);
+    await this.reloadPresets();
+  }
+
+  startPreset(timer: TimerPreset) {
+    this.engineSvc.loadPreset(timer);
+    this.hours.set(timer.hours);
+    this.minutes.set(timer.minutes);
+    this.seconds.set(timer.seconds);
   }
 }

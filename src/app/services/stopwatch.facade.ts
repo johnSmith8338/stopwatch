@@ -28,7 +28,6 @@ export class StopwatchFacade {
     }
 
     async lap() {
-        console.log('Facade lap');
         const lap = this.engine.lap();
         await this.history.addLap(
             lap.lapTime,

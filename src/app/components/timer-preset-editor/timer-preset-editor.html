@@ -1,0 +1,9 @@
+<div class="editor">
+    <input [value]="model().title" (input)="updateTitle($event)" placeholder="title" />
+    <input type="number" [value]="model().hours" (input)="updateHours($event)" />
+    <input type="number" [value]="model().minutes" (input)="updateMinutes($event)" />
+    <input type="number" [value]="model().seconds" (input)="updateSeconds($event)" />
+
+    <button (click)="save.emit(model())">save</button>
+    <button (click)="cancel.emit()">cancel</button>
+</div>

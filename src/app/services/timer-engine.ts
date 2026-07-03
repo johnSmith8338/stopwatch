@@ -1,6 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { ClockEngine } from '../models/clock-engine.interface';
 import { TIMER_DEFAULT_HOUR, TIMER_DEFAULT_MINUTE, TIMER_DEFAULT_SECOND } from '../constants/timer.constants';
+import { TimerPreset } from '../core/repositories/timer.repository';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class TimerEngine implements ClockEngine {
   private startTimestamp = 0;
   private remainingAtStart = 0;
   private stopped = false;
+  readonly favorite?: boolean;
 
   readonly displayTime = computed(() => this.formatTime(this.remainingMs()));
 
@@ -95,6 +97,14 @@ export class TimerEngine implements ClockEngine {
     const ms = (this.defaultHours * 3600 + this.defaultMinutes * 60 + this.defaultSeconds) * 1000;
     this.totalMs.set(ms);
     this.remainingMs.set(ms);
+  }
+
+  loadPreset(timer: TimerPreset) {
+    this.setDuration(
+      timer.hours,
+      timer.minutes,
+      timer.seconds
+    )
   }
 
   setDuration(hours: number, minutes: number, seconds: number) {

@@ -32,7 +32,6 @@ export class IndexedDbEngine extends StorageEngine {
 
     async get<T>(store: DbStore, key: IDBValidKey): Promise<T | undefined> {
         const objectStore = await this.getStore(store, 'readonly');
-        console.log("[IDB] load", key);
 
         return new Promise((resolve, reject) => {
             const request = objectStore.get(key);
@@ -43,7 +42,6 @@ export class IndexedDbEngine extends StorageEngine {
 
     async set<T>(store: DbStore, key: IDBValidKey, value: T): Promise<void> {
         const objectStore = await this.getStore(store, 'readwrite');
-        console.log("[IDB] save", key, value);
 
         return new Promise((resolve, reject) => {
             const request = objectStore.put(value, key);

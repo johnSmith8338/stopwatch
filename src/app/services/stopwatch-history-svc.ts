@@ -16,7 +16,6 @@ export class StopwatchHistorySvc {
   }
 
   startSession() {
-    console.log('Start session');
     if (this.current) return;
 
     this.current = {
@@ -29,7 +28,6 @@ export class StopwatchHistorySvc {
   }
 
   async finishSession(totalTime: number) {
-    console.log('Finish session', this.current);
     if (!this.current) return;
 
     this.current.finishedAt = Date.now();
@@ -41,9 +39,7 @@ export class StopwatchHistorySvc {
   }
 
   async addLap(lapTime: number, totalTime: number) {
-    console.log('History lap');
     if (!this.current) {
-      console.log('No current session');
       return;
     };
 

@@ -1,0 +1,7 @@
+@for (timer of timers(); track timer.id) {
+    <app-timer-preset-card 
+        [timer]="timer"
+        (start)="start.emit($event)"
+        (edit)="edit.emit($event)"
+        (remove)="remove.emit($event)" />
+}

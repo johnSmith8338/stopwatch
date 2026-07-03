@@ -27,6 +27,23 @@
 <app-controls [engine]="engineSvc" />
 <button (click)="resetDefault()">default</button>
 
+
+
+<button (click)="createPreset()">+ create</button>
+@if (editing(); as timer) {
+    <app-timer-preset-editor 
+        [timer]="timer"
+        (save)="savePreset($event)"
+        (cancel)="cancelEditing()" />
+}
+<app-timer-preset-list
+    [timers]="presets()"
+    (start)="startPreset($event)"
+    (edit)="editPreset($event)"
+    (remove)="deletePreset($event)" />
+
+
+
 <app-wheel-picker name="hours" 
     [items]="hoursItems" 
     [value]="hours()" 
