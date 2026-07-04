@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TimerPreset } from '../../core/repositories/timer.repository';
 import { DecimalPipe } from '@angular/common';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-timer-preset-card',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, CdkDrag, CdkDragHandle],
   templateUrl: './timer-preset-card.html',
   styleUrl: './timer-preset-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

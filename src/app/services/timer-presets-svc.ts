@@ -1,5 +1,6 @@
 import { inject, Injectable, resource, signal } from '@angular/core';
 import { TimerPreset, TimerRepository } from '../core/repositories/timer.repository';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 export type PresetsFilter = 'all' | 'favorite';
 
@@ -32,7 +33,7 @@ export class TimerPresetsSvc {
         if (a.favorite !== b.favorite) {
           return Number(a.favorite) - Number(b.favorite);
         }
-        return b.updatedAt - a.updatedAt;
+        return b.order - a.order;
       })
 
       return timers;
@@ -60,6 +61,7 @@ export class TimerPresetsSvc {
       minutes: 0,
       seconds: 0,
       favorite: false,
+      order: now,
       createdAt: now,
       updatedAt: now
     }
@@ -70,5 +72,18 @@ export class TimerPresetsSvc {
       ...timer,
       favorite: !timer.favorite
     })
+  }
+
+  async reorder(prev: number, curr: number) {
+    const list = await this.repo.getAll();
+    moveItemInArray(list, prev, curr);
+    await Promise.all(list.map((timer, index) =>
+      this.repo.save({
+        ...timer,
+        order: index
+      })
+    ))
+
+    this.presets.reload();
   }
 }

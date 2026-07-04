@@ -9,7 +9,9 @@ export interface TimerPreset {
     minutes: number;
     seconds: number;
     color?: string;
+    icon?: string;
     favorite: boolean;
+    order: number;
     createdAt: number;
     updatedAt: number;
 }

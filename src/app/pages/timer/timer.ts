@@ -10,6 +10,7 @@ import { TimerPresetsSvc } from '../../services/timer-presets-svc';
 import { TimerPreset } from '../../core/repositories/timer.repository';
 import { TimerPresetEditor } from "../../components/timer-preset-editor/timer-preset-editor";
 import { DurationPicker } from "../../components/duration-picker/duration-picker";
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-timer',
@@ -134,5 +135,13 @@ export class Timer {
 
   async searchChanged(event: Event) {
     this.presetsSvc.search.set((event.target as HTMLInputElement).value);
+  }
+
+  async reorder(event: CdkDragDrop<TimerPreset[]>) {
+    if (event.previousIndex === event.currentIndex) return;
+    await this.presetsSvc.reorder(
+      event.previousIndex,
+      event.currentIndex
+    )
   }
 }
