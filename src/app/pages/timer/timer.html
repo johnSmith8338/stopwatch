@@ -1,33 +1,24 @@
-<app-timer-face />
-
-<div class="timer-settings">
-    <input type="number" 
-        min="0" 
-        [value]="hours()" 
-        (input)="updateValue('hours',$event)"
-        [disabled]="engineSvc.running()" />
-    <span>:</span>
-    <input type="number" 
-        min="0" 
-        max="59" 
-        [value]="minutes()" 
-        (input)="updateValue('minutes',$event)"
-        [disabled]="engineSvc.running()" />
-    <span>:</span>
-    <input type="number" 
-        min="0" 
-        max="59" 
-        [value]="seconds()" 
-        (input)="updateValue('seconds',$event)"
-        [disabled]="engineSvc.running()" />
+<div class="preset-toolbar">
+    <input type="search" placeholder="search" (input)="searchChanged($event)" />
+    <button (click)="showAll()">all</button>
+    <button (click)="showFavorites()">favorites</button>
 </div>
+
+<app-timer-face />
 
 <app-digital-display [engine]="engineSvc" />
 
 <app-controls [engine]="engineSvc" />
 <button (click)="resetDefault()">default</button>
 
-
+<app-duration-picker
+    [hours]="hours()"
+    [minutes]="minutes()"
+    [seconds]="seconds()"
+    [disabled]="engineSvc.running()"
+    (hoursChange)="updateHours($event)"
+    (minutesChange)="updateMinutes($event)"
+    (secondsChange)="updateSeconds($event)" />
 
 <button (click)="createPreset()">+ create</button>
 @if (editing(); as timer) {
@@ -40,22 +31,6 @@
     [timers]="presets()"
     (start)="startPreset($event)"
     (edit)="editPreset($event)"
-    (remove)="deletePreset($event)" />
+    (remove)="deletePreset($event)"
+    (favorite)="toggleFavorite($event)" />
 
-
-
-<app-wheel-picker name="hours" 
-    [items]="hoursItems" 
-    [value]="hours()" 
-    (valueChange)="updateHours($event)" 
-    [disabled]="engineSvc.running()" />
-<app-wheel-picker name="minutes" 
-    [items]="minuteItems" 
-    [value]="minutes()" 
-    (valueChange)="updateMinutes($event)"
-    [disabled]="engineSvc.running()" />
-<app-wheel-picker name="seconds" 
-    [items]="secondItems" 
-    [value]="seconds()" 
-    (valueChange)="updateSeconds($event)"
-    [disabled]="engineSvc.running()" />

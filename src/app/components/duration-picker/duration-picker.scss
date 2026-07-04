@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.inputs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.wheels {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}

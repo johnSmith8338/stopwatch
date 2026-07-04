@@ -1,5 +1,5 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
-import { WHEEL_HEIGHT, WHEEL_ITEM_HEIGHT, WHEEL_OFFSET } from '../../constants/wheel-picker.constants';
+import { WHEEL_HEIGHT, WHEEL_ITEM_HEIGHT } from '../../constants/wheel-picker.constants';
 
 @Component({
   selector: 'app-wheel-picker',

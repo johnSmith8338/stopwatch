@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { TimerPreset } from '../../core/repositories/timer.repository';
+import { WheelPicker } from "../wheel-picker/wheel-picker";
+import { DurationPicker } from "../duration-picker/duration-picker";
 
 @Component({
   selector: 'app-timer-preset-editor',
-  imports: [],
+  imports: [DurationPicker],
   templateUrl: './timer-preset-editor.html',
   styleUrl: './timer-preset-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,24 +25,21 @@ export class TimerPresetEditor {
     }))
   }
 
-  updateHours(e: Event) {
-    const hours = Math.max(0, Number((e.target as HTMLInputElement).value));
+  setHours(hours: number) {
     this.model.update(v => ({
       ...v,
       hours
     }))
   }
 
-  updateMinutes(e: Event) {
-    const minutes = Math.min(59, Math.max(0, Number((e.target as HTMLInputElement).value)));
+  setMinutes(minutes: number) {
     this.model.update(v => ({
       ...v,
       minutes
     }))
   }
 
-  updateSeconds(e: Event) {
-    const seconds = Math.min(59, Math.max(0, Number((e.target as HTMLInputElement).value)));
+  setSeconds(seconds: number) {
     this.model.update(v => ({
       ...v,
       seconds

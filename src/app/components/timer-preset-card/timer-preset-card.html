@@ -8,4 +8,11 @@
     <button (click)="start.emit(timer())">start</button>
     <button (click)="edit.emit(timer())">edit</button>
     <button (click)="remove.emit(timer().id)">delete</button>
+    <button (click)="favorite.emit(timer())">
+        @if (timer().favorite) {
+            ★
+        }@else {
+            ☆
+        }
+    </button>
 </div>

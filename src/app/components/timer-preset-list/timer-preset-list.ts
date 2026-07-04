@@ -15,4 +15,5 @@ export class TimerPresetList {
   readonly edit = output<TimerPreset>();
   readonly start = output<TimerPreset>();
   readonly remove = output<string>();
+  readonly favorite = output<TimerPreset>();
 }

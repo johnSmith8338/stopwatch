@@ -9,10 +9,11 @@ import { TimerPresetList } from "../../components/timer-preset-list/timer-preset
 import { TimerPresetsSvc } from '../../services/timer-presets-svc';
 import { TimerPreset } from '../../core/repositories/timer.repository';
 import { TimerPresetEditor } from "../../components/timer-preset-editor/timer-preset-editor";
+import { DurationPicker } from "../../components/duration-picker/duration-picker";
 
 @Component({
   selector: 'app-timer',
-  imports: [Controls, DigitalDisplay, WheelPicker, TimerFace, TimerPresetList, TimerPresetEditor],
+  imports: [Controls, DigitalDisplay, TimerFace, TimerPresetList, TimerPresetEditor, DurationPicker],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,10 +28,6 @@ export class Timer {
   readonly seconds = signal(this.engineSvc.defaultSeconds);
   readonly editing = signal<TimerPreset | null>(null);
   readonly presets = signal<TimerPreset[]>([]);
-
-  readonly hoursItems = Array.from({ length: 24 }, (_, i) => i);
-  readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);
-  readonly secondItems = Array.from({ length: 60 }, (_, i) => i);
 
   private restored = false;
 
@@ -48,23 +45,6 @@ export class Timer {
     })
 
     void this.restore();
-  }
-
-  updateValue(type: 'hours' | 'minutes' | 'seconds', event: Event) {
-    const value = Number((event.target as HTMLInputElement).value);
-    const safeValue = Number.isNaN(value) ? 0 : Math.max(0, value);
-
-    switch (type) {
-      case 'hours':
-        this.hours.set(safeValue);
-        break;
-      case 'minutes':
-        this.minutes.set(Math.min(59, safeValue));
-        break;
-      case 'seconds':
-        this.seconds.set(Math.min(59, safeValue));
-        break;
-    }
   }
 
   resetDefault() {
@@ -145,5 +125,25 @@ export class Timer {
     this.hours.set(timer.hours);
     this.minutes.set(timer.minutes);
     this.seconds.set(timer.seconds);
+  }
+
+  async toggleFavorite(timer: TimerPreset) {
+    await this.presetsSvc.toggleFavorite(timer);
+    await this.reloadPresets();
+  }
+
+  async showAll() {
+    this.presetsSvc.filter.set('all');
+    await this.reloadPresets();
+  }
+
+  async showFavorites() {
+    this.presetsSvc.filter.set('favorite');
+    await this.reloadPresets();
+  }
+
+  async searchChanged(event: Event) {
+    this.presetsSvc.search.set((event.target as HTMLInputElement).value);
+    await this.reloadPresets();
   }
 }
