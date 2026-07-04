@@ -21,13 +21,12 @@ import { DurationPicker } from "../../components/duration-picker/duration-picker
 export class Timer {
   readonly engineSvc = inject(TimerEngine);
   private readonly timerSvc = inject(TimerSvc);
-  private readonly presetsSvc = inject(TimerPresetsSvc);
+  readonly presetsSvc = inject(TimerPresetsSvc);
 
   readonly hours = signal(this.engineSvc.defaultHours);
   readonly minutes = signal(this.engineSvc.defaultMinutes);
   readonly seconds = signal(this.engineSvc.defaultSeconds);
   readonly editing = signal<TimerPreset | null>(null);
-  readonly presets = signal<TimerPreset[]>([]);
 
   private restored = false;
 
@@ -89,12 +88,8 @@ export class Timer {
       this.minutes.set(timer.minutes);
       this.seconds.set(timer.seconds);
     }
-    await this.reloadPresets();
-    this.restored = true;
-  }
 
-  private async reloadPresets() {
-    this.presets.set(await this.presetsSvc.getAll());
+    this.restored = true;
   }
 
   createPreset() {
@@ -111,13 +106,11 @@ export class Timer {
 
   async savePreset(timer: TimerPreset) {
     await this.presetsSvc.save(timer);
-    await this.reloadPresets();
     this.editing.set(null);
   }
 
   async deletePreset(id: string) {
     await this.presetsSvc.delete(id);
-    await this.reloadPresets();
   }
 
   startPreset(timer: TimerPreset) {
@@ -129,21 +122,17 @@ export class Timer {
 
   async toggleFavorite(timer: TimerPreset) {
     await this.presetsSvc.toggleFavorite(timer);
-    await this.reloadPresets();
   }
 
   async showAll() {
     this.presetsSvc.filter.set('all');
-    await this.reloadPresets();
   }
 
   async showFavorites() {
     this.presetsSvc.filter.set('favorite');
-    await this.reloadPresets();
   }
 
   async searchChanged(event: Event) {
     this.presetsSvc.search.set((event.target as HTMLInputElement).value);
-    await this.reloadPresets();
   }
 }

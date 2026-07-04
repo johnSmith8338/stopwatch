@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, resource, signal } from '@angular/core';
 import { TimerPreset, TimerRepository } from '../core/repositories/timer.repository';
 
 export type PresetsFilter = 'all' | 'favorite';
@@ -9,46 +9,45 @@ export type PresetsFilter = 'all' | 'favorite';
 export class TimerPresetsSvc {
   private readonly repo = inject(TimerRepository);
 
-  readonly changed = signal(0);
   readonly filter = signal<PresetsFilter>('all');
   readonly search = signal('');
-  readonly presets = signal<TimerPreset[]>([]);
+  readonly presets = resource({
+    params: () => ({
+      filter: this.filter(),
+      search: this.search()
+    }),
+    loader: async ({ params }) => {
+      let timers = await this.repo.getAll();
 
-  private touch() {
-    this.changed.update(v => v + 1);
-  }
-
-  async getAll() {
-    let timers = await this.repo.getAll();
-
-    const search = this.search().trim().toLowerCase();
-    if (search.length) {
-      timers = timers.filter(x => x.title.toLowerCase().includes(search));
-    }
-
-    if (this.filter() === 'favorite') {
-      timers = timers.filter(x => x.favorite);
-    }
-
-    timers.sort((a, b) => {
-      if (a.favorite !== b.favorite) {
-        return Number(b.favorite) - Number(a.favorite);
+      if (params.search.trim()) {
+        const text = params.search.toLowerCase();
+        timers = timers.filter(x => x.title.toLowerCase().includes(text));
       }
-      return b.updatedAt - a.updatedAt;
-    })
 
-    return timers;
-  }
+      if (params.filter === 'favorite') {
+        timers = timers.filter(x => x.favorite);
+      }
+
+      timers.sort((a, b) => {
+        if (a.favorite !== b.favorite) {
+          return Number(a.favorite) - Number(b.favorite);
+        }
+        return b.updatedAt - a.updatedAt;
+      })
+
+      return timers;
+    }
+  });
 
   async save(timer: TimerPreset) {
     timer.updatedAt = Date.now();
     await this.repo.save(timer);
-    this.touch();
+    this.presets.reload();
   }
 
   async delete(id: string) {
     await this.repo.delete(id);
-    this.touch();
+    this.presets.reload();
   }
 
   create(): TimerPreset {

@@ -27,10 +27,14 @@
         (save)="savePreset($event)"
         (cancel)="cancelEditing()" />
 }
+@if (presetsSvc.presets.isLoading()) {
+    <span>Loading...</span>
+}@else {
 <app-timer-preset-list
-    [timers]="presets()"
+    [timers]="presetsSvc.presets.value() ?? []"
     (start)="startPreset($event)"
     (edit)="editPreset($event)"
     (remove)="deletePreset($event)"
     (favorite)="toggleFavorite($event)" />
+}
 
