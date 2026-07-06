@@ -1,6 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { IndexedDbEngine } from "../storage/indexed-db.engine";
 import { DbStore } from "../storage/database";
+import { TimerSound } from "../../services/sound-svc";
+import { TimerIcon } from "../../constants/icons";
+import { TimerColor } from "../../constants/colors";
 
 export interface TimerPreset {
     id: string;
@@ -8,8 +11,9 @@ export interface TimerPreset {
     hours: number;
     minutes: number;
     seconds: number;
-    color?: string;
-    icon?: string;
+    color: TimerColor;
+    icon: TimerIcon;
+    sound: TimerSound;
     favorite: boolean;
     order: number;
     createdAt: number;

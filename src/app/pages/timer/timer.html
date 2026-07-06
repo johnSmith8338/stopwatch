@@ -1,41 +1,41 @@
 <div class="preset-toolbar">
-    <input type="search" placeholder="search" (input)="searchChanged($event)" />
-    <button (click)="showAll()">all</button>
-    <button (click)="showFavorites()">favorites</button>
+    <input type="search" placeholder="search" (input)="facade.searchChanged($event)" />
+    <button (click)="facade.showAll()">all</button>
+    <button (click)="facade.showFavorites()">favorites</button>
 </div>
 
 <app-timer-face />
 
 <app-digital-display [engine]="engineSvc" />
 
-<app-controls [engine]="engineSvc" />
-<button (click)="resetDefault()">default</button>
+<app-timer-controls />
+<button (click)="facade.resetDefault()">default</button>
 
 <app-duration-picker
-    [hours]="hours()"
-    [minutes]="minutes()"
-    [seconds]="seconds()"
+    [hours]="facade.hours()"
+    [minutes]="facade.minutes()"
+    [seconds]="facade.seconds()"
     [disabled]="engineSvc.running()"
-    (hoursChange)="updateHours($event)"
-    (minutesChange)="updateMinutes($event)"
-    (secondsChange)="updateSeconds($event)" />
+    (hoursChange)="facade.updateHours($event)"
+    (minutesChange)="facade.updateMinutes($event)"
+    (secondsChange)="facade.updateSeconds($event)" />
 
-<button (click)="createPreset()">+ create</button>
-@if (editing(); as timer) {
+<button (click)="facade.createPreset()">+ create</button>
+@if (facade.editing(); as timer) {
     <app-timer-preset-editor 
         [timer]="timer"
-        (save)="savePreset($event)"
-        (cancel)="cancelEditing()" />
+        (save)="facade.savePreset($event)"
+        (cancel)="facade.cancelEditing()" />
 }
 @if (presetsSvc.presets.isLoading()) {
     <span>Loading...</span>
 }@else {
 <app-timer-preset-list
     [timers]="presetsSvc.presets.value() ?? []"
-    (start)="startPreset($event)"
-    (edit)="editPreset($event)"
-    (remove)="deletePreset($event)"
-    (favorite)="toggleFavorite($event)"
-    (reorder)="reorder($event)" />
+    (start)="facade.loadPreset($event)"
+    (edit)="facade.editPreset($event)"
+    (remove)="facade.deletePreset($event)"
+    (favorite)="facade.toggleFavorite($event)"
+    (reorder)="facade.reorder($event)" />
 }
 

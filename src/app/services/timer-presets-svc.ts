@@ -62,6 +62,7 @@ export class TimerPresetsSvc {
       seconds: 0,
       color: 'transparent',
       icon: '',
+      sound: 'ding',
       favorite: false,
       order: now,
       createdAt: now,

@@ -5,10 +5,12 @@ import { DurationPicker } from "../duration-picker/duration-picker";
 import { TIMER_COLORS, TIMER_ICONS } from '../../constants/timer.constants';
 import { TimerColor } from '../../constants/colors';
 import { TimerIcon } from '../../constants/icons';
+import { TimerSound } from '../../services/sound-svc';
+import { SoundPicker } from "../sound-picker/sound-picker";
 
 @Component({
   selector: 'app-timer-preset-editor',
-  imports: [DurationPicker],
+  imports: [DurationPicker, SoundPicker],
   templateUrl: './timer-preset-editor.html',
   styleUrl: './timer-preset-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,6 +65,13 @@ export class TimerPresetEditor {
     this.model.update(v => ({
       ...v,
       icon
+    }))
+  }
+
+  setSound(sound: TimerSound) {
+    this.model.update(v => ({
+      ...v,
+      sound
     }))
   }
 }

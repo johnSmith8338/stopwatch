@@ -1,0 +1,6 @@
+<label for="sound">sound</label>
+<select name="sound" id="sound" [value]="value()" (change)="onChange($event)">
+    @for (item of items; track item) {
+        <option [value]="item">{{item}}</option>
+    }
+</select>

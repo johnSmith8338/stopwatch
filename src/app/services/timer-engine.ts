@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { ClockEngine } from '../models/clock-engine.interface';
 import { TIMER_DEFAULT_HOUR, TIMER_DEFAULT_MINUTE, TIMER_DEFAULT_SECOND } from '../constants/timer.constants';
 import { TimerPreset } from '../core/repositories/timer.repository';
@@ -14,6 +14,7 @@ export class TimerEngine implements ClockEngine {
   readonly running = signal(false);
   readonly totalMs = signal(5 * 60_000);
   readonly remainingMs = signal(5 * 60_000);
+  readonly finished = signal(false);
 
   private frameId = 0;
   private startTimestamp = 0;
@@ -46,6 +47,7 @@ export class TimerEngine implements ClockEngine {
   }
 
   start(): void {
+    this.finished.set(false);
     if (this.running()) return;
     if (this.remainingMs() <= 0) return;
     if (this.stopped) {
@@ -65,6 +67,7 @@ export class TimerEngine implements ClockEngine {
       this.remainingMs.set(remaining);
 
       if (remaining === 0) {
+        this.finished.set(true);
         this.stop();
         return;
       }

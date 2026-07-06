@@ -1,0 +1,29 @@
+import { Injectable } from '@angular/core';
+
+export type TimerSound = 'none' | 'ding' | 'alarm';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SoundSvc {
+  private audio?: HTMLAudioElement;
+
+  play(sound: TimerSound = 'none') {
+    this.stop();
+
+    if (sound === 'none') return;
+
+    this.audio = new Audio(`sounds/${sound}.mp3`);
+    this.audio.loop = sound === 'alarm';
+    void this.audio.play();
+  }
+
+  stop() {
+    if (!this.audio) return;
+
+    this.audio.pause();
+    this.audio.currentTime = 0;
+    this.audio = undefined;
+  }
+}
+

@@ -29,6 +29,8 @@
         }
     </div>
 
+    <app-sound-picker [value]="model().sound" (valueChange)="setSound($event)" />
+
     <div class="buttons">
         <button (click)="save.emit(model())">save</button>
         <button (click)="cancel.emit()">cancel</button>
