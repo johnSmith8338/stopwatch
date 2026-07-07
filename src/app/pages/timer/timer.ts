@@ -11,7 +11,16 @@ import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
 
 @Component({
   selector: 'app-timer',
-  imports: [DigitalDisplay, TimerFace, TimerPresetList, TimerPresetEditor, DurationPicker, TimerControls, TimerFinishedDialog, ConfirmDialog],
+  imports: [
+    DigitalDisplay,
+    TimerFace,
+    TimerPresetList,
+    TimerPresetEditor,
+    DurationPicker,
+    TimerControls,
+    TimerFinishedDialog,
+    ConfirmDialog
+  ],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

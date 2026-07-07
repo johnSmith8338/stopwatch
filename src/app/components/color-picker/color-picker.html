@@ -1,0 +1,11 @@
+<div class="colors">
+    @for (color of colors; track color) {
+        <button class="color"
+            type="button"
+            class="color"
+            [class.selected]="value()===color"
+            [style.background]="color"
+            (click)="valueChange.emit(color)"
+        ></button>
+    }
+</div>

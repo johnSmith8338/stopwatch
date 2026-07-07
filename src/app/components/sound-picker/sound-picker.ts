@@ -21,6 +21,7 @@ export class SoundPicker {
   readonly valueChange = output<TimerSound>();
 
   readonly items: SoundItem[] = [
+    { value: 'inherit', title: 'use default', icon: '' },
     { value: 'none', title: 'silent', icon: '🔇' },
     { value: 'ding', title: 'ding', icon: '🔔' },
     { value: 'alarm', title: 'alarm', icon: '🚨' },

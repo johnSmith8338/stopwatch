@@ -1,15 +1,16 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { TimerPreset } from '../../core/repositories/timer.repository';
 import { DurationPicker } from "../duration-picker/duration-picker";
-import { TIMER_COLORS, TIMER_ICONS } from '../../constants/timer.constants';
 import { TimerColor } from '../../constants/colors';
 import { TimerIcon } from '../../constants/icons';
 import { TimerSound } from '../../services/sound-svc';
 import { SoundPicker } from "../sound-picker/sound-picker";
+import { IconPicker } from "../icon-picker/icon-picker";
+import { ColorPicker } from "../color-picker/color-picker";
 
 @Component({
   selector: 'app-timer-preset-editor',
-  imports: [DurationPicker, SoundPicker],
+  imports: [DurationPicker, SoundPicker, IconPicker, ColorPicker],
   templateUrl: './timer-preset-editor.html',
   styleUrl: './timer-preset-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,9 +19,6 @@ export class TimerPresetEditor {
   readonly timer = input.required<TimerPreset>();
   readonly save = output<TimerPreset>();
   readonly cancel = output();
-
-  readonly colors = TIMER_COLORS;
-  readonly icons = TIMER_ICONS;
 
   readonly model = linkedSignal(() => structuredClone(this.timer()));
 

@@ -1,6 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from "@angular/core";
 import { TimerEngine } from "./timer-engine";
-import { SoundSvc } from "./sound-svc";
+import { SoundSvc, TimerSound } from "./sound-svc";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerPresetsSvc } from "./timer-presets-svc";
 import { TimerSvc } from "./timer-svc";
@@ -21,6 +21,7 @@ export class TimerFacade {
     readonly dialogOpened = signal(false);
     readonly deleting = signal<TimerPreset | null>(null);
     readonly editing = signal<TimerPreset | null>(null);
+    readonly manualSound = signal<TimerSound>('ding');
     currentPreset = signal<TimerPreset | null>(null);
 
     private restored = false;
@@ -63,10 +64,15 @@ export class TimerFacade {
             if (!preset) return;
 
             this.dialogOpened.set(true);
-            this.sound.play(preset.sound ?? 'ding');
+            this.sound.play(this.resolveSound(preset));
         })
 
         void this.restore();
+    }
+
+    private resolveSound(timer: TimerPreset): TimerSound {
+        if (timer.sound === 'inherit') return this.manualSound();
+        return timer.sound;
     }
 
     private async restore() {

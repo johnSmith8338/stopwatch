@@ -9,25 +9,9 @@
         (minutesChange)="setMinutes($event)"
         (secondsChange)="setSeconds($event)" />
 
-    <div class="icons">
-        @for(icon of icons; track icon) {
-            <button class="icon"
-                [class.selected]="model().icon===icon"
-                (click)="setIcon(icon)">
-                {{icon}}
-            </button>
-        }
-    </div>
+    <app-icon-picker [value]="model().icon" (valueChange)="setIcon($event)" />
 
-    <div class="colors">
-        @for (color of colors; track color) {
-            <button class="color"
-                [class.selected]="model().color===color"
-                [style.background]="color"
-                (click)="setColor(color)"
-            ></button>
-        }
-    </div>
+    <app-color-picker [value]="model().color" (valueChange)="setColor($event)" />
 
     <app-sound-picker [value]="model().sound" (valueChange)="setSound($event)" />
 

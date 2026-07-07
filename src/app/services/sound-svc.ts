@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export type TimerSound = 'none' | 'ding' | 'alarm';
+export type TimerSound = 'inherit' | 'none' | 'ding' | 'alarm';
 
 @Injectable({
   providedIn: 'root',
