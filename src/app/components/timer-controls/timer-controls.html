@@ -1,4 +1,5 @@
-<button (click)="start()">start</button>
-<button (click)="stop()">stop</button>
-<button (click)="pause()">pause</button>
-<button (click)="reset()">reset</button>
+<button (click)="start()" [disabled]="disabled()">start</button>
+<button (click)="stop()" [disabled]="disabled()">stop</button>
+<button (click)="pause()" [disabled]="disabled()">pause</button>
+<button (click)="reset()" [disabled]="disabled()">reset</button>
+<button (click)="resetDefault()" [disabled]="disabled()">reset default</button>

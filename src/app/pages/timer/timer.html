@@ -4,18 +4,19 @@
     <button (click)="facade.showFavorites()">favorites</button>
 </div>
 
+<h2>{{facade.icon()}} {{facade.title()}}</h2>
+
 <app-timer-face />
 
 <app-digital-display [engine]="engineSvc" />
 
 <app-timer-controls />
-<button (click)="facade.resetDefault()">default</button>
 
 <app-duration-picker
     [hours]="facade.hours()"
     [minutes]="facade.minutes()"
     [seconds]="facade.seconds()"
-    [disabled]="engineSvc.running()"
+    [disabled]="engineSvc.running()||facade.dialogOpened()"
     (hoursChange)="facade.updateHours($event)"
     (minutesChange)="facade.updateMinutes($event)"
     (secondsChange)="facade.updateSeconds($event)" />
@@ -34,8 +35,21 @@
     [timers]="presetsSvc.presets.value() ?? []"
     (start)="facade.loadPreset($event)"
     (edit)="facade.editPreset($event)"
-    (remove)="facade.deletePreset($event)"
+    (remove)="facade.requestDelete($event)"
     (favorite)="facade.toggleFavorite($event)"
     (reorder)="facade.reorder($event)" />
 }
 
+@if (facade.dialogOpened()) {
+<app-timer-finished-dialog
+    [preset]="facade.currentPreset()!"
+    (repeat)="facade.repeatInDialog()"
+    (stop)="facade.stopInDialog()" />
+}
+
+@if(facade.deleting(); as timer) {
+<app-confirm-dialog
+    [message]="`delete ${timer.title}?`"
+    (confirm)="facade.confirmDelete()"
+    (cancel)="facade.cancelDelete()" />
+}

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TimerFacade } from '../../services/timer.facade';
 
 @Component({
@@ -10,6 +10,8 @@ import { TimerFacade } from '../../services/timer.facade';
 })
 export class TimerControls {
   readonly facade = inject(TimerFacade);
+
+  readonly disabled = computed(() => this.facade.dialogOpened());
 
   start() {
     this.facade.start();
@@ -25,5 +27,9 @@ export class TimerControls {
 
   reset() {
     this.facade.reset();
+  }
+
+  resetDefault() {
+    this.facade.resetDefault();
   }
 }

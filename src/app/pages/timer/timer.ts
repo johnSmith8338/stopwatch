@@ -6,10 +6,12 @@ import { TimerPresetEditor } from "../../components/timer-preset-editor/timer-pr
 import { DurationPicker } from "../../components/duration-picker/duration-picker";
 import { TimerFacade } from '../../services/timer.facade';
 import { TimerControls } from "../../components/timer-controls/timer-controls";
+import { TimerFinishedDialog } from "../../components/timer-finished-dialog/timer-finished-dialog";
+import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
 
 @Component({
   selector: 'app-timer',
-  imports: [DigitalDisplay, TimerFace, TimerPresetList, TimerPresetEditor, DurationPicker, TimerControls],
+  imports: [DigitalDisplay, TimerFace, TimerPresetList, TimerPresetEditor, DurationPicker, TimerControls, TimerFinishedDialog, ConfirmDialog],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

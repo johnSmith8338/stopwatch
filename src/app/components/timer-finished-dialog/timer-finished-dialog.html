@@ -1,1 +1,15 @@
-<p>timer-finished-dialog works!</p>,
+<div class="overlay">
+    <div class="dialog">
+        <h2>time is over</h2>
+        <h3>{{preset().title}}</h3>
+        <div class="time">
+            {{preset().hours | number:'2.0'}}:
+            {{preset().minutes | number:'2.0'}}:
+            {{preset().seconds | number:'2.0'}}:
+        </div>
+        <div class="buttons">
+            <button (click)="repeat.emit()">repeat</button>
+            <button (click)="stop.emit()">stop</button>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-import { effect, inject, Injectable, signal } from "@angular/core";
+import { computed, effect, inject, Injectable, signal } from "@angular/core";
 import { TimerEngine } from "./timer-engine";
 import { SoundSvc } from "./sound-svc";
 import { TimerPreset } from "../core/repositories/timer.repository";
@@ -19,25 +19,37 @@ export class TimerFacade {
     readonly minutes = signal(this.engine.defaultMinutes);
     readonly seconds = signal(this.engine.defaultSeconds);
     readonly dialogOpened = signal(false);
+    readonly deleting = signal<TimerPreset | null>(null);
     readonly editing = signal<TimerPreset | null>(null);
     currentPreset = signal<TimerPreset | null>(null);
 
     private restored = false;
     private wasFinished = false;
 
+    readonly title = computed(() => {
+        return this.currentPreset()?.title || 'custom timer'
+    })
+
+    readonly icon = computed(() => this.currentPreset()?.icon || '⏱');
+
+    private createManualPreset(): TimerPreset {
+        return {
+            id: 'manual',
+            title: 'Manual timer',
+            hours: this.hours(),
+            minutes: this.minutes(),
+            seconds: this.seconds(),
+            color: 'transparent',
+            icon: '',
+            sound: 'ding',
+            favorite: false,
+            order: 0,
+            createdAt: 0,
+            updatedAt: 0
+        }
+    }
+
     constructor() {
-        effect(() => {
-            if (!this.restored) return;
-
-            const hours = this.hours();
-            const minutes = this.minutes();
-            const seconds = this.seconds();
-
-            this.engine.setDuration(hours, minutes, seconds)
-
-            void this.timerSvc.save(hours, minutes, seconds)
-        })
-
         effect(() => {
             const finished = this.engine.finished();
             if (!finished || this.wasFinished) {
@@ -77,12 +89,14 @@ export class TimerFacade {
     }
 
     start() {
+        if (!this.currentPreset()) this.currentPreset.set(this.createManualPreset());
         this.engine.start();
     }
 
     stop() {
         this.engine.stop();
         this.sound.stop();
+        this.dialogOpened.set(false);
     }
 
     pause() {
@@ -92,18 +106,51 @@ export class TimerFacade {
     reset() {
         this.engine.reset();
         this.sound.stop();
+        this.currentPreset.set(null);
     }
 
     updateHours(value: number) {
         this.hours.set(value);
+        this.applyDuration();
     }
 
     updateMinutes(value: number) {
         this.minutes.set(value);
+        this.applyDuration();
     }
 
     updateSeconds(value: number) {
         this.seconds.set(value);
+        this.applyDuration();
+    }
+
+    updateManualPreset() {
+        const preset = this.currentPreset();
+
+        if (!preset || preset.id !== 'manual') return;
+
+        this.currentPreset.update(p => ({
+            ...p!,
+            hours: this.hours(),
+            minutes: this.minutes(),
+            seconds: this.seconds()
+        }))
+    }
+
+    private applyDuration() {
+        this.engine.setDuration(
+            this.hours(),
+            this.minutes(),
+            this.seconds()
+        );
+
+        this.updateManualPreset();
+
+        void this.timerSvc.save(
+            this.hours(),
+            this.minutes(),
+            this.seconds()
+        );
     }
 
     resetDefault() {
@@ -114,6 +161,7 @@ export class TimerFacade {
         this.seconds.set(defaults.seconds);
 
         this.engine.resetDefault();
+        this.currentPreset.set(null);
     }
 
     createPreset() {
@@ -172,10 +220,32 @@ export class TimerFacade {
         this.sound.stop();
     }
 
-    repeat() {
+    repeatInDialog() {
         this.sound.stop();
         this.dialogOpened.set(false);
         this.engine.reset();
         this.engine.start();
+    }
+
+    stopInDialog() {
+        this.engine.stop();
+        this.sound.stop();
+        this.dialogOpened.set(false);
+    }
+
+    requestDelete(timer: TimerPreset) {
+        this.deleting.set(timer);
+    }
+
+    cancelDelete() {
+        this.deleting.set(null);
+    }
+
+    async confirmDelete() {
+        const timer = this.deleting();
+        if (!timer) return;
+
+        await this.presetsSvc.delete(timer.id);
+        this.deleting.set(null);
     }
 }

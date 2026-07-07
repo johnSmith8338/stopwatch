@@ -1,5 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { TimerSound } from '../../services/sound-svc';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { SoundSvc, TimerSound } from '../../services/sound-svc';
+
+interface SoundItem {
+  value: TimerSound;
+  title: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-sound-picker',
@@ -9,14 +15,24 @@ import { TimerSound } from '../../services/sound-svc';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SoundPicker {
+  private readonly sound = inject(SoundSvc);
+
   readonly value = input.required<TimerSound>();
   readonly valueChange = output<TimerSound>();
 
-  readonly items: TimerSound[] = ['none', 'ding', 'alarm'];
+  readonly items: SoundItem[] = [
+    { value: 'none', title: 'silent', icon: '🔇' },
+    { value: 'ding', title: 'ding', icon: '🔔' },
+    { value: 'alarm', title: 'alarm', icon: '🚨' },
+  ];
 
-  onChange(event: Event) {
-    this.valueChange.emit(
-      (event.target as HTMLSelectElement).value as TimerSound
-    )
+  select(sound: TimerSound) {
+    this.valueChange.emit(sound);
+  }
+
+  preview(event: MouseEvent, sound: TimerSound) {
+    event.stopPropagation();
+    this.sound.play(sound);
+    if (sound !== 'alarm') setTimeout(() => { this.sound.stop() }, 1000);
   }
 }

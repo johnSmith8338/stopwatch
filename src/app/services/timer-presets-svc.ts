@@ -31,9 +31,9 @@ export class TimerPresetsSvc {
 
       timers.sort((a, b) => {
         if (a.favorite !== b.favorite) {
-          return Number(a.favorite) - Number(b.favorite);
+          return Number(b.favorite) - Number(a.favorite);
         }
-        return b.order - a.order;
+        return a.order - b.order;
       })
 
       return timers;
@@ -62,7 +62,7 @@ export class TimerPresetsSvc {
       seconds: 0,
       color: 'transparent',
       icon: '',
-      sound: 'ding',
+      sound: 'none',
       favorite: false,
       order: now,
       createdAt: now,

@@ -18,7 +18,7 @@ export class TimerPresetList {
 
   readonly edit = output<TimerPreset>();
   readonly start = output<TimerPreset>();
-  readonly remove = output<string>();
+  readonly remove = output<TimerPreset>();
   readonly favorite = output<TimerPreset>();
   readonly reorder = output<CdkDragDrop<TimerPreset[]>>();
 

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { TimerPreset } from '../../core/repositories/timer.repository';
-import { WheelPicker } from "../wheel-picker/wheel-picker";
 import { DurationPicker } from "../duration-picker/duration-picker";
 import { TIMER_COLORS, TIMER_ICONS } from '../../constants/timer.constants';
 import { TimerColor } from '../../constants/colors';

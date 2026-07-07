@@ -1,6 +1,11 @@
-<label for="sound">sound</label>
-<select name="sound" id="sound" [value]="value()" (change)="onChange($event)">
-    @for (item of items; track item) {
-        <option [value]="item">{{item}}</option>
+<div class="sound-picker">
+    @for (item of items; track item.value) {
+        <button class="sound-card"
+            [class.selected]="value()===item.value"
+            (click)="select(item.value)">
+            <span class="icon">{{item.icon}}</span>
+            <span class="title">{{item.title}}</span>
+            <button class="preview" (click)="preview($event,item.value)">play</button>
+        </button>
     }
-</select>
+</div>
