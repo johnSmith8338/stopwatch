@@ -3,8 +3,9 @@ import { TimerEngine } from "./timer-engine";
 import { SoundSvc, TimerSound } from "./sound-svc";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerPresetsSvc } from "./timer-presets-svc";
-import { TimerSvc } from "./timer-svc";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { TimerSettingsSvc } from "./timer-settings-svc";
+import { TimerAppSettings } from "../core/repositories/timers.repository";
 
 @Injectable({
     providedIn: 'root'
@@ -12,42 +13,56 @@ import { CdkDragDrop } from "@angular/cdk/drag-drop";
 export class TimerFacade {
     readonly engine = inject(TimerEngine);
     readonly presetsSvc = inject(TimerPresetsSvc);
-    private readonly timerSvc = inject(TimerSvc);
+    private readonly settingsSvc = inject(TimerSettingsSvc);
     private readonly sound = inject(SoundSvc);
 
-    readonly hours = signal(this.engine.defaultHours);
-    readonly minutes = signal(this.engine.defaultMinutes);
-    readonly seconds = signal(this.engine.defaultSeconds);
     readonly dialogOpened = signal(false);
     readonly deleting = signal<TimerPreset | null>(null);
     readonly editing = signal<TimerPreset | null>(null);
-    readonly manualSound = signal<TimerSound>('ding');
-    currentPreset = signal<TimerPreset | null>(null);
+    currentPreset = signal<TimerPreset | 'manual' | null>(null);
 
     private restored = false;
     private wasFinished = false;
 
-    readonly title = computed(() => {
-        return this.currentPreset()?.title || 'custom timer'
-    })
+    readonly appSettings = computed(() => this.settingsSvc.settings());
 
-    readonly icon = computed(() => this.currentPreset()?.icon || '⏱');
+    readonly title = computed(() => this.activePreset()?.title || 'timer');
 
-    private createManualPreset(): TimerPreset {
+    readonly icon = computed(() => this.activePreset()?.icon || '⏱');
+
+    readonly manualPreset = computed<TimerPreset>(() => {
+        const s = this.requireSettings();
         return {
             id: 'manual',
-            title: 'Manual timer',
-            hours: this.hours(),
-            minutes: this.minutes(),
-            seconds: this.seconds(),
-            color: 'transparent',
-            icon: '',
-            sound: 'ding',
+            title: 'manual timer',
+            hours: s.hours,
+            minutes: s.minutes,
+            seconds: s.seconds,
+            color: s.color,
+            icon: s.icon,
+            sound: s.sound,
             favorite: false,
             order: 0,
             createdAt: 0,
             updatedAt: 0
         }
+    })
+
+    readonly activePreset = computed<TimerPreset | null>(() => {
+        const preset = this.currentPreset();
+        if (preset === null) return null;
+        if (preset === 'manual') return this.manualPreset();
+        return preset;
+    })
+
+    private requireSettings(): TimerAppSettings {
+        const settings = this.appSettings();
+
+        if (!settings) {
+            throw new Error('Timer settings are not loaded');
+        }
+
+        return settings;
     }
 
     constructor() {
@@ -60,49 +75,44 @@ export class TimerFacade {
 
             this.wasFinished = true;
 
-            const preset = this.currentPreset();
+            const preset = this.activePreset();
             if (!preset) return;
 
             this.dialogOpened.set(true);
             this.sound.play(this.resolveSound(preset));
         })
 
-        void this.restore();
+        void this.settingsSvc.load();
     }
 
     private resolveSound(timer: TimerPreset): TimerSound {
-        if (timer.sound === 'inherit') return this.manualSound();
+        if (timer.sound === 'inherit') return this.requireSettings().sound;
         return timer.sound;
-    }
-
-    private async restore() {
-        const timer = await this.timerSvc.restore();
-        if (timer) {
-            this.hours.set(timer.hours);
-            this.minutes.set(timer.minutes);
-            this.seconds.set(timer.seconds);
-        }
-
-        this.restored = true;
     }
 
     loadPreset(timer: TimerPreset) {
         this.currentPreset.set(timer);
-        this.hours.set(timer.hours);
-        this.minutes.set(timer.minutes);
-        this.seconds.set(timer.seconds);
         this.engine.loadPreset(timer);
     }
 
     start() {
-        if (!this.currentPreset()) this.currentPreset.set(this.createManualPreset());
+        if (!this.settingsSvc.loaded()) return;
+        const preset = this.currentPreset();
+        if (!preset) this.currentPreset.set('manual');
         this.engine.start();
     }
 
     stop() {
-        this.engine.stop();
         this.sound.stop();
         this.dialogOpened.set(false);
+
+        const s = this.requireSettings();
+        this.engine.reset();
+        this.engine.setDuration(
+            s.hours,
+            s.minutes,
+            s.seconds
+        )
     }
 
     pause() {
@@ -115,58 +125,27 @@ export class TimerFacade {
         this.currentPreset.set(null);
     }
 
-    updateHours(value: number) {
-        this.hours.set(value);
-        this.applyDuration();
+    updateHours(hours: number) {
+        this.settingsSvc.patch({ hours });
     }
 
-    updateMinutes(value: number) {
-        this.minutes.set(value);
-        this.applyDuration();
+    updateMinutes(minutes: number) {
+        this.settingsSvc.patch({ minutes });
     }
 
-    updateSeconds(value: number) {
-        this.seconds.set(value);
-        this.applyDuration();
-    }
-
-    updateManualPreset() {
-        const preset = this.currentPreset();
-
-        if (!preset || preset.id !== 'manual') return;
-
-        this.currentPreset.update(p => ({
-            ...p!,
-            hours: this.hours(),
-            minutes: this.minutes(),
-            seconds: this.seconds()
-        }))
-    }
-
-    private applyDuration() {
-        this.engine.setDuration(
-            this.hours(),
-            this.minutes(),
-            this.seconds()
-        );
-
-        this.updateManualPreset();
-
-        void this.timerSvc.save(
-            this.hours(),
-            this.minutes(),
-            this.seconds()
-        );
+    updateSeconds(seconds: number) {
+        this.settingsSvc.patch({ seconds });
     }
 
     resetDefault() {
         const defaults = this.engine.getDefaults();
 
-        this.hours.set(defaults.hours);
-        this.minutes.set(defaults.minutes);
-        this.seconds.set(defaults.seconds);
+        void this.settingsSvc.patch({
+            hours: defaults.hours,
+            minutes: defaults.minutes,
+            seconds: defaults.seconds
+        })
 
-        this.engine.resetDefault();
         this.currentPreset.set(null);
     }
 
@@ -234,9 +213,16 @@ export class TimerFacade {
     }
 
     stopInDialog() {
-        this.engine.stop();
         this.sound.stop();
         this.dialogOpened.set(false);
+
+        const s = this.requireSettings();
+        this.engine.reset();
+        this.engine.setDuration(
+            s.hours,
+            s.minutes,
+            s.seconds
+        )
     }
 
     requestDelete(timer: TimerPreset) {

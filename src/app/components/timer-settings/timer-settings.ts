@@ -1,22 +1,33 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { TimerSound } from '../../services/sound-svc';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { SoundPicker } from "../sound-picker/sound-picker";
+import { TimerSettingsSvc } from '../../services/timer-settings-svc';
 import { TimerColor } from '../../constants/colors';
 import { TimerIcon } from '../../constants/icons';
-import { SoundPicker } from "../sound-picker/sound-picker";
+import { TimerSound } from '../../services/sound-svc';
+import { ColorPicker } from "../color-picker/color-picker";
+import { IconPicker } from "../icon-picker/icon-picker";
 
 @Component({
   selector: 'app-timer-settings',
-  imports: [SoundPicker],
+  imports: [SoundPicker, ColorPicker, IconPicker],
   templateUrl: './timer-settings.html',
   styleUrl: './timer-settings.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerSettings {
-  readonly sound = input.required<TimerSound>();
-  readonly color = input.required<TimerColor>();
-  readonly icon = input.required<TimerIcon>();
+  readonly svc = inject(TimerSettingsSvc);
 
-  readonly soundChange = output<TimerSound>();
-  readonly colorChange = output<TimerColor>();
-  readonly iconChange = output<TimerIcon>();
+  readonly settings = computed(() => this.svc.settings());
+
+  setColor(color: TimerColor) {
+    void this.svc.patch({ color });
+  }
+
+  setIcon(icon: TimerIcon) {
+    void this.svc.patch({ icon });
+  }
+
+  setSound(sound: TimerSound) {
+    void this.svc.patch({ sound });
+  }
 }

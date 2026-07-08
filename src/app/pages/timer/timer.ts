@@ -8,6 +8,7 @@ import { TimerFacade } from '../../services/timer.facade';
 import { TimerControls } from "../../components/timer-controls/timer-controls";
 import { TimerFinishedDialog } from "../../components/timer-finished-dialog/timer-finished-dialog";
 import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
+import { TimerSettings } from "../../components/timer-settings/timer-settings";
 
 @Component({
   selector: 'app-timer',
@@ -19,7 +20,8 @@ import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
     DurationPicker,
     TimerControls,
     TimerFinishedDialog,
-    ConfirmDialog
+    ConfirmDialog,
+    TimerSettings
   ],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',

@@ -1,13 +1,15 @@
 <h3>default settings</h3>
-<section>
-    <label>sound</label>
-    <app-sound-picker [value]="sound()" (valueChange)="soundChange.emit($event)" />
-</section>
-<section>
-    <label>color</label>
-    <!-- <app-color-picker /> -->
-</section>
-<section>
-    <label>icon</label>
-    <!-- <app-icon-picker /> -->
-</section>
+@if (settings(); as settings) {
+    <section>
+        <label>color</label>
+        <app-color-picker [value]="settings.color" (valueChange)="setColor($event)" />
+    </section>
+    <section>
+        <label>icon</label>
+        <app-icon-picker [value]="settings.icon" (valueChange)="setIcon($event)" />
+    </section>
+    <section>
+        <label>sound</label>
+        <app-sound-picker [value]="settings.sound" (valueChange)="setSound($event)" />
+    </section>
+}

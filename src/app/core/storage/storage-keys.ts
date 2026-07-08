@@ -1,4 +1,4 @@
 export enum StorageKey {
     Theme = 'theme',
-    TimerDefaults = 'timer-defaults',
+    TimerAppSettings = 'timer-app-settings',
 }

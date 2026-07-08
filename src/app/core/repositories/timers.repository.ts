@@ -2,11 +2,17 @@ import { inject, Injectable } from "@angular/core";
 import { IndexedDbEngine } from "../storage/indexed-db.engine";
 import { DbStore } from "../storage/database";
 import { StorageKey } from "../storage/storage-keys";
+import { TimerColor } from "../../constants/colors";
+import { TimerIcon } from "../../constants/icons";
+import { TimerSound } from "../../services/sound-svc";
 
-export interface TimerDefaults {
+export interface TimerAppSettings {
     hours: number;
     minutes: number;
     seconds: number;
+    color: TimerColor;
+    icon: TimerIcon;
+    sound: TimerSound;
 }
 
 @Injectable({
@@ -15,18 +21,18 @@ export interface TimerDefaults {
 export class TimersRepository {
     private readonly storage = inject(IndexedDbEngine);
 
-    loadDefaults() {
-        return this.storage.get<TimerDefaults>(
+    loadSettings() {
+        return this.storage.get<TimerAppSettings>(
             DbStore.Settings,
-            StorageKey.TimerDefaults
+            StorageKey.TimerAppSettings
         )
     }
 
-    saveDefaults(hours: number, minutes: number, seconds: number) {
+    saveSettings(settings: TimerAppSettings) {
         return this.storage.set(
             DbStore.Settings,
-            StorageKey.TimerDefaults,
-            { hours, minutes, seconds }
+            StorageKey.TimerAppSettings,
+            settings
         )
     }
 }

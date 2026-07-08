@@ -5,7 +5,7 @@ import { TimerSound } from "../../services/sound-svc";
 
 export interface TimerSettings {
     color: TimerColor;
-    icons: TimerIcon;
+    icon: TimerIcon;
     sound: TimerSound;
 }
 
