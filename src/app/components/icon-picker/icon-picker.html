@@ -1,11 +1,11 @@
 <div class="icons">
-        @for(icon of icons; track icon) {
-            <button class="icon"
-                type="button"
-                class="icon"
-                [class.selected]="value()===icon"
-                (click)="valueChange.emit(icon)">
-                <span [iconName]="icon"></span>
-            </button>
-        }
-    </div>
+    @for(icon of icons; track icon) {
+        <button class="icon"
+            type="button"
+            class="icon-button"
+            [class.selected]="value()===icon"
+            (click)="valueChange.emit(icon)">
+            <span [iconName]="icon" class="icon"></span>
+        </button>
+    }
+</div>

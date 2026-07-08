@@ -9,6 +9,7 @@ import { TimerControls } from "../../components/timer-controls/timer-controls";
 import { TimerFinishedDialog } from "../../components/timer-finished-dialog/timer-finished-dialog";
 import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
 import { TimerSettings } from "../../components/timer-settings/timer-settings";
+import { SvgIcon } from '../../directives/svg-icon';
 
 @Component({
   selector: 'app-timer',
@@ -21,7 +22,8 @@ import { TimerSettings } from "../../components/timer-settings/timer-settings";
     TimerControls,
     TimerFinishedDialog,
     ConfirmDialog,
-    TimerSettings
+    TimerSettings,
+    SvgIcon,
   ],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',

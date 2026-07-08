@@ -4,7 +4,10 @@
     <button (click)="facade.showFavorites()">favorites</button>
 </div>
 
-<h2>{{facade.icon()}} {{facade.title()}}</h2>
+<h2>
+    <span [iconName]="facade.icon()" class="icon"></span>
+    <span>{{facade.title()}}</span>
+</h2>
 
 <app-timer-face />
 

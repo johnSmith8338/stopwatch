@@ -1,1 +1,1 @@
-export type TimerIcon = '' | '🍳' | '☕' | '🍝' | '📚' | '🏃' | '💪' | '🧘' | '💤' | '🎮' | '⭐';
+export type TimerIcon = '' | 'search' | 'coffee' | 'goal' | 'book' | 'walk' | 'gym' | 'game' | 'lunch' | 'star';
