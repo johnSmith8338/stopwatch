@@ -10,6 +10,8 @@ import { TimerFinishedDialog } from "../../components/timer-finished-dialog/time
 import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
 import { TimerSettings } from "../../components/timer-settings/timer-settings";
 import { SvgIcon } from '../../directives/svg-icon';
+import { RunningTimerList } from "../../components/running-timer-list/running-timer-list";
+import { PreviewTimerEngine } from '../../services/timer-preview.engine';
 
 @Component({
   selector: 'app-timer',
@@ -24,6 +26,7 @@ import { SvgIcon } from '../../directives/svg-icon';
     ConfirmDialog,
     TimerSettings,
     SvgIcon,
+    RunningTimerList
   ],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
@@ -31,7 +34,7 @@ import { SvgIcon } from '../../directives/svg-icon';
 })
 export class Timer {
   readonly facade = inject(TimerFacade);
+  readonly preview = inject(PreviewTimerEngine);
 
-  readonly engineSvc = this.facade.engine;
   readonly presetsSvc = this.facade.presetsSvc;
 }

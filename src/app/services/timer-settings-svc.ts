@@ -1,13 +1,13 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { TimerAppSettings, TimersRepository } from '../core/repositories/timers.repository';
-import { TimerEngine } from './timer-engine';
+import { PreviewTimerEngine } from './timer-preview.engine';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimerSettingsSvc {
   private readonly repo = inject(TimersRepository);
-  private readonly engine = inject(TimerEngine);
+  private readonly preview = inject(PreviewTimerEngine);
 
   private saveTimer?: number;
 
@@ -29,10 +29,13 @@ export class TimerSettingsSvc {
       }
 
       await this.repo.saveSettings(settings);
+
+      console.log('settings loaded', settings);
+      console.log('engine total', this.preview.totalMs());
     };
 
     this.settings.set(settings);
-    this.engine.setDuration(
+    this.preview.setDuration(
       settings.hours,
       settings.minutes,
       settings.seconds
@@ -58,7 +61,7 @@ export class TimerSettingsSvc {
 
     this.settings.set(next);
 
-    this.engine.setDuration(
+    this.preview.setDuration(
       next.hours,
       next.minutes,
       next.seconds

@@ -1,6 +1,9 @@
 <div class="card" cdkDrag [style.border-left]="`8px solid ${timer().color}`">
     <div class="drag" cdkDragHandle>☰</div>
-    <h3>{{timer().icon}} {{timer().title}}</h3>
+    <h3>
+        <span [iconName]="timer().icon" class="icon"></span>
+        <span>{{timer().title}}</span>
+    </h3>
     <div>
         {{timer().hours | number:'2.0'}}:
         {{timer().minutes | number:'2.0'}}:

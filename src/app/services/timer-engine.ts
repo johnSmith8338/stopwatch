@@ -23,6 +23,7 @@ export class TimerEngine implements ClockEngine {
   readonly favorite?: boolean;
 
   readonly displayTime = computed(() => this.formatTime(this.remainingMs()));
+  readonly formattedTime = this.displayTime;
 
   readonly secondProgressAngle = computed(() => {
     const remainingSeconds = (this.remainingMs() % 60_000) / 1000;

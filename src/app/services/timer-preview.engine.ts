@@ -1,0 +1,144 @@
+import { computed, Injectable, signal } from "@angular/core";
+import { ClockEngine } from "../models/clock-engine.interface";
+import { TIMER_DEFAULT_HOUR, TIMER_DEFAULT_MINUTE, TIMER_DEFAULT_SECOND } from "../constants/timer.constants";
+import { TimerPreset } from "../core/repositories/timer.repository";
+
+@Injectable({
+    providedIn: 'root',
+})
+export class PreviewTimerEngine implements ClockEngine {
+    readonly defaultHours = TIMER_DEFAULT_HOUR;
+    readonly defaultMinutes = TIMER_DEFAULT_MINUTE;
+    readonly defaultSeconds = TIMER_DEFAULT_SECOND;
+
+    readonly running = signal(false);
+    readonly totalMs = signal(5 * 60_000);
+    readonly remainingMs = signal(5 * 60_000);
+    readonly finished = signal(false);
+
+    private frameId = 0;
+    private startTimestamp = 0;
+    private remainingAtStart = 0;
+    private stopped = false;
+    readonly favorite?: boolean;
+
+    readonly displayTime = computed(() => this.formatTime(this.remainingMs()));
+    readonly formattedTime = this.displayTime;
+
+    readonly secondProgressAngle = computed(() => {
+        const remainingSeconds = (this.remainingMs() % 60_000) / 1000;
+        return remainingSeconds * 6;
+    })
+
+    readonly minuteProgressAngle = computed(() => {
+        const remainingMinutes = this.remainingMs() / 60_000;
+        return remainingMinutes * 6;
+    })
+
+    readonly remainingHours = computed(() => Math.floor(this.remainingMs() / 3_600_000));
+    readonly remainingMinutes = computed(() => Math.floor(this.remainingMs() / 60_000) % 60);
+    readonly remainingSeconds = computed(() => Math.floor(this.remainingMs() / 1000) % 60);
+
+    getDefaults() {
+        return {
+            hours: this.defaultHours,
+            minutes: this.defaultMinutes,
+            seconds: this.defaultSeconds
+        }
+    }
+
+    start(): void {
+        console.log('ENGINE START');
+
+        console.log({
+            remaining: this.remainingMs(),
+            total: this.totalMs(),
+            running: this.running()
+        });
+
+        this.finished.set(false);
+        if (this.running()) return;
+        if (this.remainingMs() <= 0) return;
+        if (this.stopped) {
+            this.remainingMs.set(this.totalMs())
+        }
+
+        this.running.set(true);
+        this.stopped = false;
+        this.remainingAtStart = this.remainingMs();
+        this.startTimestamp = performance.now();
+
+        const tick = () => {
+            if (!this.running()) return;
+
+            const elapsed = performance.now() - this.startTimestamp;
+            const remaining = Math.max(this.remainingAtStart - elapsed, 0);
+            this.remainingMs.set(remaining);
+
+            if (remaining === 0) {
+                this.finished.set(true);
+                this.stop();
+                return;
+            }
+
+            this.frameId = requestAnimationFrame(tick);
+        }
+
+        tick();
+    }
+
+    pause(): void {
+        if (!this.running()) return;
+        this.running.set(false);
+        cancelAnimationFrame(this.frameId);
+    }
+
+    stop(): void {
+        this.running.set(false);
+        cancelAnimationFrame(this.frameId);
+        this.stopped = true;
+    }
+
+    reset(): void {
+        this.stop();
+        this.remainingMs.set(this.totalMs());
+    }
+
+    resetDefault() {
+        this.stop();
+        const ms = (this.defaultHours * 3600 + this.defaultMinutes * 60 + this.defaultSeconds) * 1000;
+        this.totalMs.set(ms);
+        this.remainingMs.set(ms);
+    }
+
+    loadPreset(timer: TimerPreset) {
+        this.setDuration(
+            timer.hours,
+            timer.minutes,
+            timer.seconds
+        )
+    }
+
+    setDuration(hours: number, minutes: number, seconds: number) {
+        const totalMs = (hours * 3600 + minutes * 60 + seconds) * 1000;
+        this.totalMs.set(totalMs);
+        this.remainingMs.set(totalMs);
+    }
+
+    private formatTime(milliseconds: number): string {
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = hours > 0 ?
+            Math.floor((totalSeconds % 3600) / 60) :
+            Math.floor(totalSeconds / 60)
+        const seconds = totalSeconds % 60;
+        const ms = Math.floor((milliseconds % 1000) / 10);
+
+        const shortFormat =
+            `${minutes.toString().padStart(2, '0')}:` +
+            `${seconds.toString().padStart(2, '0')}.` +
+            `${ms.toString().padStart(2, '0')}`;
+
+        return hours > 0 ? `${hours.toString().padStart(2, '0')}:${shortFormat}` : shortFormat;
+    }
+}

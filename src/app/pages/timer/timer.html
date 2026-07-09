@@ -11,7 +11,7 @@
 
 <app-timer-face />
 
-<app-digital-display [engine]="engineSvc" />
+<app-digital-display />
 
 <app-timer-controls />
 
@@ -20,13 +20,15 @@
     [hours]="settings.hours"
     [minutes]="settings.minutes"
     [seconds]="settings.seconds"
-    [disabled]="engineSvc.running()||facade.dialogOpened()"
+    [disabled]="preview.running()||facade.dialogOpened()"
     (hoursChange)="facade.updateHours($event)"
     (minutesChange)="facade.updateMinutes($event)"
     (secondsChange)="facade.updateSeconds($event)" />
 }
 
 <app-timer-settings />
+
+<app-running-timer-list />
 
 <button (click)="facade.createPreset()">+ create</button>
 @if (facade.editing(); as timer) {
