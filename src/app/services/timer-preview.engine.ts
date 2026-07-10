@@ -48,14 +48,6 @@ export class PreviewTimerEngine implements ClockEngine {
     }
 
     start(): void {
-        console.log('ENGINE START');
-
-        console.log({
-            remaining: this.remainingMs(),
-            total: this.totalMs(),
-            running: this.running()
-        });
-
         this.finished.set(false);
         if (this.running()) return;
         if (this.remainingMs() <= 0) return;

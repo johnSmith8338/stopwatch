@@ -32,7 +32,6 @@ export class TimerInstance {
 
     start() {
         this.engine.start();
-        console.log('INSTANCE START');
     }
 
     pause() {
