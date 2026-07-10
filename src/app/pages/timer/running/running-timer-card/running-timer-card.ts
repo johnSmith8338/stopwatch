@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { TimerInstance } from '../../services/timer-instance';
-import { SvgIcon } from "../../directives/svg-icon";
+import { TimerInstance } from '../../../../services/timer-instance';
+import { SvgIcon } from "../../../../directives/svg-icon";
 
 @Component({
   selector: 'app-running-timer-card',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { SCALE_CENTER, SCALE_LABEL_RADIUS, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../constants/scale.constants';
-import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../utils/clock-face.util';
-import { TimerInstanceStore } from '../../services/timer-instance.store';
+import { SCALE_CENTER, SCALE_LABEL_RADIUS, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../../../constants/scale.constants';
+import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../../utils/clock-face.util';
+import { TimerInstanceStore } from '../../../../services/timer-instance.store';
 
 @Component({
   selector: 'app-timer-face',

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { TimerFacade } from '../../services/timer.facade';
+import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 
 @Component({
   selector: 'app-timer-controls',
@@ -9,7 +9,7 @@ import { TimerFacade } from '../../services/timer.facade';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerControls {
-  readonly facade = inject(TimerFacade);
+  readonly facade = inject(TimerWorkspaceFacade);
 
   readonly disabled = computed(() => this.facade.dialogOpened());
 

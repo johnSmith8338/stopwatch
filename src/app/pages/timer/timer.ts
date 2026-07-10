@@ -1,40 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DigitalDisplay } from "../../components/digital-display/digital-display";
-import { TimerFace } from "../../components/timer-face/timer-face";
-import { TimerPresetList } from "../../components/timer-preset-list/timer-preset-list";
-import { TimerPresetEditor } from "../../components/timer-preset-editor/timer-preset-editor";
-import { DurationPicker } from "../../components/duration-picker/duration-picker";
-import { TimerFacade } from '../../services/timer.facade';
-import { TimerControls } from "../../components/timer-controls/timer-controls";
-import { TimerFinishedDialog } from "../../components/timer-finished-dialog/timer-finished-dialog";
-import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
-import { TimerSettings } from "../../components/timer-settings/timer-settings";
-import { SvgIcon } from '../../directives/svg-icon';
-import { RunningTimerList } from "../../components/running-timer-list/running-timer-list";
-import { PreviewTimerEngine } from '../../services/timer-preview.engine';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { TimerWorkspace } from "./timer-workspace/timer-workspace/timer-workspace";
+import { TimerPresets } from "./presets/timer-presets/timer-presets";
 
 @Component({
   selector: 'app-timer',
   imports: [
-    DigitalDisplay,
-    TimerFace,
-    TimerPresetList,
-    TimerPresetEditor,
-    DurationPicker,
-    TimerControls,
-    TimerFinishedDialog,
-    ConfirmDialog,
-    TimerSettings,
-    SvgIcon,
-    RunningTimerList
+    TimerWorkspace,
+    TimerPresets
   ],
   templateUrl: './timer.html',
   styleUrl: './timer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Timer {
-  readonly facade = inject(TimerFacade);
-  readonly preview = inject(PreviewTimerEngine);
-
-  readonly presetsSvc = this.facade.presetsSvc;
-}
+export class Timer { }

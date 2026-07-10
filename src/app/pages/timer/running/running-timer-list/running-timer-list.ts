@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
-import { TimerInstanceStore } from '../../services/timer-instance.store';
+import { TimerInstanceStore } from '../../../../services/timer-instance.store';
 import { RunningTimerCard } from "../running-timer-card/running-timer-card";
 
 @Component({

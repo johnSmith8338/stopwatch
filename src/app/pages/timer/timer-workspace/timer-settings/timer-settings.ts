@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { SoundPicker } from "../sound-picker/sound-picker";
-import { TimerSettingsSvc } from '../../services/timer-settings-svc';
-import { TimerColor } from '../../constants/colors';
-import { TimerIcon } from '../../constants/icons';
-import { TimerSound } from '../../services/sound-svc';
-import { ColorPicker } from "../color-picker/color-picker";
-import { IconPicker } from "../icon-picker/icon-picker";
+import { SoundPicker } from "../../../../components/sound-picker/sound-picker";
+import { TimerSettingsSvc } from '../../../../services/timer-settings-svc';
+import { TimerColor } from '../../../../constants/colors';
+import { TimerIcon } from '../../../../constants/icons';
+import { TimerSound } from '../../../../services/sound-svc';
+import { ColorPicker } from "../../../../components/color-picker/color-picker";
+import { IconPicker } from "../../../../components/icon-picker/icon-picker";
 
 @Component({
   selector: 'app-timer-settings',

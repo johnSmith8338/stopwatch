@@ -1,0 +1,20 @@
+<app-preset-toolbar />
+
+<button (click)="facade.createPreset()">+ create</button>
+
+@if (facade.editing(); as timer) {
+    <app-timer-preset-editor 
+        [timer]="timer"
+        (save)="facade.savePreset($event)"
+        (cancel)="facade.cancelEditing()" />
+}
+
+<!-- <app-timer-preset-list /> -->
+
+
+@if(facade.deleting(); as timer) {
+<app-confirm-dialog
+    [message]="`delete ${timer.title}?`"
+    (confirm)="facade.confirmDelete()"
+    (cancel)="facade.cancelDelete()" />
+}

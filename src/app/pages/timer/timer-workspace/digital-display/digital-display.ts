@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { ClockEngine } from '../../models/clock-engine.interface';
-import { PreviewTimerEngine } from '../../services/timer-preview.engine';
-import { TimerInstanceStore } from '../../services/timer-instance.store';
+import { ClockEngine } from '../../../../models/clock-engine.interface';
+import { PreviewTimerEngine } from '../../../../services/timer-preview.engine';
+import { TimerInstanceStore } from '../../../../services/timer-instance.store';
 
 @Component({
   selector: 'app-digital-display',

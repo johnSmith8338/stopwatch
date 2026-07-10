@@ -1,0 +1,32 @@
+<h2>
+    <span [iconName]="facade.icon()" class="icon"></span>
+    <span>{{facade.title()}}</span>
+</h2>
+
+<app-timer-face />
+
+<app-digital-display />
+
+<app-timer-controls />
+
+@if (facade.appSettings(); as settings) {
+<app-duration-picker
+    [hours]="settings.hours"
+    [minutes]="settings.minutes"
+    [seconds]="settings.seconds"
+    [disabled]="facade.dialogOpened()"
+    (hoursChange)="facade.updateHours($event)"
+    (minutesChange)="facade.updateMinutes($event)"
+    (secondsChange)="facade.updateSeconds($event)" />
+}
+
+<app-timer-settings />
+
+<app-running-timer-list />
+
+@if (facade.dialogOpened() && facade.activePreset(); as preset) {
+<app-timer-finished-dialog
+    [preset]="preset"
+    (repeat)="facade.repeatInDialog()"
+    (stop)="facade.stopInDialog()" />
+}

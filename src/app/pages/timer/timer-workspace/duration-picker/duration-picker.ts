@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { WheelPicker } from "../wheel-picker/wheel-picker";
+import { WheelPicker } from "../../../../components/wheel-picker/wheel-picker";
 
 @Component({
   selector: 'app-duration-picker',
