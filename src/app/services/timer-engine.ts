@@ -61,6 +61,12 @@ export class TimerEngine implements ClockEngine {
     this.startTimestamp = performance.now();
 
     const tick = () => {
+      console.log(
+        'tick',
+        this.remainingMs(),
+        this.running()
+      );
+
       if (!this.running()) return;
 
       const elapsed = performance.now() - this.startTimestamp;

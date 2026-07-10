@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { ClockEngine } from '../../../../models/clock-engine.interface';
-import { PreviewTimerEngine } from '../../../../services/timer-preview.engine';
-import { TimerInstanceStore } from '../../../../services/timer-instance.store';
+import { ChangeDetectionStrategy, Component, input, Signal } from '@angular/core';
+
+export interface DigitalDisplayEngine {
+  displayTime: Signal<string>;
+}
 
 @Component({
   selector: 'app-digital-display',
@@ -11,11 +12,5 @@ import { TimerInstanceStore } from '../../../../services/timer-instance.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DigitalDisplay {
-  private readonly preview = inject(PreviewTimerEngine);
-  private readonly store = inject(TimerInstanceStore);
-
-  readonly display = computed(() => {
-    return this.store.active()?.engine.displayTime()
-      ?? this.preview.displayTime();
-  });
+  readonly engine = input.required<DigitalDisplayEngine>();
 }

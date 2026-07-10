@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { TimerPreset } from '../../../../core/repositories/timer.repository';
 import { TimerPresetCard } from "../timer-preset-card/timer-preset-card";
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { TimerPresetsSvc } from '../../../../services/timer-presets-svc';
+import { TimerPresetsFacade } from '../timer-presets.facade';
+import { TimerWorkspaceFacade } from '../../timer-workspace/timer-workspace.facade';
 
 @Component({
   selector: 'app-timer-preset-list',
@@ -12,20 +14,28 @@ import { TimerPresetsSvc } from '../../../../services/timer-presets-svc';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerPresetList {
-  private readonly presetsSvc = inject(TimerPresetsSvc);
+  private readonly presets = inject(TimerPresetsFacade);
+  readonly workspace = inject(TimerWorkspaceFacade);
 
-  readonly timers = input.required<TimerPreset[]>();
+  readonly timers = this.presets.timers;
 
-  readonly edit = output<TimerPreset>();
-  readonly start = output<TimerPreset>();
-  readonly remove = output<TimerPreset>();
-  readonly favorite = output<TimerPreset>();
-  readonly reorder = output<CdkDragDrop<TimerPreset[]>>();
+  start(timer: TimerPreset) {
+    this.workspace.loadPreset(timer);
+  }
+
+  edit(timer: TimerPreset) {
+    this.presets.editPreset(timer);
+  }
+
+  remove(timer: TimerPreset) {
+    this.presets.requestDelete(timer);
+  }
+
+  favorite(timer: TimerPreset) {
+    void this.presets.toggleFavorite(timer);
+  }
 
   async drop(event: CdkDragDrop<TimerPreset[]>) {
-    await this.presetsSvc.reorder(
-      event.previousIndex,
-      event.currentIndex
-    )
+    await this.presets.reorder(event);
   }
 }

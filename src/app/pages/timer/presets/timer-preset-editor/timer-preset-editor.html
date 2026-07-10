@@ -1,13 +1,7 @@
 <div class="editor">
     <input [value]="model().title" (input)="updateTitle($event)" placeholder="title" />
 
-    <app-duration-picker
-        [hours]="model().hours"
-        [minutes]="model().minutes"
-        [seconds]="model().seconds"
-        (hoursChange)="setHours($event)"
-        (minutesChange)="setMinutes($event)"
-        (secondsChange)="setSeconds($event)" />
+    <app-duration-picker />
 
     <app-icon-picker [value]="model().icon" (valueChange)="setIcon($event)" />
 
@@ -16,7 +10,7 @@
     <app-sound-picker [value]="model().sound" (valueChange)="setSound($event)" />
 
     <div class="buttons">
-        <button (click)="save.emit(model())">save</button>
-        <button (click)="cancel.emit()">cancel</button>
+        <button (click)="save()">save</button>
+        <button (click)="cancel()">cancel</button>
     </div>
 </div>

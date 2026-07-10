@@ -12,10 +12,24 @@ export class TimerInstanceStore {
     readonly timers = signal<TimerInstance[]>([]);
     readonly active = signal<TimerInstance | null>(null);
 
+    constructor() {
+        console.log('STORE CREATED', this);
+    }
+
     add(preset: TimerPreset) {
+        console.log('ADD CALLED');
+
         const timer = this.factory.create();
+        console.log(timer);
+        console.log(timer.start);
+
         timer.loadPreset(preset);
+
+        console.log('before start');
+
         timer.start();
+
+        console.log('START FINISHED');
 
         this.timers.update(list => {
             const next = [...list, timer];

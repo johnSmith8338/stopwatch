@@ -1,4 +1,4 @@
-import { DestroyRef, effect, inject, signal } from "@angular/core";
+import { computed, DestroyRef, effect, inject, signal } from "@angular/core";
 import { TimerEngine } from "./timer-engine";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerSound } from "./sound-svc";
@@ -11,6 +11,8 @@ export class TimerInstance {
     readonly engine = new TimerEngine();
     readonly preset = signal<TimerPreset | null>(null);
     readonly finished = signal(false);
+
+    readonly running = computed(() => this.engine.running());
 
     constructor() {
         effect(() => {
@@ -30,6 +32,7 @@ export class TimerInstance {
 
     start() {
         this.engine.start();
+        console.log('INSTANCE START');
     }
 
     pause() {

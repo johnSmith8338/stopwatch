@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { TimerWorkspaceFacade } from '../timer-workspace.facade';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+export interface TimerControlsEngine {
+  running(): boolean;
+  start(): void;
+  pause(): void;
+  stop(): void;
+  reset(): void;
+}
 
 @Component({
   selector: 'app-timer-controls',
@@ -9,27 +16,22 @@ import { TimerWorkspaceFacade } from '../timer-workspace.facade';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerControls {
-  readonly facade = inject(TimerWorkspaceFacade);
-
-  readonly disabled = computed(() => this.facade.dialogOpened());
+  readonly engine = input.required<TimerControlsEngine>();
+  readonly disabled = input(false);
 
   start() {
-    this.facade.start();
+    this.engine().start();
   }
 
   pause() {
-    this.facade.pause();
+    this.engine().pause();
   }
 
   stop() {
-    this.facade.stop();
+    this.engine().stop();
   }
 
   reset() {
-    this.facade.reset();
-  }
-
-  resetDefault() {
-    this.facade.resetDefault();
+    this.engine().reset();
   }
 }

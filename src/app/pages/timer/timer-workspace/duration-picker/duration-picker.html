@@ -1,26 +1,26 @@
 <div class="editor">
     <div class="inputs">
-        <input type="number" [value]="hours()" (input)="updateHours($event)" [disabled]="disabled()" />
-        <input type="number" [value]="minutes()" (input)="updateMinutes($event)" [disabled]="disabled()" />
-        <input type="number" [value]="seconds()" (input)="updateSeconds($event)" [disabled]="disabled()" />
+        <input type="number" [value]="settings()?.hours ?? 0" (input)="updateHours($event)" [disabled]="disabled()" />
+        <input type="number" [value]="settings()?.minutes ?? 0" (input)="updateMinutes($event)" [disabled]="disabled()" />
+        <input type="number" [value]="settings()?.seconds ?? 0" (input)="updateSeconds($event)" [disabled]="disabled()" />
     </div>
     <div class="wheels">
         <app-wheel-picker name="hours"
             [items]="hoursItems"
-            [value]="hours()"
-            (valueChange)="hoursChange.emit($event)"
+            [value]="settings()?.hours ?? 0"
+            (valueChange)="facade.updateHours($event)"
             [disabled]="disabled()" />
 
         <app-wheel-picker name="minutes"
             [items]="minuteItems"
-            [value]="minutes()"
-            (valueChange)="minutesChange.emit($event)"
+            [value]="settings()?.minutes ?? 0"
+            (valueChange)="facade.updateMinutes($event)"
             [disabled]="disabled()" />
 
         <app-wheel-picker name="seconds"
             [items]="secondItems"
-            [value]="seconds()"
-            (valueChange)="secondsChange.emit($event)"
+            [value]="settings()?.seconds ?? 0"
+            (valueChange)="facade.updateSeconds($event)"
             [disabled]="disabled()" />
     </div>
 </div>

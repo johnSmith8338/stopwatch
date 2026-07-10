@@ -3,10 +3,11 @@ import { PresetToolbar } from "../preset-toolbar/preset-toolbar";
 import { TimerPresetsFacade } from '../timer-presets.facade';
 import { TimerPresetEditor } from "../timer-preset-editor/timer-preset-editor";
 import { ConfirmDialog } from "../../../../components/confirm-dialog/confirm-dialog";
+import { TimerPresetList } from "../timer-preset-list/timer-preset-list";
 
 @Component({
   selector: 'app-timer-presets',
-  imports: [PresetToolbar, TimerPresetEditor, ConfirmDialog],
+  imports: [PresetToolbar, TimerPresetEditor, ConfirmDialog, TimerPresetList],
   templateUrl: './timer-presets.html',
   styleUrl: './timer-presets.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

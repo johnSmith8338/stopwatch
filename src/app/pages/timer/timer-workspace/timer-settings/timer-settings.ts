@@ -6,6 +6,7 @@ import { TimerIcon } from '../../../../constants/icons';
 import { TimerSound } from '../../../../services/sound-svc';
 import { ColorPicker } from "../../../../components/color-picker/color-picker";
 import { IconPicker } from "../../../../components/icon-picker/icon-picker";
+import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 
 @Component({
   selector: 'app-timer-settings',
@@ -15,19 +16,19 @@ import { IconPicker } from "../../../../components/icon-picker/icon-picker";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerSettings {
-  readonly svc = inject(TimerSettingsSvc);
+  readonly facade = inject(TimerWorkspaceFacade);
 
-  readonly settings = computed(() => this.svc.settings());
+  readonly settings = this.facade.appSettings;
 
   setColor(color: TimerColor) {
-    void this.svc.patch({ color });
+    this.facade.updateColor(color);
   }
 
   setIcon(icon: TimerIcon) {
-    void this.svc.patch({ icon });
+    this.facade.updateIcon(icon);
   }
 
   setSound(sound: TimerSound) {
-    void this.svc.patch({ sound });
+    this.facade.updateSound(sound);
   }
 }

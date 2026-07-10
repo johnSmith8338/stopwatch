@@ -3,21 +3,14 @@
     <span>{{facade.title()}}</span>
 </h2>
 
-<app-timer-face />
+<app-timer-face [engine]="facade.preview" />
 
-<app-digital-display />
+<app-digital-display [engine]="facade.preview" />
 
-<app-timer-controls />
+<app-timer-controls [engine]="facade.controls" [disabled]="facade.dialogOpened()" />
 
 @if (facade.appSettings(); as settings) {
-<app-duration-picker
-    [hours]="settings.hours"
-    [minutes]="settings.minutes"
-    [seconds]="settings.seconds"
-    [disabled]="facade.dialogOpened()"
-    (hoursChange)="facade.updateHours($event)"
-    (minutesChange)="facade.updateMinutes($event)"
-    (secondsChange)="facade.updateSeconds($event)" />
+<app-duration-picker />
 }
 
 <app-timer-settings />

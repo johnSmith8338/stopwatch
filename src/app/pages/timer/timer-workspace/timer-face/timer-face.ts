@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, Signal } from '@angular/core';
 import { SCALE_CENTER, SCALE_LABEL_RADIUS, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../../../constants/scale.constants';
 import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../../utils/clock-face.util';
-import { TimerInstanceStore } from '../../../../services/timer-instance.store';
+
+export interface TimerFaceEngine {
+  secondProgressAngle: Signal<number>;
+  minuteProgressAngle: Signal<number>;
+}
 
 @Component({
   selector: 'app-timer-face',
@@ -19,7 +23,7 @@ import { TimerInstanceStore } from '../../../../services/timer-instance.store';
   }
 })
 export class TimerFace {
-  private readonly store = inject(TimerInstanceStore);
+  readonly engine = input.required<TimerFaceEngine>();
 
   readonly size = SCALE_SIZE;
   readonly center = SCALE_CENTER;
@@ -51,9 +55,6 @@ export class TimerFace {
     ]
   )
 
-  readonly engine = computed(() => this.store.active()?.engine ?? null);
-
-  readonly secondProgressAngle = computed(() => this.engine()?.secondProgressAngle() ?? 0);
-
-  readonly minuteProgressAngle = computed(() => this.engine()?.minuteProgressAngle() ?? 0);
+  secondProgressAngle = computed(() => this.engine().secondProgressAngle());
+  minuteProgressAngle = computed(() => this.engine().minuteProgressAngle());
 }

@@ -3,13 +3,14 @@
 <button (click)="facade.createPreset()">+ create</button>
 
 @if (facade.editing(); as timer) {
-    <app-timer-preset-editor 
-        [timer]="timer"
-        (save)="facade.savePreset($event)"
-        (cancel)="facade.cancelEditing()" />
+    <app-timer-preset-editor [timer]="timer" />
 }
 
-<!-- <app-timer-preset-list /> -->
+@if (facade.loading()) {
+    <span>loading...</span>
+}@else {
+    <app-timer-preset-list />
+}
 
 
 @if(facade.deleting(); as timer) {

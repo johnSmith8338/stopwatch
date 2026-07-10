@@ -2,13 +2,14 @@
     cdkDropList 
     [cdkDropListData]="timers()" 
     (cdkDropListDropped)="drop($event)">
+
     @for (timer of timers(); track timer.id) {
         <app-timer-preset-card 
             cdkDrag
             [timer]="timer"
-            (favorite)="favorite.emit($event)"
-            (start)="start.emit($event)"
-            (edit)="edit.emit($event)"
-            (remove)="remove.emit($event)" />
+            (favorite)="favorite(timer)"
+            (start)="start(timer)"
+            (edit)="edit(timer)"
+            (remove)="remove(timer)" />
     }
 </div>

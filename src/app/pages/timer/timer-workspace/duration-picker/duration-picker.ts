@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { WheelPicker } from "../../../../components/wheel-picker/wheel-picker";
+import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 
 @Component({
   selector: 'app-duration-picker',
@@ -9,29 +10,41 @@ import { WheelPicker } from "../../../../components/wheel-picker/wheel-picker";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurationPicker {
-  readonly hours = input(0);
-  readonly minutes = input(0);
-  readonly seconds = input(0);
-
-  readonly disabled = input(false);
-
-  readonly hoursChange = output<number>();
-  readonly minutesChange = output<number>();
-  readonly secondsChange = output<number>();
+  readonly facade = inject(TimerWorkspaceFacade);
+  settings = this.facade.appSettings;
 
   readonly hoursItems = Array.from({ length: 24 }, (_, i) => i);
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);
   readonly secondItems = Array.from({ length: 60 }, (_, i) => i);
 
-  updateHours(e: Event) {
-    this.hoursChange.emit(Math.max(0, Number((e.target as HTMLInputElement).value)))
+  disabled = computed(() =>
+    this.facade.preview.running() || this.facade.dialogOpened()
+  )
+
+  updateHours(event: Event) {
+    const value = Math.max(
+      0,
+      Number((event.target as HTMLInputElement).value)
+    );
+
+    this.facade.updateHours(value);
   }
 
-  updateMinutes(e: Event) {
-    this.minutesChange.emit(Math.min(59, Math.max(0, Number((e.target as HTMLInputElement).value))))
+  updateMinutes(event: Event) {
+    const value = Math.min(
+      59,
+      Math.max(0, Number((event.target as HTMLInputElement).value))
+    );
+
+    this.facade.updateMinutes(value);
   }
 
-  updateSeconds(e: Event) {
-    this.secondsChange.emit(Math.min(59, Math.max(0, Number((e.target as HTMLInputElement).value))))
+  updateSeconds(event: Event) {
+    const value = Math.min(
+      59,
+      Math.max(0, Number((event.target as HTMLInputElement).value))
+    );
+
+    this.facade.updateSeconds(value);
   }
 }

@@ -5,6 +5,8 @@ import { PreviewTimerEngine } from "../../../services/timer-preview.engine";
 import { TimerSettingsSvc } from "../../../services/timer-settings-svc";
 import { TimerPreset } from "../../../core/repositories/timer.repository";
 import { TimerAppSettings } from "../../../core/repositories/timers.repository";
+import { TimerColor } from "../../../constants/colors";
+import { TimerIcon } from "../../../constants/icons";
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +33,14 @@ export class TimerWorkspaceFacade {
         const settings = this.appSettings();
         if (!settings) throw new Error('Timer settings are not loaded');
         return settings;
+    }
+
+    readonly controls = {
+        running: this.preview.running,
+        start: () => this.start(),
+        pause: () => this.pause(),
+        stop: () => this.stop(),
+        reset: () => this.reset(),
     }
 
     readonly manualPreset = computed<TimerPreset>(() => {
@@ -88,12 +98,16 @@ export class TimerWorkspaceFacade {
             this.currentPreset.set('manual');
         }
 
-        if (!this.settings.loaded()) return;
+        if (!this.settings.loaded()) {
+            return;
+        }
 
         const preset = this.activePreset();
-        if (!preset) return;
+        if (!preset) {
+            return;
+        }
 
-        this.instance.add(preset);
+        const timer = this.instance.add(preset);
     }
 
     stop() {
@@ -141,6 +155,23 @@ export class TimerWorkspaceFacade {
 
     updateSeconds(seconds: number) {
         this.settings.patch({ seconds });
+    }
+
+    updateColor(color: TimerColor) {
+        this.settings.patch({ color });
+    }
+
+    updateIcon(icon: TimerIcon) {
+        this.settings.patch({ icon });
+    }
+
+    updateSound(sound: TimerSound) {
+        this.settings.patch({ sound });
+    }
+
+    loadPreset(timer: TimerPreset) {
+        this.currentPreset.set(timer);
+        this.preview.loadPreset(timer);
     }
 
     closeDialog() {

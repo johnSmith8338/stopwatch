@@ -3,13 +3,10 @@
         <span class="icon" [iconName]="timer().preset()?.icon ?? 'timer'"></span>
         <span>{{timer().preset()?.title}}</span>
     </h3>
-    <div class="time">
-        <span>{{timer().engine.formattedTime()}}</span>
-    </div>
-    <div class="buttons">
-        <button (click)="start()">resume</button>
-        <button (click)="pause()">pause</button>
-        <button (click)="stop()">stop</button>
-        <button (click)="reset()">reset</button>
-    </div>
+
+    <app-timer-face [engine]="timer().engine" />
+
+    <app-digital-display [engine]="timer().engine" />
+
+    <app-timer-controls [engine]="timer()" />
 </div>

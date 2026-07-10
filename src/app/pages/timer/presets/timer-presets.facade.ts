@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { TimerPreset } from "../../../core/repositories/timer.repository";
 import { TimerPresetsSvc } from "../../../services/timer-presets-svc";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
@@ -11,6 +11,10 @@ export class TimerPresetsFacade {
 
     readonly deleting = signal<TimerPreset | null>(null);
     readonly editing = signal<TimerPreset | null>(null);
+
+    readonly timers = computed(() => this.presetsSvc.presets.value() ?? []);
+
+    readonly loading = computed(() => this.presetsSvc.presets.isLoading());
 
     createPreset() {
         this.editing.set(this.presetsSvc.create());
