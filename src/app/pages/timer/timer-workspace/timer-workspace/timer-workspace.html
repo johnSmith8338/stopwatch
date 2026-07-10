@@ -3,11 +3,11 @@
     <span>{{facade.title()}}</span>
 </h2>
 
-<app-timer-face [engine]="facade.preview" />
-
-<app-digital-display [engine]="facade.preview" />
-
-<app-timer-controls [engine]="facade.controls" [disabled]="facade.dialogOpened()" />
+<app-timer-panel 
+    [face]="facade.preview" 
+    [display]="facade.preview" 
+    [controls]="facade.controls" 
+    [disabled]="facade.dialogOpened()" />
 
 @if (facade.appSettings(); as settings) {
 <app-duration-picker />

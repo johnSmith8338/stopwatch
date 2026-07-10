@@ -4,9 +4,8 @@
         <span>{{timer().preset()?.title}}</span>
     </h3>
 
-    <app-timer-face [engine]="timer().engine" />
-
-    <app-digital-display [engine]="timer().engine" />
-
-    <app-timer-controls [engine]="timer()" />
+    <app-timer-panel
+        [face]="timer().engine"
+        [display]="timer().engine"
+        [controls]="timer().engine" />
 </div>
