@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { TimerFaceEngine, TimerFace } from '../timer-workspace/timer-face/timer-face';
-import { DigitalDisplayEngine, DigitalDisplay } from '../timer-workspace/digital-display/digital-display';
-import { TimerControlsEngine, TimerControls } from '../timer-workspace/timer-controls/timer-controls';
+import { TimerFace } from '../timer-workspace/timer-face/timer-face';
+import { DigitalDisplay } from '../timer-workspace/digital-display/digital-display';
+import { TimerControls } from '../timer-workspace/timer-controls/timer-controls';
+import { DraftTimer } from '../../../services/draft-timer';
 
 @Component({
   selector: 'app-timer-panel',
@@ -11,8 +12,6 @@ import { TimerControlsEngine, TimerControls } from '../timer-workspace/timer-con
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerPanel {
-  readonly face = input.required<TimerFaceEngine>();
-  readonly display = input.required<DigitalDisplayEngine>();
-  readonly controls = input.required<TimerControlsEngine>();
+  readonly timer = input.required<DraftTimer>();
   readonly disabled = input(false);
 }

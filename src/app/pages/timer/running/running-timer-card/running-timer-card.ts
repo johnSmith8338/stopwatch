@@ -7,7 +7,6 @@ import { TimerPanel } from "../../timer-panel/timer-panel";
   selector: 'app-running-timer-card',
   imports: [
     SvgIcon,
-    TimerPanel,
   ],
   templateUrl: './running-timer-card.html',
   styleUrl: './running-timer-card.scss',

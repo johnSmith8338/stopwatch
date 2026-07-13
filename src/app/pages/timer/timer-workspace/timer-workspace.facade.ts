@@ -7,70 +7,34 @@ import { TimerPreset } from "../../../core/repositories/timer.repository";
 import { TimerAppSettings } from "../../../core/repositories/timers.repository";
 import { TimerColor } from "../../../constants/colors";
 import { TimerIcon } from "../../../constants/icons";
+import { DraftTimer } from "../../../services/draft-timer";
 
 @Injectable({
     providedIn: 'root'
 })
 export class TimerWorkspaceFacade {
-    readonly preview = inject(PreviewTimerEngine);
+    readonly draft = inject(DraftTimer);
     readonly settings = inject(TimerSettingsSvc);
     readonly instance = inject(TimerInstanceStore);
     readonly sound = inject(SoundSvc);
 
     private wasFinished = false;
 
-    currentPreset = signal<TimerPreset | 'manual' | null>(null);
     readonly dialogOpened = signal(false);
-
-    readonly title = computed(() => this.activePreset()?.title || 'timer');
-
-    // readonly icon = computed(() => this.activePreset()?.icon || '⏱');
-    readonly icon = computed(() => this.activePreset()?.icon || '');
 
     readonly appSettings = computed(() => this.settings.settings());
 
-    private requireSettings(): TimerAppSettings {
-        const settings = this.appSettings();
-        if (!settings) throw new Error('Timer settings are not loaded');
-        return settings;
-    }
-
     readonly controls = {
-        running: this.preview.running,
+        running: this.draft.engine.running(),
         start: () => this.start(),
         pause: () => this.pause(),
         stop: () => this.stop(),
         reset: () => this.reset(),
     }
 
-    readonly manualPreset = computed<TimerPreset>(() => {
-        const s = this.requireSettings();
-        return {
-            id: 'manual',
-            title: 'manual timer',
-            hours: s.hours,
-            minutes: s.minutes,
-            seconds: s.seconds,
-            color: s.color,
-            icon: s.icon,
-            sound: s.sound,
-            favorite: false,
-            order: 0,
-            createdAt: 0,
-            updatedAt: 0
-        }
-    })
-
-    readonly activePreset = computed<TimerPreset | null>(() => {
-        const preset = this.currentPreset();
-        if (preset === null) return null;
-        if (preset === 'manual') return this.manualPreset();
-        return preset;
-    })
-
     constructor() {
         effect(() => {
-            const finished = this.preview.finished();
+            const finished = this.draft.engine.finished();
             if (!finished || this.wasFinished) {
                 this.wasFinished = finished;
                 return;
@@ -78,7 +42,7 @@ export class TimerWorkspaceFacade {
 
             this.wasFinished = true;
 
-            const preset = this.activePreset();
+            const preset = this.draft.activePreset();
             if (!preset) return;
 
             this.dialogOpened.set(true);
@@ -89,34 +53,30 @@ export class TimerWorkspaceFacade {
     }
 
     private resolveSound(timer: TimerPreset): TimerSound {
-        if (timer.sound === 'inherit') return this.requireSettings().sound;
+        if (timer.sound === 'inherit') return this.draft.requireSettings().sound;
         return timer.sound;
     }
 
     start() {
-        if (this.currentPreset() === null) {
-            this.currentPreset.set('manual');
+        if (this.draft.preset() === null) {
+            this.draft.loadManual();
         }
 
-        if (!this.settings.loaded()) {
-            return;
-        }
+        // if (!this.settings.loaded()) return;
 
-        const preset = this.activePreset();
-        if (!preset) {
-            return;
-        }
+        const preset = this.draft.activePreset();
+        if (!preset) return;
 
-        const timer = this.instance.add(preset);
+        this.instance.add(preset);
     }
 
     stop() {
         this.sound.stop();
         this.dialogOpened.set(false);
 
-        const s = this.requireSettings();
-        this.preview.reset();
-        this.preview.setDuration(
+        const s = this.draft.requireSettings();
+        this.draft.reset();
+        this.draft.engine.setDuration(
             s.hours,
             s.minutes,
             s.seconds
@@ -124,17 +84,17 @@ export class TimerWorkspaceFacade {
     }
 
     pause() {
-        this.preview.pause();
+        this.draft.pause();
     }
 
     reset() {
-        this.preview.reset();
+        this.draft.reset();
         this.sound.stop();
-        this.currentPreset.set(null);
+        this.draft.preset.set(null);
     }
 
     resetDefault() {
-        const defaults = this.preview.getDefaults();
+        const defaults = this.draft.engine.getDefaults();
 
         void this.settings.patch({
             hours: defaults.hours,
@@ -142,7 +102,7 @@ export class TimerWorkspaceFacade {
             seconds: defaults.seconds
         })
 
-        this.currentPreset.set(null);
+        this.draft.preset.set(null);
     }
 
     updateHours(hours: number) {
@@ -170,8 +130,7 @@ export class TimerWorkspaceFacade {
     }
 
     loadPreset(timer: TimerPreset) {
-        this.currentPreset.set(timer);
-        this.preview.loadPreset(timer);
+        this.draft.loadPreset(timer);
     }
 
     closeDialog() {
@@ -182,17 +141,17 @@ export class TimerWorkspaceFacade {
     repeatInDialog() {
         this.sound.stop();
         this.dialogOpened.set(false);
-        this.preview.reset();
-        this.preview.start();
+        this.draft.reset();
+        this.draft.start();
     }
 
     stopInDialog() {
         this.sound.stop();
         this.dialogOpened.set(false);
 
-        const s = this.requireSettings();
-        this.preview.reset();
-        this.preview.setDuration(
+        const s = this.draft.requireSettings();
+        this.draft.reset();
+        this.draft.engine.setDuration(
             s.hours,
             s.minutes,
             s.seconds

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { DraftTimer } from '../../../../services/draft-timer';
 
 export interface TimerControlsEngine {
   running(): boolean;
@@ -16,22 +17,22 @@ export interface TimerControlsEngine {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerControls {
-  readonly engine = input.required<TimerControlsEngine>();
+  readonly timer = input.required<DraftTimer>();
   readonly disabled = input(false);
 
   start() {
-    this.engine().start();
+    this.timer().start();
   }
 
   pause() {
-    this.engine().pause();
+    this.timer().pause();
   }
 
   stop() {
-    this.engine().stop();
+    this.timer().stop();
   }
 
   reset() {
-    this.engine().reset();
+    this.timer().reset();
   }
 }

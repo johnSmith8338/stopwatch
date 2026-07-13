@@ -3,9 +3,11 @@
         <span class="icon" [iconName]="timer().preset()?.icon ?? 'timer'"></span>
         <span>{{timer().preset()?.title}}</span>
     </h3>
-
-    <app-timer-panel
-        [face]="timer().engine"
-        [display]="timer().engine"
-        [controls]="timer().engine" />
+    <div class="time">{{timer().engine.displayTime()}}</div>
+    <div class="buttons">
+        <button (click)="timer().start()">Resume</button>
+        <button (click)="timer().pause()">Pause</button>
+        <button (click)="timer().stop()">Stop</button>
+        <button (click)="timer().reset()">Reset</button>
+    </div>
 </div>

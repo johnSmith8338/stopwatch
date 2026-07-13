@@ -1,3 +1,3 @@
-<app-timer-face [engine]="face()" />
-<app-digital-display [engine]="display()" />
-<app-timer-controls [engine]="controls()" [disabled]="disabled()" />
+<app-timer-face [engine]="timer().engine" />
+<app-digital-display [engine]="timer().engine" />
+<app-timer-controls [timer]="timer()" [disabled]="disabled()" />

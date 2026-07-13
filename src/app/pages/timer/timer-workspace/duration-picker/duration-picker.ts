@@ -18,7 +18,7 @@ export class DurationPicker {
   readonly secondItems = Array.from({ length: 60 }, (_, i) => i);
 
   disabled = computed(() =>
-    this.facade.preview.running() || this.facade.dialogOpened()
+    this.facade.draft.running() || this.facade.dialogOpened()
   )
 
   updateHours(event: Event) {

@@ -1,12 +1,10 @@
 <h2>
-    <span [iconName]="facade.icon()" class="icon"></span>
-    <span>{{facade.title()}}</span>
+    <span [iconName]="facade.draft.icon()" class="icon"></span>
+    <span>{{facade.draft.title()}}</span>
 </h2>
 
 <app-timer-panel 
-    [face]="facade.preview" 
-    [display]="facade.preview" 
-    [controls]="facade.controls" 
+    [timer]="facade.draft"
     [disabled]="facade.dialogOpened()" />
 
 @if (facade.appSettings(); as settings) {
@@ -17,7 +15,7 @@
 
 <app-running-timer-list />
 
-@if (facade.dialogOpened() && facade.activePreset(); as preset) {
+@if (facade.dialogOpened() && facade.draft.activePreset(); as preset) {
 <app-timer-finished-dialog
     [preset]="preset"
     (repeat)="facade.repeatInDialog()"
