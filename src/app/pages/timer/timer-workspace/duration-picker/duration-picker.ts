@@ -11,7 +11,7 @@ import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 })
 export class DurationPicker {
   readonly facade = inject(TimerWorkspaceFacade);
-  settings = this.facade.appSettings;
+  settings = this.facade.draft.settings;
 
   readonly hoursItems = Array.from({ length: 24 }, (_, i) => i);
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);
@@ -22,29 +22,14 @@ export class DurationPicker {
   )
 
   updateHours(event: Event) {
-    const value = Math.max(
-      0,
-      Number((event.target as HTMLInputElement).value)
-    );
-
-    this.facade.updateHours(value);
+    this.facade.draft.setHours(Number((event.target as HTMLInputElement).value));
   }
 
   updateMinutes(event: Event) {
-    const value = Math.min(
-      59,
-      Math.max(0, Number((event.target as HTMLInputElement).value))
-    );
-
-    this.facade.updateMinutes(value);
+    this.facade.draft.setMinutes(Number((event.target as HTMLInputElement).value));
   }
 
   updateSeconds(event: Event) {
-    const value = Math.min(
-      59,
-      Math.max(0, Number((event.target as HTMLInputElement).value))
-    );
-
-    this.facade.updateSeconds(value);
+    this.facade.draft.setSeconds(Number((event.target as HTMLInputElement).value));
   }
 }

@@ -8,19 +8,19 @@
         <app-wheel-picker name="hours"
             [items]="hoursItems"
             [value]="settings()?.hours ?? 0"
-            (valueChange)="facade.updateHours($event)"
+            (valueChange)="facade.draft.updateHours($event)"
             [disabled]="disabled()" />
 
         <app-wheel-picker name="minutes"
             [items]="minuteItems"
             [value]="settings()?.minutes ?? 0"
-            (valueChange)="facade.updateMinutes($event)"
+            (valueChange)="facade.draft.updateMinutes($event)"
             [disabled]="disabled()" />
 
         <app-wheel-picker name="seconds"
             [items]="secondItems"
             [value]="settings()?.seconds ?? 0"
-            (valueChange)="facade.updateSeconds($event)"
+            (valueChange)="facade.draft.updateSeconds($event)"
             [disabled]="disabled()" />
     </div>
 </div>

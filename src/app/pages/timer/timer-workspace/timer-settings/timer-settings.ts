@@ -21,14 +21,14 @@ export class TimerSettings {
   readonly settings = this.facade.appSettings;
 
   setColor(color: TimerColor) {
-    this.facade.updateColor(color);
+    this.facade.draft.updateColor(color);
   }
 
   setIcon(icon: TimerIcon) {
-    this.facade.updateIcon(icon);
+    this.facade.draft.updateIcon(icon);
   }
 
   setSound(sound: TimerSound) {
-    this.facade.updateSound(sound);
+    this.facade.draft.updateSound(sound);
   }
 }
