@@ -6,35 +6,16 @@ import { TimerAppSettings } from "../core/repositories/timers.repository";
 import { TimerColor } from "../constants/colors";
 import { TimerIcon } from "../constants/icons";
 import { TimerSound } from "./sound-svc";
+import { BaseTimer } from "./base-timer";
 
 @Injectable({
     providedIn: 'root'
 })
-export class DraftTimer {
-    readonly engine = inject(PreviewTimerEngine);
+export class DraftTimer extends BaseTimer<PreviewTimerEngine> {
+    override readonly engine = inject(PreviewTimerEngine);
     private readonly settingsSvc = inject(TimerSettingsSvc);
 
-    readonly preset = signal<TimerPreset | 'manual' | null>(null);
-
     readonly settings = computed(() => this.settingsSvc.settings());
-
-    readonly title = computed(() => {
-        const preset = this.preset();
-        if (!preset) return 'timer';
-        if (preset === 'manual') return 'manual timer';
-
-        return preset.title;
-    });
-
-    readonly icon = computed(() => {
-        const preset = this.preset();
-        if (!preset) return '';
-        if (preset === 'manual') return '';
-
-        return preset.icon;
-    });
-
-    readonly running = computed(() => this.engine.running());
 
     requireSettings(): TimerAppSettings {
         const settings = this.settings();
@@ -60,7 +41,7 @@ export class DraftTimer {
         }
     })
 
-    readonly activePreset = computed(() => {
+    override readonly activePreset = computed(() => {
         const preset = this.preset();
         if (preset === null) return null;
         if (preset === 'manual') return this.manualPreset();
@@ -76,31 +57,9 @@ export class DraftTimer {
         )
     }
 
-    loadPreset(preset: TimerPreset) {
-        this.preset.set(preset);
-        this.engine.loadPreset(preset);
-    }
-
     loadManual() {
-        const preset = this.manualPreset();
         this.preset.set('manual');
-        this.engine.loadPreset(preset);
-    }
-
-    start() {
-        this.engine.start();
-    }
-
-    pause() {
-        this.engine.pause();
-    }
-
-    stop() {
-        this.engine.stop();
-    }
-
-    reset() {
-        this.engine.reset();
+        this.applySettings();
     }
 
     resetDefault() {

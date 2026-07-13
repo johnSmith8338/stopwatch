@@ -1,20 +1,19 @@
-import { computed, DestroyRef, effect, inject, signal } from "@angular/core";
+import { DestroyRef, effect, inject, signal } from "@angular/core";
 import { TimerEngine } from "./timer-engine";
-import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerSound } from "./sound-svc";
+import { BaseTimer } from "./base-timer";
 
-export class TimerInstance {
+export class TimerInstance extends BaseTimer<TimerEngine> {
     private readonly destroyRef = inject(DestroyRef);
 
     readonly id = crypto.randomUUID();
     readonly startedAt = Date.now();
-    readonly engine = new TimerEngine();
-    readonly preset = signal<TimerPreset | null>(null);
+    override readonly engine = new TimerEngine();
     readonly finished = signal(false);
 
-    readonly running = computed(() => this.engine.running());
-
     constructor() {
+        super();
+
         effect(() => {
             if (this.engine.finished()) return;
             this.finished.set(true);
@@ -25,28 +24,7 @@ export class TimerInstance {
         })
     }
 
-    loadPreset(preset: TimerPreset) {
-        this.preset.set(preset);
-        this.engine.loadPreset(preset);
-    }
-
-    start() {
-        this.engine.start();
-    }
-
-    pause() {
-        this.engine.pause();
-    }
-
-    stop() {
-        this.engine.stop();
-    }
-
-    reset() {
-        this.engine.reset();
-    }
-
     sound(): TimerSound {
-        return this.preset()?.sound ?? 'none';
+        return this.activePreset()?.sound ?? 'none';
     }
 }
