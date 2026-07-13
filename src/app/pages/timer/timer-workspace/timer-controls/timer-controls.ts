@@ -17,22 +17,22 @@ export interface TimerControlsEngine {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerControls {
-  readonly timer = input.required<DraftTimer>();
+  readonly engine = input.required<TimerControlsEngine>();
   readonly disabled = input(false);
 
   start() {
-    this.timer().start();
+    this.engine().start();
   }
 
   pause() {
-    this.timer().pause();
+    this.engine().pause();
   }
 
   stop() {
-    this.timer().stop();
+    this.engine().stop();
   }
 
   reset() {
-    this.timer().reset();
+    this.engine().reset();
   }
 }

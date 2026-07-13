@@ -5,10 +5,11 @@
 
 <app-timer-panel 
     [timer]="facade.draft"
+    [controls]="facade"
     [disabled]="facade.dialogOpened()" />
 
 @if (facade.appSettings(); as settings) {
-<app-duration-picker />
+    <app-duration-picker />
 }
 
 <app-timer-settings />
@@ -16,8 +17,8 @@
 <app-running-timer-list />
 
 @if (facade.dialogOpened() && facade.draft.activePreset(); as preset) {
-<app-timer-finished-dialog
-    [preset]="preset"
-    (repeat)="facade.repeatInDialog()"
-    (stop)="facade.stopInDialog()" />
+    <app-timer-finished-dialog
+        [preset]="preset"
+        (repeat)="facade.repeatInDialog()"
+        (stop)="facade.stopInDialog()" />
 }

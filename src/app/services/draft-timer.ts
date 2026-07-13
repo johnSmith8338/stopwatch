@@ -41,15 +41,8 @@ export class DraftTimer extends BaseTimer<PreviewTimerEngine> {
         }
     })
 
-    override readonly activePreset = computed(() => {
-        const preset = this.preset();
-        if (preset === null) return null;
-        if (preset === 'manual') return this.manualPreset();
-        return preset;
-    })
-
     private applySettings() {
-        const s = this.requireSettings();
+        const s = this.manualPreset();
         this.engine.setDuration(
             s.hours,
             s.minutes,
@@ -58,12 +51,7 @@ export class DraftTimer extends BaseTimer<PreviewTimerEngine> {
     }
 
     loadManual() {
-        this.preset.set('manual');
-        this.applySettings();
-    }
-
-    resetDefault() {
-        this.engine.resetDefault();
+        this.loadPreset(this.manualPreset());
     }
 
     resetToDefault() {

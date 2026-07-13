@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TimerFace } from '../timer-workspace/timer-face/timer-face';
 import { DigitalDisplay } from '../timer-workspace/digital-display/digital-display';
-import { TimerControls } from '../timer-workspace/timer-controls/timer-controls';
+import { TimerControls, TimerControlsEngine } from '../timer-workspace/timer-controls/timer-controls';
 import { DraftTimer } from '../../../services/draft-timer';
 
 @Component({
@@ -13,5 +13,6 @@ import { DraftTimer } from '../../../services/draft-timer';
 })
 export class TimerPanel {
   readonly timer = input.required<DraftTimer>();
+  readonly controls = input.required<TimerControlsEngine>();
   readonly disabled = input(false);
 }

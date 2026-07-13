@@ -60,11 +60,7 @@ export class TimerPresetsFacade {
 
     async reorder(event: CdkDragDrop<TimerPreset[]>) {
         if (event.previousIndex === event.currentIndex) return;
-
-        await this.presetsSvc.reorder(
-            event.previousIndex,
-            event.currentIndex
-        )
+        await this.presetsSvc.reorder(event);
     }
 
     requestDelete(timer: TimerPreset) {

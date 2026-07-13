@@ -1,6 +1,6 @@
 import { inject, Injectable, resource, signal } from '@angular/core';
 import { TimerPreset, TimerRepository } from '../core/repositories/timer.repository';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 export type PresetsFilter = 'all' | 'favorite';
 
@@ -77,15 +77,26 @@ export class TimerPresetsSvc {
     })
   }
 
-  async reorder(prev: number, curr: number) {
-    const list = await this.repo.getAll();
-    moveItemInArray(list, prev, curr);
-    await Promise.all(list.map((timer, index) =>
-      this.repo.save({
-        ...timer,
-        order: index
-      })
-    ))
+  async reorder(event: CdkDragDrop<TimerPreset[]>) {
+    const visible = [...event.container.data];
+    const moved = visible[event.previousIndex];
+    const group = visible.filter(x => x.favorite === moved.favorite);
+    const prev = group.findIndex(x => x.id === moved.id);
+    const target = visible[event.currentIndex];
+    const curr = group.findIndex(x => x.id === target.id);
+
+    if (curr === -1) return;
+
+    moveItemInArray(group, prev, curr);
+
+    await Promise.all(
+      group.map((timer, index) =>
+        this.repo.save({
+          ...timer,
+          order: index,
+        }),
+      ),
+    );
 
     this.presets.reload();
   }

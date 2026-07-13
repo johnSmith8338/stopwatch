@@ -42,6 +42,10 @@ export class TimerWorkspaceFacade {
         void this.settings.load();
     }
 
+    running() {
+        return this.draft.running();
+    }
+
     private resolveSound(timer: TimerPreset): TimerSound {
         if (timer.sound === 'inherit') return this.draft.requireSettings().sound;
         return timer.sound;

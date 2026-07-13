@@ -1,7 +1,7 @@
 <div class="card">
     <h3>
-        <span class="icon" [iconName]="timer().preset()?.icon ?? 'timer'"></span>
-        <span>{{timer().preset()?.title}}</span>
+        <span class="icon" [iconName]="timer().icon() || 'timer'"></span>
+        <span>{{timer().title()}}</span>
     </h3>
     <div class="time">{{timer().engine.displayTime()}}</div>
     <div class="buttons">
