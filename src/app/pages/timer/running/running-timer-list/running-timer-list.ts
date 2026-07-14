@@ -21,4 +21,8 @@ export class RunningTimerList {
   stop(timer: TimerInstance) {
     this.store.stop(timer);
   }
+
+  remove(timer: TimerInstance) {
+    this.store.remove(timer);
+  }
 }

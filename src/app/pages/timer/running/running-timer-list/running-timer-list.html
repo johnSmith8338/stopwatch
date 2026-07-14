@@ -1,5 +1,5 @@
 @for (timer of store.timers(); track timer.id) {
-    <app-running-timer-card [timer]="timer" />
+    <app-running-timer-card [timer]="timer" (remove)="remove($event)" />
 }
 @if (store.finished(); as timer) {
     <app-timer-finished-dialog

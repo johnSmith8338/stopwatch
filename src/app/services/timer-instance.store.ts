@@ -35,7 +35,10 @@ export class TimerInstanceStore {
     }
 
     remove(timer: TimerInstance) {
+        timer.stop();
         this.timers.update(list => list.filter(x => x !== timer));
+        if (this.active() === timer) this.active.set(null);
+        if (this.finished() === timer) this.finished.set(null);
     }
 
     select(timer: TimerInstance) {
