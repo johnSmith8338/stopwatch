@@ -23,32 +23,11 @@ export class TimerWorkspaceFacade {
     readonly controls = this.draft;
 
     constructor() {
-        effect(() => {
-            const finished = this.draft.engine.finished();
-            if (!finished || this.wasFinished) {
-                this.wasFinished = finished;
-                return;
-            };
-
-            this.wasFinished = true;
-
-            const preset = this.draft.activePreset();
-            if (!preset) return;
-
-            this.dialogOpened.set(true);
-            this.sound.play(this.resolveSound(preset));
-        })
-
         void this.settings.load();
     }
 
     running() {
         return this.draft.running();
-    }
-
-    private resolveSound(timer: TimerPreset): TimerSound {
-        if (timer.sound === 'inherit') return this.draft.requireSettings().sound;
-        return timer.sound;
     }
 
     start() {
@@ -85,20 +64,7 @@ export class TimerWorkspaceFacade {
         this.draft.loadPreset(timer);
     }
 
-    closeDialog() {
-        this.dialogOpened.set(false);
-        this.sound.stop();
-    }
-
-    repeatInDialog() {
-        this.sound.stop();
-        this.dialogOpened.set(false);
-        this.draft.restart();
-    }
-
-    stopInDialog() {
-        this.sound.stop();
-        this.dialogOpened.set(false);
-        this.draft.restore();
+    startPreset(timer: TimerPreset) {
+        this.instance.add(timer);
     }
 }

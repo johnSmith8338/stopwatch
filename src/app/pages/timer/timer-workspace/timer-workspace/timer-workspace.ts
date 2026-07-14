@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 import { SvgIcon } from '../../../../directives/svg-icon';
 import { TimerSettings } from "../timer-settings/timer-settings";
-import { TimerFinishedDialog } from "../../../../components/timer-finished-dialog/timer-finished-dialog";
 import { RunningTimerList } from "../../running/running-timer-list/running-timer-list";
 import { DurationPicker } from "../duration-picker/duration-picker";
 import { TimerPanel } from "../../timer-panel/timer-panel";
@@ -12,7 +11,6 @@ import { TimerPanel } from "../../timer-panel/timer-panel";
   imports: [
     SvgIcon,
     TimerSettings,
-    TimerFinishedDialog,
     RunningTimerList,
     DurationPicker,
     TimerPanel,

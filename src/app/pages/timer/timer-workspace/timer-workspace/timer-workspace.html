@@ -15,10 +15,3 @@
 <app-timer-settings />
 
 <app-running-timer-list />
-
-@if (facade.dialogOpened() && facade.draft.activePreset(); as preset) {
-    <app-timer-finished-dialog
-        [preset]="preset"
-        (repeat)="facade.repeatInDialog()"
-        (stop)="facade.stopInDialog()" />
-}

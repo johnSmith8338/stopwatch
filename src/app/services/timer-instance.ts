@@ -14,11 +14,6 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
     constructor() {
         super();
 
-        effect(() => {
-            if (this.engine.finished()) return;
-            this.finished.set(true);
-        })
-
         this.destroyRef.onDestroy(() => {
             this.engine.stop();
         })

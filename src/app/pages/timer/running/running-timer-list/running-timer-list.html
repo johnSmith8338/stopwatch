@@ -1,3 +1,9 @@
 @for (timer of store.timers(); track timer.id) {
     <app-running-timer-card [timer]="timer" />
 }
+@if (store.finished(); as timer) {
+    <app-timer-finished-dialog
+        [preset]="timer.activePreset()!"
+        (repeat)="repeat(timer)"
+        (stop)="stop(timer)" />
+}

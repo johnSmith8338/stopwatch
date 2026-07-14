@@ -20,7 +20,7 @@ export class TimerPresetList {
   readonly timers = this.presets.timers;
 
   start(timer: TimerPreset) {
-    this.workspace.loadPreset(timer);
+    this.workspace.startPreset(timer);
   }
 
   edit(timer: TimerPreset) {

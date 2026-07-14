@@ -15,6 +15,7 @@ export class TimerEngine implements ClockEngine {
   readonly totalMs = signal(5 * 60_000);
   readonly remainingMs = signal(5 * 60_000);
   readonly finished = signal(false);
+  onFinished?: () => void;
 
   private frameId = 0;
   private startTimestamp = 0;
@@ -70,6 +71,7 @@ export class TimerEngine implements ClockEngine {
       if (remaining === 0) {
         this.finished.set(true);
         this.stop();
+        this.onFinished?.();
         return;
       }
 
