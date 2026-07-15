@@ -1,8 +1,11 @@
-import { Directive, ElementRef, EventEmitter, HostListener, inject, output, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, inject, input, output, Output } from '@angular/core';
 
-export interface DialChange {
-  previous: number;
-  current: number;
+export type DialUnit = 'seconds' | 'minutes';
+
+export interface DialStep {
+  unit: DialUnit;
+  value: number;
+  turns: -1 | 0 | 1;
 }
 
 @Directive({
@@ -11,7 +14,8 @@ export interface DialChange {
 export class TimerDialEditor {
   private host = inject(ElementRef<HTMLElement>);
 
-  readonly valueChange = output<DialChange>();
+  readonly unit = input.required<DialUnit>();
+  readonly step = output<DialStep>();
 
   private dragging = false;
   private previousValue = 0;
@@ -25,25 +29,17 @@ export class TimerDialEditor {
     this.host.nativeElement.setPointerCapture(event.pointerId);
 
     const value = this.calculateValue(event);
-    this.previousValue = 0;
+    this.previousValue = value;
 
-    this.valueChange.emit({
-      previous: value,
-      current: value
-    })
+    this.emitStep(value);
   }
 
   @HostListener('pointermove', ['$event']) pointerMove(event: PointerEvent) {
     if (!this.dragging) return;
     event.preventDefault();
-    const current = this.calculateValue(event);
+    const value = this.calculateValue(event);
 
-    this.valueChange.emit({
-      previous: this.previousValue,
-      current,
-    });
-
-    this.previousValue = current;
+    this.emitStep(value);
   }
 
   @HostListener('pointerup', ['$event']) pointerUp(event: PointerEvent) {
@@ -58,6 +54,24 @@ export class TimerDialEditor {
     if (!this.dragging) return;
     this.dragging = false;
     this.host.nativeElement.releasePointerCapture(event.pointerId);
+  }
+
+  private emitStep(current: number) {
+    const delta = current - this.previousValue;
+    let turns: -1 | 0 | 1 = 0;
+    if (delta < -30) {
+      turns = 1;
+    } else if (delta > 30) {
+      turns = -1;
+    }
+
+    this.step.emit({
+      unit: this.unit(),
+      value: current,
+      turns
+    })
+
+    this.previousValue = current;
   }
 
   private calculateValue(event: PointerEvent): number {

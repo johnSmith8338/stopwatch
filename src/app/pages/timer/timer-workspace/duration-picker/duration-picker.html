@@ -1,12 +1,7 @@
 <div class="editor">
     <app-timer-face mode="editor"
         [engine]="facade.draft.engine"
-        (secondsChange)="facade.draft.setSeconds($event)"
-        (minutesChange)="facade.draft.setMinutes($event)"
-        (minutesIncrement)="increamentMinutes()"
-        (minutesDecrement)="decrementMinutes()"
-        (hoursIncrement)="incrementHours()"
-        (hoursDecrement)="decrementHours()" />
+        (dialStep)="dialStep($event)" />
 
     <div class="inputs">
         <input type="number" [value]="settings()?.hours ?? 0" (input)="updateHours($event)" [disabled]="disabled()" />

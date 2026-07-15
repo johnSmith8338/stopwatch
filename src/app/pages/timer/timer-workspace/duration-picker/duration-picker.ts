@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { WheelPicker } from "../../../../components/wheel-picker/wheel-picker";
 import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 import { TimerFace } from "../timer-face/timer-face";
+import { DialStep } from '../../../../directives/timer-dial-editor';
 
 @Component({
   selector: 'app-duration-picker',
@@ -32,6 +33,22 @@ export class DurationPicker {
 
   updateSeconds(event: Event) {
     this.facade.draft.setSeconds(Number((event.target as HTMLInputElement).value));
+  }
+
+  dialStep(step: DialStep) {
+    const settings = this.settings();
+    if (!settings) return;
+
+    if (step.unit === 'seconds') {
+      this.facade.draft.setSeconds(step.value);
+      if (step.turns === 1) this.increamentMinutes();
+      if (step.turns === -1) this.decrementMinutes();
+      return;
+    }
+
+    this.facade.draft.setMinutes(step.value);
+    if (step.turns === 1) this.incrementHours();
+    if (step.turns === -1) this.decrementHours();
   }
 
   increamentMinutes() {

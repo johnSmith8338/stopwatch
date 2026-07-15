@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, Signal } from '@angular/core';
 import { SCALE_CENTER, SCALE_LABEL_RADIUS, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../../../constants/scale.constants';
 import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../../utils/clock-face.util';
-import { DialChange, TimerDialEditor } from "../../../../directives/timer-dial-editor";
+import { DialStep, TimerDialEditor } from "../../../../directives/timer-dial-editor";
 
 export interface TimerFaceEngine {
   secondProgressAngle: Signal<number>;
@@ -29,14 +29,7 @@ export class TimerFace {
   readonly engine = input.required<TimerFaceEngine>();
   readonly mode = input<TimerFaceMode>('display');
 
-  readonly secondsChange = output<number>();
-  readonly minutesChange = output<number>();
-
-  readonly minutesIncrement = output();
-  readonly minutesDecrement = output();
-
-  readonly hoursIncrement = output();
-  readonly hoursDecrement = output();
+  readonly dialStep = output<DialStep>();
 
   readonly size = SCALE_SIZE;
   readonly center = SCALE_CENTER;
@@ -71,17 +64,7 @@ export class TimerFace {
   secondProgressAngle = computed(() => this.engine().secondProgressAngle());
   minuteProgressAngle = computed(() => this.engine().minuteProgressAngle());
 
-  secondDragged(change: DialChange) {
-    this.secondsChange.emit(change.current);
-    const delta = change.current - change.previous;
-    if (delta < -30) this.minutesIncrement.emit();
-    if (delta > 30) this.minutesDecrement.emit();
-  }
-
-  minuteDragged(change: DialChange) {
-    this.minutesChange.emit(change.current);
-    const delta = change.current - change.previous;
-    if (delta < -30) this.hoursIncrement.emit();
-    if (delta > 30) this.hoursDecrement.emit();
+  dialChange(step: DialStep) {
+    this.dialStep.emit(step);
   }
 }
