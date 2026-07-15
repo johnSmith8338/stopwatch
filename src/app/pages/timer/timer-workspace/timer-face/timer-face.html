@@ -7,7 +7,7 @@
     }
     <div class="second-sector" [style.--angle.deg]="secondProgressAngle()"></div>
     @if (mode()==='editor') {
-        <div class="second-handle" [style.--angle.deg]="secondProgressAngle()">
+        <div class="second-handle" [style.--angle.deg]="secondProgressAngle()" timerDialEditor (valueChange)="secondDragged($event)">
             <div class="knob"></div>
         </div>
     }
@@ -21,7 +21,7 @@
         }
         <div class="minute-sector" [style.--angle.deg]="minuteProgressAngle()"></div>
         @if (mode()==='editor') {
-            <div class="minute-handle" [style.--angle.deg]="minuteProgressAngle()">
+            <div class="minute-handle" [style.--angle.deg]="minuteProgressAngle()" timerDialEditor (valueChange)="minuteDragged($event)">
                 <div class="knob"></div>
             </div>
         }

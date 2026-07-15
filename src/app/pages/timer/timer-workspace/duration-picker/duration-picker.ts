@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { WheelPicker } from "../../../../components/wheel-picker/wheel-picker";
 import { TimerWorkspaceFacade } from '../timer-workspace.facade';
+import { TimerFace } from "../timer-face/timer-face";
 
 @Component({
   selector: 'app-duration-picker',
-  imports: [WheelPicker],
+  imports: [WheelPicker, TimerFace],
   templateUrl: './duration-picker.html',
   styleUrl: './duration-picker.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,5 +32,51 @@ export class DurationPicker {
 
   updateSeconds(event: Event) {
     this.facade.draft.setSeconds(Number((event.target as HTMLInputElement).value));
+  }
+
+  increamentMinutes() {
+    const s = this.settings();
+    if (!s) return;
+
+    let minutes = s.minutes + 1;
+    let hours = s.hours;
+
+    if (minutes > 59) {
+      minutes = 0;
+      hours++;
+    }
+
+    this.facade.draft.setMinutes(minutes);
+    this.facade.draft.setHours(hours);
+  }
+
+  decrementMinutes() {
+    const s = this.settings();
+    if (!s) return;
+
+    let minutes = s.minutes - 1;
+    let hours = s.hours;
+
+    if (minutes < 0) {
+      minutes = 59;
+      hours = Math.max(0, hours - 1);
+    }
+
+    this.facade.draft.setMinutes(minutes);
+    this.facade.draft.setHours(hours);
+  }
+
+  incrementHours() {
+    const s = this.settings();
+    if (!s) return;
+
+    this.facade.draft.setHours(Math.min(23, s.hours + 1));
+  }
+
+  decrementHours() {
+    const s = this.settings();
+    if (!s) return;
+
+    this.facade.draft.setHours(Math.max(0, s.hours - 1));
   }
 }
