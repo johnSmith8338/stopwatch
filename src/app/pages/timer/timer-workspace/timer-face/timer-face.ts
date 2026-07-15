@@ -7,6 +7,8 @@ export interface TimerFaceEngine {
   minuteProgressAngle: Signal<number>;
 }
 
+export type TimerFaceMode = 'display' | 'editor';
+
 @Component({
   selector: 'app-timer-face',
   imports: [],
@@ -24,6 +26,7 @@ export interface TimerFaceEngine {
 })
 export class TimerFace {
   readonly engine = input.required<TimerFaceEngine>();
+  readonly mode = input<TimerFaceMode>('display');
 
   readonly size = SCALE_SIZE;
   readonly center = SCALE_CENTER;

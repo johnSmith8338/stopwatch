@@ -1,4 +1,9 @@
 :host {
+  --outer-ring-width: 20px;
+  --minute-ring-width: 6px;
+  --outer-knob-size: 18px;
+  --minute-knob-size: 10px;
+
   display: block;
 }
 
@@ -38,6 +43,26 @@
   opacity: 0.6;
 }
 
+.second-handle {
+  position: absolute;
+  inset: 0;
+  transform: rotate(var(--angle));
+  pointer-events: none;
+
+  .knob {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    inline-size: 16px;
+    block-size: 16px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 10px #000000;
+  }
+}
+
 .minute-dial {
   position: absolute;
   inline-size: var(--scale-minute-size);
@@ -75,4 +100,24 @@
   border-radius: 50%;
   background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
   opacity: .6;
+}
+
+.minute-handle {
+  position: absolute;
+  inset: 0;
+  transform: rotate(var(--angle));
+  pointer-events: none;
+
+  .knob {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    inline-size: 10px;
+    block-size: 10px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 10px #000000;
+  }
 }
