@@ -13,7 +13,7 @@ export class SoundSvc {
   play(sound: TimerSound = 'none') {
     this.stop();
 
-    if (sound === 'none') return;
+    if (sound === 'none' || sound === 'inherit') return;
 
     this.audio = new Audio(`sounds/${sound}.mp3`);
     this.audio.loop = sound === 'alarm';

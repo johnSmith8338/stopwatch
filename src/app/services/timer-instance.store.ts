@@ -2,12 +2,14 @@ import { inject, Injectable, signal } from "@angular/core";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerInstanceFactory } from "./timer-instance.factory";
 import { TimerInstance } from "./timer-instance";
+import { DEFAULT_TIMER_SOUND, SoundSvc } from "./sound-svc";
 
 @Injectable({
     providedIn: 'root'
 })
 export class TimerInstanceStore {
     private readonly factory = inject(TimerInstanceFactory);
+    private readonly soundSvc = inject(SoundSvc);
 
     readonly timers = signal<TimerInstance[]>([]);
     readonly active = signal<TimerInstance | null>(null);
@@ -20,6 +22,7 @@ export class TimerInstanceStore {
 
         timer.engine.onFinished = () => {
             this.finished.set(timer);
+            this.soundSvc.play(timer.activePreset()?.sound ?? DEFAULT_TIMER_SOUND);
         }
 
         timer.start();
@@ -59,5 +62,6 @@ export class TimerInstanceStore {
         timer.stop();
         this.remove(timer);
         this.finished.set(null);
+        this.soundSvc.stop();
     }
 }
