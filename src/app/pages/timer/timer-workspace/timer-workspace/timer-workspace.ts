@@ -4,7 +4,6 @@ import { SvgIcon } from '../../../../directives/svg-icon';
 import { TimerSettings } from "../timer-settings/timer-settings";
 import { RunningTimerList } from "../../running/running-timer-list/running-timer-list";
 import { DurationPicker } from "../duration-picker/duration-picker";
-import { TimerPanel } from "../../timer-panel/timer-panel";
 
 @Component({
   selector: 'app-timer-workspace',
@@ -13,7 +12,6 @@ import { TimerPanel } from "../../timer-panel/timer-panel";
     TimerSettings,
     RunningTimerList,
     DurationPicker,
-    TimerPanel,
   ],
   templateUrl: './timer-workspace.html',
   styleUrl: './timer-workspace.scss',

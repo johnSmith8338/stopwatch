@@ -1,4 +1,5 @@
 <div class="card">
+    <app-timer-face [engine]="timer().engine" mode="display" />
     <h3>
         <span class="icon" [iconName]="timer().icon() || 'timer'"></span>
         <span>{{timer().title()}}</span>

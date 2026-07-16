@@ -3,14 +3,11 @@
     <span>{{facade.draft.title()}}</span>
 </h2>
 
-<app-timer-panel 
-    [timer]="facade.draft"
-    [controls]="facade"
-    [disabled]="facade.dialogOpened()" />
-
 @if (facade.appSettings(); as settings) {
     <app-duration-picker />
 }
+
+<button class="start-button" (click)="facade.start()" [disabled]="facade.dialogOpened()">▶ START</button>
 
 <app-timer-settings />
 
