@@ -12,22 +12,33 @@ export class TimerPresetsFacade {
     readonly workspace = inject(TimerWorkspaceFacade);
 
     readonly deleting = signal<TimerPreset | null>(null);
+    readonly editorOpened = signal(false);
 
     readonly timers = computed(() => this.presetsSvc.presets.value() ?? []);
-
     readonly loading = computed(() => this.presetsSvc.presets.isLoading());
+
+    openEditor() {
+        this.editorOpened.set(true);
+    }
+
+    closeEditor() {
+        this.editorOpened.set(false);
+    }
 
     createPreset() {
         const preset = this.presetsSvc.create();
         this.workspace.loadPreset(preset);
+        this.openEditor();
     }
 
     editPreset(timer: TimerPreset) {
         this.workspace.loadPreset(structuredClone(timer));
+        this.openEditor();
     }
 
     cancelEditing() {
         this.workspace.reset();
+        this.closeEditor();
     }
 
     async savePreset() {
@@ -35,6 +46,8 @@ export class TimerPresetsFacade {
         if (!preset) return;
 
         await this.presetsSvc.save(preset);
+        this.workspace.draft.clear();
+        this.closeEditor();
     }
 
     async deletePreset(id: string) {

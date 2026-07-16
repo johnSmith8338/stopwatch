@@ -14,8 +14,6 @@ export class TimerWorkspaceFacade {
     readonly instance = inject(TimerInstanceStore);
     readonly sound = inject(SoundSvc);
 
-    private wasFinished = false;
-
     readonly dialogOpened = signal(false);
 
     readonly appSettings = computed(() => this.settings.settings());
