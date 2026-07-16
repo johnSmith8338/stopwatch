@@ -1,4 +1,4 @@
-import { DestroyRef, effect, inject, signal } from "@angular/core";
+import { DestroyRef, inject, signal } from "@angular/core";
 import { TimerEngine } from "./timer-engine";
 import { TimerSound } from "./sound-svc";
 import { BaseTimer } from "./base-timer";

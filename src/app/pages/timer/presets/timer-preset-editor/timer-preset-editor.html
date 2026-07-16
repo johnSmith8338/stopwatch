@@ -1,13 +1,13 @@
 <div class="editor">
-    <input [value]="model().title" (input)="updateTitle($event)" placeholder="title" />
+    <input [value]="draft.activePreset()?.title" (input)="updateTitle($event)" placeholder="title" />
 
     <app-duration-picker />
 
-    <app-icon-picker [value]="model().icon" (valueChange)="setIcon($event)" />
+    <app-icon-picker [value]="icon()" (valueChange)="setIcon($event)" />
 
-    <app-color-picker [value]="model().color" (valueChange)="setColor($event)" />
+    <app-color-picker [value]="color()" (valueChange)="setColor($event)" />
 
-    <app-sound-picker [value]="model().sound" (valueChange)="setSound($event)" />
+    <app-sound-picker [value]="sound()" (valueChange)="setSound($event)" />
 
     <div class="buttons">
         <button (click)="save()">save</button>

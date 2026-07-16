@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { TimerPreset } from '../../../../core/repositories/timer.repository';
-import { TimerColor } from '../../../../constants/colors';
-import { TimerIcon } from '../../../../constants/icons';
-import { TimerSound } from '../../../../services/sound-svc';
+import { DEFAULT_TIMER_COLOR, TimerColor } from '../../../../constants/colors';
+import { DEFAULT_TIMER_ICON, TimerIcon } from '../../../../constants/icons';
+import { DEFAULT_TIMER_SOUND, TimerSound } from '../../../../services/sound-svc';
 import { SoundPicker } from "../../../../components/sound-picker/sound-picker";
 import { IconPicker } from "../../../../components/icon-picker/icon-picker";
 import { ColorPicker } from "../../../../components/color-picker/color-picker";
@@ -23,13 +23,15 @@ import { TimerPresetsFacade } from '../timer-presets.facade';
 })
 export class TimerPresetEditor {
   readonly facade = inject(TimerPresetsFacade);
+  readonly draft = this.facade.workspace.draft;
 
-  readonly timer = input.required<TimerPreset>();
-
-  readonly model = linkedSignal(() => structuredClone(this.timer()));
+  readonly preset = computed(() => this.draft.activePreset());
+  readonly icon = computed(() => this.preset()?.icon ?? DEFAULT_TIMER_ICON);
+  readonly color = computed(() => this.preset()?.color ?? DEFAULT_TIMER_COLOR);
+  readonly sound = computed(() => this.preset()?.sound ?? DEFAULT_TIMER_SOUND);
 
   save() {
-    this.facade.savePreset(this.model());
+    this.facade.savePreset();
   }
 
   cancel() {
@@ -37,52 +39,30 @@ export class TimerPresetEditor {
   }
 
   updateTitle(e: Event) {
-    const title = (e.target as HTMLInputElement).value;
-    this.model.update(v => ({
-      ...v,
-      title
-    }))
+    this.draft.updateTitle((e.target as HTMLInputElement).value);
   }
 
   setHours(hours: number) {
-    this.model.update(v => ({
-      ...v,
-      hours
-    }))
+    this.draft.updateHours(hours);
   }
 
   setMinutes(minutes: number) {
-    this.model.update(v => ({
-      ...v,
-      minutes
-    }))
+    this.draft.updateMinutes(minutes);
   }
 
   setSeconds(seconds: number) {
-    this.model.update(v => ({
-      ...v,
-      seconds
-    }))
+    this.draft.updateSeconds(seconds);
   }
 
   setColor(color: TimerColor) {
-    this.model.update(v => ({
-      ...v,
-      color
-    }))
+    this.draft.updateColor(color);
   }
 
   setIcon(icon: TimerIcon) {
-    this.model.update(v => ({
-      ...v,
-      icon
-    }))
+    this.draft.updateIcon(icon);
   }
 
   setSound(sound: TimerSound) {
-    this.model.update(v => ({
-      ...v,
-      sound
-    }))
+    this.draft.updateSound(sound);
   }
 }

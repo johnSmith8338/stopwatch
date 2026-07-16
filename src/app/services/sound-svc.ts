@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+export const DEFAULT_TIMER_SOUND = 'none';
+
 export type TimerSound = 'inherit' | 'none' | 'ding' | 'alarm';
 
 @Injectable({

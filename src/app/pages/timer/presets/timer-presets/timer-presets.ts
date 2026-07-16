@@ -4,6 +4,7 @@ import { TimerPresetsFacade } from '../timer-presets.facade';
 import { TimerPresetEditor } from "../timer-preset-editor/timer-preset-editor";
 import { ConfirmDialog } from "../../../../components/confirm-dialog/confirm-dialog";
 import { TimerPresetList } from "../timer-preset-list/timer-preset-list";
+import { TimerWorkspaceFacade } from '../../timer-workspace/timer-workspace.facade';
 
 @Component({
   selector: 'app-timer-presets',
@@ -14,4 +15,5 @@ import { TimerPresetList } from "../timer-preset-list/timer-preset-list";
 })
 export class TimerPresets {
   readonly facade = inject(TimerPresetsFacade);
+  readonly workspace = inject(TimerWorkspaceFacade);
 }

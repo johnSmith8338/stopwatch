@@ -2,8 +2,8 @@
 
 <button (click)="facade.createPreset()">+ create</button>
 
-@if (facade.editing(); as timer) {
-    <app-timer-preset-editor [timer]="timer" />
+@if (workspace.draft.activePreset(); as timer) {
+    <app-timer-preset-editor />
 }
 
 @if (facade.loading()) {

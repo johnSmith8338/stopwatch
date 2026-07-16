@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable } from "@angular/core";
 import { PreviewTimerEngine } from "./timer-preview.engine";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerSettingsSvc } from "./timer-settings-svc";
@@ -82,27 +82,37 @@ export class DraftTimer extends BaseTimer<PreviewTimerEngine> {
     }
 
     updateHours(hours: number) {
+        this.preset.update(p => p ? { ...p, hours } : null);
         void this.settingsSvc.patch({ hours });
     }
 
     updateMinutes(minutes: number) {
+        this.preset.update(p => p ? { ...p, minutes } : null);
         void this.settingsSvc.patch({ minutes });
     }
 
     updateSeconds(seconds: number) {
+        this.preset.update(p => p ? { ...p, seconds } : null);
         void this.settingsSvc.patch({ seconds });
     }
 
     updateColor(color: TimerColor) {
+        this.preset.update(p => p ? { ...p, color } : p);
         void this.settingsSvc.patch({ color });
     }
 
     updateIcon(icon: TimerIcon) {
+        this.preset.update(p => p ? { ...p, icon } : null);
         void this.settingsSvc.patch({ icon });
     }
 
     updateSound(sound: TimerSound) {
+        this.preset.update(p => p ? { ...p, sound } : null);
         void this.settingsSvc.patch({ sound });
+    }
+
+    updateTitle(title: string) {
+        this.preset.update(p => p ? { ...p, title } : null);
     }
 
     setHours(value: number) {

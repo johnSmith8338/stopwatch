@@ -2,35 +2,39 @@ import { computed, inject, Injectable, signal } from "@angular/core";
 import { TimerPreset } from "../../../core/repositories/timer.repository";
 import { TimerPresetsSvc } from "../../../services/timer-presets-svc";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { TimerWorkspaceFacade } from "../timer-workspace/timer-workspace.facade";
 
 @Injectable({
     providedIn: 'root'
 })
 export class TimerPresetsFacade {
     readonly presetsSvc = inject(TimerPresetsSvc);
+    readonly workspace = inject(TimerWorkspaceFacade);
 
     readonly deleting = signal<TimerPreset | null>(null);
-    readonly editing = signal<TimerPreset | null>(null);
 
     readonly timers = computed(() => this.presetsSvc.presets.value() ?? []);
 
     readonly loading = computed(() => this.presetsSvc.presets.isLoading());
 
     createPreset() {
-        this.editing.set(this.presetsSvc.create());
+        const preset = this.presetsSvc.create();
+        this.workspace.loadPreset(preset);
     }
 
     editPreset(timer: TimerPreset) {
-        this.editing.set(structuredClone(timer));
+        this.workspace.loadPreset(structuredClone(timer));
     }
 
     cancelEditing() {
-        this.editing.set(null);
+        this.workspace.reset();
     }
 
-    async savePreset(timer: TimerPreset) {
-        await this.presetsSvc.save(timer);
-        this.editing.set(null);
+    async savePreset() {
+        const preset = this.workspace.draft.activePreset();
+        if (!preset) return;
+
+        await this.presetsSvc.save(preset);
     }
 
     async deletePreset(id: string) {
