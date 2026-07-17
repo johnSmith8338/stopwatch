@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, Signal } from '@angular/core';
 import { SCALE_CENTER, SCALE_LABEL_RADIUS, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../../../constants/scale.constants';
 import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../../utils/clock-face.util';
 import { DialStep, TimerDialEditor } from "../../../../directives/timer-dial-editor";
 
 export interface TimerFaceEngine {
+  remainingMs: Signal<number>;
   remainingSeconds: Signal<number>;
   remainingMinutes: Signal<number>;
 }
@@ -70,15 +71,25 @@ export class TimerFace {
     ]
   )
 
-  secondProgressAngle = computed(() => this.engine().remainingSeconds() * 6);
-  minuteProgressAngle = computed(() => this.engine().remainingMinutes() * 6);
+  readonly smoothSeconds = computed(() => {
+    const ms = this.engine().remainingMs();
+    return (ms % 60_000) / 1000;
+  })
+
+  readonly smoothMinutes = computed(() => {
+    const ms = this.engine().remainingMs();
+    return (ms % 3_600_000) / 60_000;
+  })
+
+  secondProgressAngle = computed(() => this.smoothSeconds() * 6);
+  minuteProgressAngle = computed(() => this.smoothMinutes() * 6);
 
   readonly secondDashOffset = computed(() =>
-    RING.circumference * (1 - this.engine().remainingSeconds() / 60)
+    RING.circumference * (1 - this.smoothSeconds() / 60)
   )
 
   readonly minuteDashOffset = computed(() =>
-    RING.circumference * (1 - this.engine().remainingMinutes() / 60)
+    RING.circumference * (1 - this.smoothMinutes() / 60)
   )
 
   dialChange(step: DialStep) {
