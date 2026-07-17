@@ -3,6 +3,7 @@ import { Stopwatch } from './pages/stopwatch/stopwatch';
 import { Timer } from './pages/timer/timer';
 import { Home } from './pages/home/home';
 import { NotFound } from './pages/not-found/not-found';
+import { Settings } from './pages/settings/settings';
 
 export const routes: Routes = [
     {
@@ -31,6 +32,16 @@ export const routes: Routes = [
             showInMenu: true,
             icon: '',
             order: 2
+        }
+    },
+    {
+        path: 'settings',
+        component: Settings,
+        data: {
+            title: 'settings',
+            showInMenu: true,
+            icon: '',
+            order: 3
         }
     },
     {

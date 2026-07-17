@@ -1,8 +1,5 @@
 :host {
-  --outer-ring-width: 20px;
-  --minute-ring-width: 6px;
-  --outer-knob-size: 18px;
-  --minute-knob-size: 10px;
+  --knob-size: 16px;
 
   display: block;
 }
@@ -13,6 +10,7 @@
   block-size: var(--scale-size);
   border: 4px solid black;
   border-radius: 50%;
+  touch-action: none;
 }
 
 .second-label {
@@ -37,16 +35,36 @@
 .second-sector {
   position: absolute;
   inset: 20px;
-  border-radius: 50%;
-  background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
+
+  // border-radius: 50%;
+  // background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
   // mask: radial-gradient(circle, transparent 55%, black 56%);
-  opacity: 0.6;
+  // opacity: 0.6;
+  circle {
+    fill: none;
+  }
+
+  .progress {
+    stroke: red;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    stroke-dasharray: 263.89;
+  }
 }
 
 .second-handle {
   position: absolute;
   inset: 0;
   transform: rotate(var(--angle));
+  touch-action: none;
+  user-select: none;
+
+  span {
+    display: block;
+    transform: rotate(calc(var(--angle)*-1));
+  }
 
   .knob {
     content: '';
@@ -55,10 +73,13 @@
     top: 8px;
     inline-size: 16px;
     block-size: 16px;
+    display: grid;
+    place-items: center;
     translate: -50% -50%;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 0 10px #000000;
+    font-size: 10px;
   }
 }
 
@@ -96,26 +117,49 @@
 .minute-sector {
   position: absolute;
   inset: 6px;
-  border-radius: 50%;
-  background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
-  opacity: .6;
+
+  //   border-radius: 50%;
+  //   background: conic-gradient(red 0deg, red var(--angle), transparent var(--angle));
+  //   opacity: .6;
+  circle {
+    fill: none;
+  }
+
+  .progress {
+    stroke: red;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    stroke-dasharray: 263.89;
+  }
 }
 
 .minute-handle {
   position: absolute;
   inset: 0;
   transform: rotate(var(--angle));
+  touch-action: none;
+  user-select: none;
+
+  span {
+    display: block;
+    transform: rotate(calc(var(--angle)*-1));
+  }
 
   .knob {
     content: '';
     position: absolute;
     left: 50%;
     top: 10px;
-    inline-size: 10px;
-    block-size: 10px;
+    inline-size: 16px;
+    block-size: 16px;
+    display: grid;
+    place-items: center;
     translate: -50% -50%;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 0 10px #000000;
+    font-size: 10px;
   }
 }

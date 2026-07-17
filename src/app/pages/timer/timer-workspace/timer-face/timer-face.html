@@ -5,14 +5,19 @@
     @for (tick of secondTicks; track tick) {
         <div class="second-tick" [class.major]="tick%5===0" [style.rotate]="`${tick*6}deg`"></div>
     }
-    <div class="second-sector" [style.--angle.deg]="secondProgressAngle()"></div>
+    <!-- <div class="second-sector" [style.--angle.deg]="secondProgressAngle()"></div> -->
+    <svg class="second-sector" viewBox="0 0 100 100">
+        <circle class="progress" cx="50" cy="50" r="42" [style.stroke-dashoffset]="secondDashOffset()" />
+    </svg>
     @if (mode()==='editor') {
         <div class="second-handle" 
             [style.--angle.deg]="secondProgressAngle()" 
             timerDialEditor 
             unit="seconds" 
             (step)="dialChange($event)">
-            <div class="knob"></div>
+            <div class="knob">
+                <span>{{engine().remainingSeconds()}}</span>
+            </div>
         </div>
     }
 
@@ -23,14 +28,19 @@
         @for (label of minuteLabels; track label.value) {
             <div class="minute-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
         }
-        <div class="minute-sector" [style.--angle.deg]="minuteProgressAngle()"></div>
+        <!-- <div class="minute-sector" [style.--angle.deg]="minuteProgressAngle()"></div> -->
+        <svg class="minute-sector" viewBox="0 0 100 100">
+            <circle class="progress" cx="50" cy="50" r="42" [style.stroke-dashoffset]="minuteDashOffset()" />
+        </svg>
         @if (mode()==='editor') {
             <div class="minute-handle" 
                 [style.--angle.deg]="minuteProgressAngle()" 
                 timerDialEditor 
                 unit="minutes" 
                 (step)="dialChange($event)">
-                <div class="knob"></div>
+                <div class="knob">
+                    <span>{{engine().remainingMinutes()}}</span>
+                </div>
             </div>
         }
     </div>

@@ -1,0 +1,7 @@
+<h3>theme</h3>
+<app-toggle [checked]="themeSvc.theme()==='dark'" (checkedChange)="changeTheme()">
+    <span left>light</span>
+    <span right>dark</span>
+</app-toggle>
+<h3>default timer settings</h3>
+<app-default-timer-settings />

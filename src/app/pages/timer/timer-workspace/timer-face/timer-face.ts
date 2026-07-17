@@ -4,11 +4,20 @@ import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../../util
 import { DialStep, TimerDialEditor } from "../../../../directives/timer-dial-editor";
 
 export interface TimerFaceEngine {
-  secondProgressAngle: Signal<number>;
-  minuteProgressAngle: Signal<number>;
+  remainingSeconds: Signal<number>;
+  remainingMinutes: Signal<number>;
 }
 
 export type TimerFaceMode = 'display' | 'editor';
+
+const RING = createRing(42);
+
+function createRing(radius: number) {
+  return {
+    radius,
+    circumference: 2 * Math.PI * radius
+  }
+}
 
 @Component({
   selector: 'app-timer-face',
@@ -61,8 +70,16 @@ export class TimerFace {
     ]
   )
 
-  secondProgressAngle = computed(() => this.engine().secondProgressAngle());
-  minuteProgressAngle = computed(() => this.engine().minuteProgressAngle());
+  secondProgressAngle = computed(() => this.engine().remainingSeconds() * 6);
+  minuteProgressAngle = computed(() => this.engine().remainingMinutes() * 6);
+
+  readonly secondDashOffset = computed(() =>
+    RING.circumference * (1 - this.engine().remainingSeconds() / 60)
+  )
+
+  readonly minuteDashOffset = computed(() =>
+    RING.circumference * (1 - this.engine().remainingMinutes() / 60)
+  )
 
   dialChange(step: DialStep) {
     this.dialStep.emit(step);

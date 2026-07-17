@@ -1,6 +1,7 @@
 import { computed, signal } from "@angular/core";
 import { PresetClockEngine } from "../models/clock-engine.interface";
 import { TimerPreset } from "../core/repositories/timer.repository";
+import { DEFAULT_TIMER_ICON } from "../constants/icons";
 
 export abstract class BaseTimer<T extends PresetClockEngine = PresetClockEngine> {
     abstract readonly engine: T;
@@ -12,7 +13,7 @@ export abstract class BaseTimer<T extends PresetClockEngine = PresetClockEngine>
 
     readonly title = computed(() => this.preset()?.title ?? 'timer');
 
-    readonly icon = computed(() => this.preset()?.icon ?? '');
+    readonly icon = computed(() => this.preset()?.icon ?? DEFAULT_TIMER_ICON);
 
     start() {
         this.engine.start();

@@ -5,7 +5,13 @@
             (click)="select(item.value)">
             <span class="icon">{{item.icon}}</span>
             <span class="title">{{item.title}}</span>
-            <button class="preview" (click)="preview($event,item.value)">play</button>
+            @if (item.value!=='none') {
+                @if (previewing()===item.value) {
+                    <button class="preview" (click)="stopPreview($event)">■</button>
+                }@else {
+                    <button class="preview" (click)="preview($event,item.value)">▶</button>
+                }
+            }
         </button>
     }
 </div>

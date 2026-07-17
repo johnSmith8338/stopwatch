@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { SoundSvc, TimerSound } from '../../services/sound-svc';
 
 interface SoundItem {
@@ -20,8 +20,9 @@ export class SoundPicker {
   readonly value = input.required<TimerSound>();
   readonly valueChange = output<TimerSound>();
 
+  readonly previewing = signal<TimerSound | null>(null);
+
   readonly items: SoundItem[] = [
-    { value: 'inherit', title: 'use default', icon: '' },
     { value: 'none', title: 'silent', icon: '🔇' },
     { value: 'ding', title: 'ding', icon: '🔔' },
     { value: 'alarm', title: 'alarm', icon: '🚨' },
@@ -33,7 +34,21 @@ export class SoundPicker {
 
   preview(event: MouseEvent, sound: TimerSound) {
     event.stopPropagation();
+
     this.sound.play(sound);
-    if (sound !== 'alarm') setTimeout(() => { this.sound.stop() }, 1000);
+    this.previewing.set(sound);
+
+    if (sound !== 'alarm') setTimeout(() => {
+      if (this.previewing() === sound) {
+        this.stopPreview();
+      }
+    }, 1000);
+  }
+
+  stopPreview(event?: MouseEvent) {
+    event?.stopPropagation();
+
+    this.sound.stop();
+    this.previewing.set(null);
   }
 }

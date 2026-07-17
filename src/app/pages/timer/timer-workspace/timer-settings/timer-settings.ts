@@ -9,13 +9,13 @@ import { IconPicker } from "../../../../components/icon-picker/icon-picker";
 import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 
 @Component({
-  selector: 'app-timer-settings',
+  selector: 'app-default-timer-settings',
   imports: [SoundPicker, ColorPicker, IconPicker],
   templateUrl: './timer-settings.html',
   styleUrl: './timer-settings.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimerSettings {
+export class DefaultTimerSettings {
   readonly facade = inject(TimerWorkspaceFacade);
 
   readonly settings = this.facade.appSettings;
