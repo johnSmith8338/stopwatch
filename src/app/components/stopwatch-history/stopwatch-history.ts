@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@ang
 import { StopwatchHistorySvc } from '../../services/stopwatch-history-svc';
 import { LapSession } from '../../core/repositories/stopwatch.repository';
 import { DatePipe } from '@angular/common';
+import { ConfirmDialog } from "../confirm-dialog/confirm-dialog";
 
 @Component({
   selector: 'app-stopwatch-history',
-  imports: [DatePipe],
+  imports: [DatePipe, ConfirmDialog],
   templateUrl: './stopwatch-history.html',
   styleUrl: './stopwatch-history.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,6 +15,8 @@ export class StopwatchHistory {
   private readonly historySvc = inject(StopwatchHistorySvc);
 
   readonly sessions = signal<LapSession[]>([]);
+  readonly deletingSession = signal<string | null>(null);
+  readonly clearing = signal(false);
 
   constructor() {
     effect(() => {
@@ -34,6 +37,37 @@ export class StopwatchHistory {
   async clear() {
     await this.historySvc.clear();
     this.sessions.set([]);
+  }
+
+  requestDelete(id: string) {
+    this.deletingSession.set(id);
+  }
+
+  cancelDelete() {
+    this.deletingSession.set(null);
+  }
+
+  async confirmDelete() {
+    const id = this.deletingSession();
+    if (!id) return;
+
+    await this.historySvc.deleteSession(id);
+    this.deletingSession.set(null);
+    await this.reload();
+  }
+
+  requestClear() {
+    this.clearing.set(true);
+  }
+
+  cancelClear() {
+    this.clearing.set(false);
+  }
+
+  async confirmClear() {
+    await this.historySvc.clear();
+    this.sessions.set([]);
+    this.clearing.set(false);
   }
 
   format(ms: number): string {

@@ -1,5 +1,9 @@
 <app-stopwatch-face />
-<!-- <app-digital-display [engine]="engine" /> -->
+
+<div class="display">
+    <span>{{engine.displayTime()}}</span>
+</div>
+
 <app-stopwatch-controls />
 <hr>
 <app-stopwatch-history />

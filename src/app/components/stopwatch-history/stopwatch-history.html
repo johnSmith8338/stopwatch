@@ -1,19 +1,46 @@
 <h2>History</h2>
-<button (click)="clear()">clear history</button>
-@for (session of sessions(); track session.id) {
-    <section class="session">
-        <header>
-            <strong>{{session.startedAt|date:'dd.MM.yyyy HH:mm'}}</strong>
-            <button (click)="delete(session.id)">delete</button>
-        </header>
-        <div>duration: {{format(session.duration)}}</div>
-        <ul>
-            @for (lap of session.laps; track lap.id) {
-                <li>
-                    #{{lap.index}}
-                    lap: {{format(lap.lapTime)}} | total: {{format(lap.totalTime)}}
-                </li>
-            }
-        </ul>
-    </section>
+
+@if (sessions().length>0) {
+    <button (click)="requestClear()">clear history</button>
+}
+
+@if (sessions().length===0) {
+    <div class="empty-history">
+        <p>No recorded sessions yet</p>
+    </div>
+}@else {
+    @for (session of sessions(); track session.id) {
+        <section class="session">
+            <header>
+                <strong>{{session.startedAt|date:'dd.MM.yyyy HH:mm'}}</strong>
+                <button (click)="requestDelete(session.id)">delete</button>
+            </header>
+            <ul>
+                @for (lap of session.laps; track lap.id) {
+                    <li>
+                        lap {{lap.index}}: {{format(lap.lapTime)}} | total: {{format(lap.totalTime)}}
+                    </li>
+                }
+            </ul>
+            <div>
+                <p>duration: {{format(session.duration)}}</p>
+            </div>
+        </section>
+    }
+}
+
+
+@if (deletingSession()) {
+    <app-confirm-dialog
+        title="delete session?"
+        message="this session will be permanently removed"
+        (confirm)="confirmDelete()"
+        (cancel)="cancelDelete()" />
+}
+@if (clearing()) {
+    <app-confirm-dialog
+        title="clear history?"
+        message="All stopwatch sessions will be deleted"
+        (confirm)="confirmClear()"
+        (cancel)="cancelClear()" />
 }
