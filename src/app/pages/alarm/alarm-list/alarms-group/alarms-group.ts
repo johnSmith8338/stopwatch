@@ -6,8 +6,8 @@ import { AlarmCard } from "./alarm-card/alarm-card";
 @Component({
   selector: 'app-alarms-group',
   imports: [AlarmCard],
-  templateUrl: './alarm-group.html',
-  styleUrl: './alarm-group.scss',
+  templateUrl: './alarms-group.html',
+  styleUrl: './alarms-group.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlarmsGroup {

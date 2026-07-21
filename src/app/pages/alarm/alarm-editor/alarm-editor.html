@@ -1,32 +1,17 @@
 <div class="editor">
     <h2>alarm</h2>
-    <label >
-        <span>title</span>
-        <input [ngModel]="draft.title()" (ngModelChange)="draft.updateTitle($event)" />
-    </label>
+
+    <app-alarm-preview />
+
+    <app-alarm-title-editor />
 
     <app-alarm-time-picker />
 
     <app-alarm-repeat-editor [repeat]="draft.repeat()" (repeatChange)="draft.updateRepeat($event)" />
 
-    <label >
-        <span>group</span>
-        <select [ngModel]="draft.groupId()" (ngModelChange)="draft.updateGroup($event||null)">
-            <option [ngValue]="null">ungrouped</option>
-            @for (group of groups(); track group.id) {
-                <option [ngValue]="group.id">{{group.title}}</option>
-            }
-        </select>
-    </label>
+    <app-alarm-group-picker />
 
-    <label >
-        <span>snooze</span>
-        <input type="number"
-            min="0"
-            max="60"
-            [ngModel]="draft.snoozeMinutes()"
-            (ngModelChange)="draft.updateSnooze(+$event)"/>
-    </label>
+    <app-alarm-snooze-picker />
 
     <label >
         <input type="checkbox" [ngModel]="draft.enabled()" (ngModelChange)="draft.toggleEnabled()"/>

@@ -71,12 +71,12 @@ export class AlarmFace {
   )
 
   readonly handAngle = computed(() =>
-    this.mode() === 'hour' ? this.engine().hour() * 30 : this.engine().minute() * 6
+    this.mode() === 'hour' ? (this.engine().hour() % 12) * 30 : this.engine().minute() * 6
   )
 
   readonly knobValue = computed(() =>
     this.mode() === 'hour'
-      ? this.engine().hour()
+      ? this.engine().hour().toString().padStart(2, '0')
       : this.engine().minute().toString().padStart(2, '0')
   );
 }

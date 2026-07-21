@@ -10,10 +10,15 @@ export class AlarmDialEditor {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly unit = input.required<AlarmTimeUnit>();
+  readonly currentHour = input(0);
+
   readonly step = output<AlarmDialStep>();
   finished = output();
 
   private pointerId: number | null = null;
+
+  private lastHourValue = 0;
+  private turns = 0;
 
   constructor() {
     const element = this.host.nativeElement;
@@ -36,6 +41,11 @@ export class AlarmDialEditor {
   private pointerDown = (event: PointerEvent) => {
     this.pointerId = event.pointerId;
     this.host.nativeElement.setPointerCapture(event.pointerId);
+
+    if (this.unit() === 'hour') {
+      this.turns = Math.floor(this.currentHour() / 12);
+      this.lastHourValue = this.currentHour() % 12;
+    }
     this.emitValue(event);
   }
 
@@ -64,9 +74,16 @@ export class AlarmDialEditor {
 
     if (this.unit() === 'hour') {
       const value = Math.floor(angle / 30) % 12;
+      const delta = value - this.lastHourValue;
+
+      if (delta < -6) this.turns++;
+      if (delta > 6) this.turns--;
+      this.turns = Math.max(0, Math.min(1, this.turns));
+      this.lastHourValue = value;
+
       this.step.emit({
         unit: 'hour',
-        value
+        value: value + this.turns * 12
       })
 
       return;

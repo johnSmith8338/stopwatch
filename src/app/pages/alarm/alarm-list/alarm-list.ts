@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { AlarmListFacade } from '../../../services/alarm-list.facade';
-import { AlarmsGroup } from "./alarm-group/alarm-group";
+import { AlarmsGroup } from "./alarms-group/alarms-group";
 import { AlarmGroupView } from '../../../models/alarm.interface';
 
 @Component({

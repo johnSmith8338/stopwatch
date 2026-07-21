@@ -4,10 +4,22 @@ import { AlarmWorkspaceFacade } from '../../../services/alarm-workspace.facade';
 import { FormsModule } from '@angular/forms';
 import { AlarmRepeatEditor } from "./alarm-repeat-editor/alarm-repeat-editor";
 import { AlarmTimePicker } from "./alarm-time-picker/alarm-time-picker";
+import { AlarmPreview } from "./alarm-preview/alarm-preview";
+import { AlarmTitleEditor } from "./alarm-title-editor/alarm-title-editor";
+import { AlarmGroupPicker } from "./alarm-group-picker/alarm-group-picker";
+import { AlarmSnoozePicker } from "./alarm-snooze-picker/alarm-snooze-picker";
 
 @Component({
   selector: 'app-alarm-editor',
-  imports: [FormsModule, AlarmRepeatEditor, AlarmTimePicker],
+  imports: [
+    FormsModule,
+    AlarmRepeatEditor,
+    AlarmTimePicker,
+    AlarmPreview,
+    AlarmTitleEditor,
+    AlarmGroupPicker,
+    AlarmSnoozePicker
+  ],
   templateUrl: './alarm-editor.html',
   styleUrl: './alarm-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

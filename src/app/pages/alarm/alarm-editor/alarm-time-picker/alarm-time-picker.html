@@ -4,16 +4,18 @@
     <button (click)="inputMode.set('wheel')">wheel</button>
 </div>
 
-@if (inputMode()==='dial') {
-    <app-alarm-face 
-        [engine]="draft.faceEngine" 
-        [mode]="faceMode()" 
-        (dialStep)="dialChanged($event)"
-        (dialFinished)="dialFinished()" />
-}
-@if (inputMode()==='inputs') {
-    <app-alarm-inputs />
-}
-@if (inputMode()==='wheel') {
-    <app-alarm-wheel-picker />
+@switch (inputMode()) {
+    @case ('dial') {
+        <app-alarm-face 
+            [engine]="draft.faceEngine" 
+            [mode]="faceMode()" 
+            (dialStep)="dialChanged($event)"
+            (dialFinished)="dialFinished()" />
+    }
+    @case ('inputs') {
+        <app-alarm-inputs />
+    }
+    @case ('wheel') {
+        <app-alarm-wheel-picker />
+    }
 }

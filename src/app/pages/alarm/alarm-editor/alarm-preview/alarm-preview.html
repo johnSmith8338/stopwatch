@@ -1,0 +1,13 @@
+<div class="preview">
+    <div class="time">{{time()}}</div>
+
+    <app-alarm-repeat-preview [repeat]="draft.repeat()" />
+    
+    <div class="title">
+        @if (draft.title()) {
+            <span>{{draft.title()}}</span>
+        }@else {
+            <span>alarm</span>
+        }
+    </div>
+</div>

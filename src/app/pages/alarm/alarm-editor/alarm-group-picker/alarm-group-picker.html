@@ -1,0 +1,10 @@
+<div class="groups">
+    <span class="label">group</span>
+
+    <select [value]="draft.groupId()??''" (change)="change($event)">
+        <option value="">ungrouped</option>
+        @for (group of groups(); track group.id) {
+            <option [value]="group.id">{{group.title}}</option>
+        }
+    </select>
+</div>

@@ -1,0 +1,9 @@
+@if (allSelected()) {
+    <span>every_day</span>
+}@else {
+    <div class="days">
+        @for (day of days; track day.key) {
+            <span class="day" [class.active]="repeat().includes(day.key)">{{day.short}}</span>
+        }
+    </div>
+}

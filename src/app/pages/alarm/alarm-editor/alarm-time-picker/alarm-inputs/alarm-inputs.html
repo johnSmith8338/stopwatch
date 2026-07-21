@@ -1,1 +1,13 @@
-<p>alarm-inputs works!</p>,
+<div class="inputs">
+    <input type="number"
+        min="0"
+        max="23"
+        [value]="draft.hour()"
+        (input)="updateHour($event)" />
+    :
+    <input type="number"
+        min="0"
+        max="59"
+        [value]="draft.minute()"
+        (input)="updateMinute($event)" />
+</div>

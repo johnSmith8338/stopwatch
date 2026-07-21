@@ -3,3 +3,19 @@
 @if (facade.editorOpened()) {
     <app-alarm-editor />
 }
+
+@if (facade.deletingAlarm(); as alarm) {
+    <app-confirm-dialog
+        title="delete alarm?"
+        [message]="`delete alarm '${alarm.title}'?`"
+        (confirm)="facade.confirmDeleteAlarm()"
+        (cancel)="facade.cancelDeleteAlarm()" />
+}
+
+@if (facade.deletingGroup(); as group) {
+    <app-confirm-dialog
+        title="delete group?"
+        [message]="`delete group '${group.title}'?`"
+        (confirm)="facade.confirmDeleteGroup()"
+        (cancel)="facade.cancelDeleteGroup()" />
+}

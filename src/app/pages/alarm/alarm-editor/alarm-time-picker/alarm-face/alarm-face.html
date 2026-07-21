@@ -28,8 +28,11 @@
 <div class="hand" [style.--angle.deg]="handAngle()" 
     alarmDialEditor 
     [unit]="mode()" 
+    [currentHour]="engine().hour()"
     (step)="dialStep.emit($event)" 
     (finished)="dialFinished.emit()">
     <span class="shaft"></span>
-    <span class="knob">{{knobValue()}}</span>
+    <span class="knob">
+        <span class="value">{{knobValue()}}</span>
+    </span>
 </div>

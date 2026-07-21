@@ -1,0 +1,14 @@
+<div class="snooze">
+    <span class="label">snooze</span>
+    <select [value]="draft.snoozeMinutes()" (change)="change($event)">
+        @for (value of values; track value) {
+            <option [value]="value">
+                @if (value===0) {
+                    <span>off</span>
+                }@else {
+                    <span>{{value}} min</span>
+                }
+            </option>
+        }
+    </select>
+</div>

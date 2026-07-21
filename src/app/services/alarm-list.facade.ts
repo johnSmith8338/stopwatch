@@ -13,7 +13,7 @@ export class AlarmListFacade {
 
     readonly editorOpened = signal(false);
     readonly deletingAlarm = signal<Alarm | null>(null);
-    readonly deletingGroup = signal<AlarmGroup | null>(null);
+    readonly deletingGroup = signal<AlarmGroupView | null>(null);
 
     readonly alarms = computed(() => this.alarmSvc.alarms());
     readonly loading = computed(() => this.alarmSvc.loading());
@@ -85,9 +85,7 @@ export class AlarmListFacade {
         await this.alarmSvc.renameGroup(group, title);
     }
 
-    requestDeleteGroup(view: AlarmGroupView) {
-        const group = this.alarmSvc.getGroup(view.id);
-        if (!group) return;
+    requestDeleteGroup(group: AlarmGroupView) {
         return this.deletingGroup.set(group);
     }
 
@@ -99,7 +97,7 @@ export class AlarmListFacade {
         const group = this.deletingGroup();
         if (!group) return;
 
-        await this.alarmSvc.deleteGroup(group.id);
+        await this.alarmSvc.deleteGroup(group.id!);
         this.deletingGroup.set(null);
     }
 
