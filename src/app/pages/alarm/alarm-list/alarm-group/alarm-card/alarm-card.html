@@ -1,0 +1,14 @@
+<div class="alarm-card">
+    <div>
+        <h4>{{alarm().title}}</h4>
+        <strong>
+            {{alarm().hour.toString().padStart(2,'0')}}:
+            {{alarm().minute.toString().padStart(2,'0')}}
+        </strong>
+    </div>
+    <div>
+        <button (click)="facade.toggleAlarm(alarm())">{{alarm().enabled ? 'ON' : 'OFF'}}</button>
+        <button (click)="facade.editAlarm(alarm())">edit</button>
+        <button (click)="facade.requestDeleteAlarm(alarm())">delete</button>
+    </div>
+</div>

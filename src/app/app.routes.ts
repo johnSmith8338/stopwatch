@@ -4,6 +4,7 @@ import { Timer } from './pages/timer/timer';
 import { Home } from './pages/home/home';
 import { NotFound } from './pages/not-found/not-found';
 import { Settings } from './pages/settings/settings';
+import { AlarmPage } from './pages/alarm/alarm';
 
 export const routes: Routes = [
     {
@@ -35,13 +36,23 @@ export const routes: Routes = [
         }
     },
     {
+        path: 'alarm',
+        component: AlarmPage,
+        data: {
+            title: 'alarm',
+            showInMenu: true,
+            icon: '',
+            order: 3
+        }
+    },
+    {
         path: 'settings',
         component: Settings,
         data: {
             title: 'settings',
             showInMenu: true,
             icon: '',
-            order: 3
+            order: 4
         }
     },
     {

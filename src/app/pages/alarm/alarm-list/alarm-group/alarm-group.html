@@ -1,0 +1,15 @@
+<div class="alarm-group">
+    <header>
+        @if (!group().system) {
+            <button (click)="facade.toggleGroup(group())">{{group().expanded?'close':'open'}}</button>
+            <span>{{group().title}}</span>
+            <button (click)="facade.requestDeleteGroup(group())">delete</button>
+        }
+        <span>{{group().title}}</span>
+    </header>
+    @if (group().expanded) {
+        @for (alarm of group().alarms; track alarm.id) {
+            <app-alarm-card [alarm]="alarm" />
+        }
+    }
+</div>

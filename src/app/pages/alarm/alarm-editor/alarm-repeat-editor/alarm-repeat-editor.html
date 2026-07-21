@@ -1,0 +1,10 @@
+<div class="repeat">
+    @for (day of days; track day.key) {
+        <button type="button" class="day"
+            [class.active]="isActive(day.key)"
+            [title]="day.title"
+            (click)="toggle(day.key)">
+            {{day.short}}
+        </button>
+    }
+</div>

@@ -1,0 +1,9 @@
+<header>
+    <h2>alarms</h2>
+    <button (click)="facade.createAlarm()">+ add alarm</button>
+    <button (click)="facade.createGroup()">+ add group</button>
+</header>
+
+@for (group of groups(); track group.id ?? 'ungrouped') {
+    <app-alarms-group [group]="group" />
+}

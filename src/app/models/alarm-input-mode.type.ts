@@ -1,0 +1,1 @@
+export type AlarmInputMode = 'dial' | 'inputs' | 'wheel';
