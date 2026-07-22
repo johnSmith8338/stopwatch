@@ -1,13 +1,15 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { Alarm, AlarmGroup, AlarmGroupView } from '../models/alarm.interface';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AlarmRepository } from '../core/repositories/alarm.repository';
+import { AlarmEngine } from './alarm-engine';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AlarmSvc {
   private readonly repo = inject(AlarmRepository);
+  private readonly engine = inject(AlarmEngine);
 
   readonly alarms = signal<Alarm[]>([]);
   readonly loading = signal(false);
@@ -48,6 +50,10 @@ export class AlarmSvc {
 
   constructor() {
     void this.load();
+
+    effect(() => {
+      this.engine.start(this.alarms());
+    })
   }
 
   async load() {
