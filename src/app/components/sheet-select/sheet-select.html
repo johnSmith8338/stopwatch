@@ -1,0 +1,21 @@
+<button class="sheet-header" (click)="toggle()">
+    <span>{{title()}}</span>
+    <span>{{opened() ? '▲' : '▼'}}</span>
+</button>
+@if (opened()) {
+    <div class="items">
+        @for (item of items(); track item.id) {
+            <button class="item" (click)="select(item)">
+                <span class="text">
+                    <strong>{{item.title}}</strong>
+                    @if (item.subtitle) {
+                        <small>{{item.subtitle}}</small>
+                    }
+                </span>
+                @if (item.id===selected()) {
+                    <span>✓</span>
+                }
+            </button>
+        }
+    </div>
+}

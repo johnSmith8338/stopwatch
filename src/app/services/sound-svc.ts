@@ -27,5 +27,10 @@ export class SoundSvc {
     this.audio.currentTime = 0;
     this.audio = undefined;
   }
+
+  preview(sound: TimerSound) {
+    this.play(sound);
+    if (sound === 'alarm') setTimeout(() => this.stop(), 1000);
+  }
 }
 

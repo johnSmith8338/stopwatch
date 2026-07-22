@@ -1,0 +1,6 @@
+<app-sheet-select
+    title="choose sound"
+    [items]="items()"
+    [selected]="draft.sound()"
+    (selectedChange)="change($event)"
+    [(opened)]="opened" />
