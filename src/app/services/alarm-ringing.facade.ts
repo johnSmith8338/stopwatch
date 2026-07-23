@@ -21,4 +21,17 @@ export class AlarmRingingFacade {
         this.soundSvc.stop();
         this.ringingAlarm.set(null);
     }
+
+    snooze(minutes: number) {
+        const alarm = this.ringingAlarm();
+        if (!alarm) return;
+
+        this.stop();
+
+        if (minutes <= 0) return;
+
+        window.setTimeout(() => {
+            this.ring(alarm);
+        }, minutes * 60_000)
+    }
 }

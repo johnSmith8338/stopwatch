@@ -4,5 +4,11 @@
         {{alarm()?.minute?.toString()?.padStart(2,'0')}}
     </h2>
     <h3>{{alarm()?.title}}</h3>
+    
+    <div class="snooze-list">
+        @for (minute of snoozeValues; track minute) {
+            <button (click)="snooze(minute)">+{{minute}} min</button>
+        }
+    </div>
     <button (click)="stop()">stop</button>
 </div>

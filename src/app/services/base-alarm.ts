@@ -14,5 +14,4 @@ export abstract class BaseAlarm {
     readonly repeat = computed(() => this.activeAlarm()?.repeat ?? []);
     readonly groupId = computed(() => this.activeAlarm()?.groupId ?? null);
     readonly enabled = computed(() => this.activeAlarm()?.enabled ?? true);
-    readonly snoozeMinutes = computed(() => this.activeAlarm()?.snoozeMinutes ?? 0);
 }

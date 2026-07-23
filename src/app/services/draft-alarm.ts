@@ -50,10 +50,6 @@ export class DraftAlarm extends BaseAlarm {
         this.activeAlarm.update(a => a ? { ...a, groupId } : null);
     }
 
-    updateSnooze(minutes: number) {
-        this.activeAlarm.update(a => a ? { ...a, snoozeMinutes: Math.max(0, minutes) } : null);
-    }
-
     toggleEnabled() {
         this.activeAlarm.update(a => a ? { ...a, enabled: !a.enabled } : null);
     }

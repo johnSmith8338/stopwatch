@@ -13,7 +13,13 @@ export class AlarmRingingDialog {
 
   readonly alarm = this.ringing.ringingAlarm;
 
+  readonly snoozeValues = [1, 3, 5, 10, 15, 20, 30];
+
   stop() {
     this.ringing.stop();
+  }
+
+  snooze(minutes: number) {
+    this.ringing.snooze(minutes);
   }
 }

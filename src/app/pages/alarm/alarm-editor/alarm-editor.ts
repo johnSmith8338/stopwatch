@@ -7,7 +7,6 @@ import { AlarmTimePicker } from "./alarm-time-picker/alarm-time-picker";
 import { AlarmPreview } from "./alarm-preview/alarm-preview";
 import { AlarmTitleEditor } from "./alarm-title-editor/alarm-title-editor";
 import { AlarmGroupPicker } from "./alarm-group-picker/alarm-group-picker";
-import { AlarmSnoozePicker } from "./alarm-snooze-picker/alarm-snooze-picker";
 import { AlarmSoundPicker } from "./alarm-sound-picker/alarm-sound-picker";
 
 @Component({
@@ -19,7 +18,6 @@ import { AlarmSoundPicker } from "./alarm-sound-picker/alarm-sound-picker";
     AlarmPreview,
     AlarmTitleEditor,
     AlarmGroupPicker,
-    AlarmSnoozePicker,
     AlarmSoundPicker
   ],
   templateUrl: './alarm-editor.html',

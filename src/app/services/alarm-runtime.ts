@@ -26,7 +26,11 @@ export class AlarmRuntime {
         })
 
         effect(() => {
-            if (!this.ringing.ringing()) this.engine.start(this.svc.alarms());
+            if (this.ringing.ringing()) {
+                this.engine.stop();
+                return;
+            }
+            this.engine.start(this.svc.alarms())
         })
     }
 }

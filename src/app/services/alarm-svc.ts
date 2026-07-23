@@ -131,7 +131,6 @@ export class AlarmSvc {
       enabled: true,
       repeat: [],
       sound: 'alarm',
-      snoozeMinutes: 5,
       order: 0,
       createdAt: Date.now(),
       updatedAt: Date.now()

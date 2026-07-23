@@ -25,7 +25,6 @@ export interface Alarm {
     minute: number;
     repeat: AlarmRepeat[];
     sound: TimerSound;
-    snoozeMinutes: number;
     createdAt: number;
     updatedAt: number;
     order: number;
