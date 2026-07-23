@@ -4,6 +4,10 @@
     <app-alarm-editor />
 }
 
+@if (ringing.ringing()) {
+    <app-alarm-ringing-dialog />
+}
+
 @if (facade.deletingAlarm(); as alarm) {
     <app-confirm-dialog
         title="delete alarm?"

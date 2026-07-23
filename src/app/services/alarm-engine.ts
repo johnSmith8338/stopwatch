@@ -1,11 +1,14 @@
 import { Injectable } from "@angular/core";
 import { AlarmScheduler, AlarmScheduleResult } from "./alarm-scheduler";
 import { Alarm } from "../models/alarm.interface";
+import { Subject } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AlarmEngine {
+    readonly fired$ = new Subject<Alarm>();
+
     private readonly scheduler = new AlarmScheduler();
     private timeoutId: number | null = null;
     private current: AlarmScheduleResult | null = null;
@@ -29,6 +32,11 @@ export class AlarmEngine {
 
     private fire() {
         if (!this.current) return;
-        console.log('ALARM!!!', this.current.alarm.title, this.current.fireAt);
+
+        const alarm = this.current.alarm;
+        this.fired$.next(alarm);
+
+        this.current = null;
+        this.timeoutId = null;
     }
 }

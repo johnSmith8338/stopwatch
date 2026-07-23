@@ -9,7 +9,6 @@ import { AlarmEngine } from './alarm-engine';
 })
 export class AlarmSvc {
   private readonly repo = inject(AlarmRepository);
-  private readonly engine = inject(AlarmEngine);
 
   readonly alarms = signal<Alarm[]>([]);
   readonly loading = signal(false);
@@ -50,10 +49,6 @@ export class AlarmSvc {
 
   constructor() {
     void this.load();
-
-    effect(() => {
-      this.engine.start(this.alarms());
-    })
   }
 
   async load() {
