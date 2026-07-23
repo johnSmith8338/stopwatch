@@ -23,6 +23,7 @@ export class AlarmRuntime {
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(alarm => {
             this.ringing.ring(alarm);
+            if (alarm.repeat.length === 0) void this.svc.disableAlarm(alarm.id);
         })
 
         effect(() => {

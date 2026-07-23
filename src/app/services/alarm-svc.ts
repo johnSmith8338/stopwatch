@@ -137,6 +137,23 @@ export class AlarmSvc {
     }
   }
 
+  async disableAlarm(id: string) {
+    this.alarms.update(list =>
+      list.map(alarm =>
+        alarm.id === id ?
+          {
+            ...alarm,
+            enabled: false,
+            updatedAt: Date.now()
+
+          }
+          : alarm
+      )
+    )
+
+    await this.persist();
+  }
+
   async createGroup() {
     const groups = [...this.groups()];
 
