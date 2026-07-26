@@ -39,4 +39,12 @@ export class AlarmEngine {
         this.current = null;
         this.timeoutId = null;
     }
+
+    snooze(alarm: Alarm, minutes: number) {
+        this.stop();
+        this.timeoutId = window.setTimeout(() => {
+            this.fired$.next(alarm);
+            this.timeoutId = null;
+        }, minutes * 60_000)
+    }
 }

@@ -1,0 +1,7 @@
+<h2>alarm history</h2>
+@for (item of history(); track item.id) {
+    <div>
+        <strong>{{item.title}}</strong>
+        <span>{{item.status}}</span>
+    </div>
+}

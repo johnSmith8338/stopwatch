@@ -3,12 +3,14 @@ import { AlarmSvc } from "./alarm-svc";
 import { AlarmEngine } from "./alarm-engine";
 import { AlarmRingingFacade } from "./alarm-ringing.facade";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { AlarmHistorySvc } from "./alarm-history-svc";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AlarmRuntime {
     private readonly destroyRef = inject(DestroyRef);
+    private readonly history = inject(AlarmHistorySvc);
 
     private readonly svc = inject(AlarmSvc);
     private readonly engine = inject(AlarmEngine);
@@ -21,8 +23,9 @@ export class AlarmRuntime {
 
         this.engine.fired$.pipe(
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(alarm => {
-            this.ringing.ring(alarm);
+        ).subscribe(async alarm => {
+            await this.history.add(alarm, 'ring');
+            await this.ringing.ring(alarm);
             if (alarm.repeat.length === 0) void this.svc.disableAlarm(alarm.id);
         })
 
@@ -32,6 +35,28 @@ export class AlarmRuntime {
                 return;
             }
             this.engine.start(this.svc.alarms())
+        })
+
+        this.ringing.stopped$.pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(async alarm => {
+            await this.history.add(alarm, 'stop');
+            this.engine.start(this.svc.alarms());
+        })
+
+        this.ringing.snoozed$.pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(async ({ alarm, minutes }) => {
+            await this.history.add(alarm, 'snooze', minutes);
+            this.engine.snooze(alarm, minutes);
+        })
+
+        this.ringing.missed$.pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(async alarm => {
+            await this.history.add(alarm, 'missed');
+            this.ringing.notifyMissedAlarm(alarm);
+            this.engine.start(this.svc.alarms());
         })
     }
 }

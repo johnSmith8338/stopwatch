@@ -6,10 +6,11 @@ import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
 import { AlarmRingingDialog } from "./alarm-ringing-dialog/alarm-ringing-dialog";
 import { AlarmRuntime } from '../../services/alarm-runtime';
 import { AlarmRingingFacade } from '../../services/alarm-ringing.facade';
+import { AlarmHistory } from "./alarm-history/alarm-history";
 
 @Component({
   selector: 'app-alarm-page',
-  imports: [AlarmList, AlarmEditor, ConfirmDialog, AlarmRingingDialog],
+  imports: [AlarmList, AlarmEditor, ConfirmDialog, AlarmRingingDialog, AlarmHistory],
   templateUrl: './alarm.html',
   styleUrl: './alarm.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
