@@ -154,6 +154,20 @@ export class AlarmSvc {
     await this.persist();
   }
 
+  async duplicateAlarm(alarm: Alarm): Promise<Alarm> {
+    const copy: Alarm = {
+      ...structuredClone(alarm),
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      title: `${alarm.title} copy`
+    }
+
+    this.alarms.update(list => [...list, copy]);
+    await this.persist();
+    return copy;
+  }
+
   async createGroup() {
     const groups = [...this.groups()];
 

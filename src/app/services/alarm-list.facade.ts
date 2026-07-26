@@ -77,6 +77,12 @@ export class AlarmListFacade {
         await this.alarmSvc.reorderAlarm(event);
     }
 
+    async duplicateAlarm(alarm: Alarm) {
+        const copy = await this.alarmSvc.duplicateAlarm(alarm);
+        this.workspace.loadAlarm(copy);
+        this.openEditor();
+    }
+
     async createGroup() {
         await this.alarmSvc.createGroup();
     }

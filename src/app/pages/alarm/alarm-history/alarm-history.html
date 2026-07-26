@@ -1,7 +1,27 @@
-<h2>alarm history</h2>
-@for (item of history(); track item.id) {
-    <div>
-        <strong>{{item.title}}</strong>
-        <span>{{item.status}}</span>
-    </div>
+<header>
+    <h2>alarm history</h2>
+    @if (history().length) {
+        <button (click)="clear()">clear</button>
+    }
+</header>
+@if (history().length) {
+    @for (item of history(); track item.id) {
+        <div class="history-item">
+            <div class="main">
+                <p>{{statusMap[item.status]}}</p>
+                <strong>{{item.title}}</strong>
+                <small>{{formatTime(item.fireAt)}}</small>
+            </div>
+            <div class="details">
+                <span>{{item.status}}</span>
+                @if (item.snoozeMinutes) {
+                    <span>snooze: {{item.snoozeMinutes}} min</span>
+                }@else {
+                    <span>snooze: -</span>
+                }
+            </div>
+        </div>
+    }
+}@else {
+    <span>no history yet</span>
 }

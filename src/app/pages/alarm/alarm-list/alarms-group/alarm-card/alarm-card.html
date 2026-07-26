@@ -9,6 +9,7 @@
     <div>
         <button (click)="facade.toggleAlarm(alarm())">{{alarm().enabled ? 'ON' : 'OFF'}}</button>
         <button (click)="facade.editAlarm(alarm())">edit</button>
+        <button (click)="facade.duplicateAlarm(alarm())">duplicate</button>
         <button (click)="facade.requestDeleteAlarm(alarm())">delete</button>
     </div>
 </div>
