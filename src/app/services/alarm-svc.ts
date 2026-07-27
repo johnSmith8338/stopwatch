@@ -302,6 +302,13 @@ export class AlarmSvc {
     return this.groups().find(g => g.id === id) ?? null;
   }
 
+  async restore(groups: AlarmGroup[], alarms: Alarm[]) {
+    this.groups.set(structuredClone(groups));
+    this.alarms.set(structuredClone(alarms));
+
+    await this.persist();
+  }
+
   readonly ungroupedAlarms = computed(() => this.alarms()
     .filter(a => a.groupId === null)
     .sort((a, b) => a.order - b.order)

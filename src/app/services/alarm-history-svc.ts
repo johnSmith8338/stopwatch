@@ -49,4 +49,10 @@ export class AlarmHistorySvc {
     this.history.update(list => list.filter(item => item.fireAt >= limit));
     await this.repo.save(this.history());
   }
+
+  async restore(history: AlarmHistoryItem[]) {
+    this.history.set(structuredClone(history));
+
+    await this.repo.save(this.history());
+  }
 }

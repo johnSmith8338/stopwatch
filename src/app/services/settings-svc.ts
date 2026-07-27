@@ -47,4 +47,9 @@ export class SettingsSvc {
     this.settings.set(settings);
     await this.repo.save(settings);
   }
+
+  async restore(settings: AppSettings) {
+    this.settings.set(structuredClone(settings));
+    await this.repo.save(this.settings());
+  }
 }

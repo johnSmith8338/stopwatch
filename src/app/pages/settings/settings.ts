@@ -4,6 +4,7 @@ import { Toggle } from "../../components/toggle/toggle";
 import { ThemeSvc } from '../../services/theme-svc';
 import { SettingsSvc } from '../../services/settings-svc';
 import { HistoryRetentionDays } from '../../models/settings.model';
+import { BackupSvc } from '../../services/backup-svc';
 
 @Component({
   selector: 'app-settings',
@@ -15,6 +16,7 @@ import { HistoryRetentionDays } from '../../models/settings.model';
 export class Settings {
   readonly settings = inject(SettingsSvc);
   readonly themeSvc = inject(ThemeSvc);
+  readonly backup = inject(BackupSvc);
 
   checked = this.themeSvc.theme() === 'dark';
 
@@ -28,5 +30,24 @@ export class Settings {
         (event.target as HTMLSelectElement).value
       ) as HistoryRetentionDays
     );
+  }
+
+  exportBackup() {
+    this.backup.export();
+  }
+
+  async importBackup(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      await this.backup.import(file);
+      alert('backup imported');
+    } catch {
+      alert('invalid backup file');
+    } finally {
+      input.value = '';
+    }
   }
 }
