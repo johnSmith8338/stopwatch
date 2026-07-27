@@ -13,6 +13,11 @@ export class AlarmHistory {
   readonly facade = inject(AlarmHistoryFacade);
 
   readonly history = this.facade.history;
+  readonly total = this.facade.total;
+  readonly rings = this.facade.rings;
+  readonly stops = this.facade.stops;
+  readonly snoozes = this.facade.snoozes;
+  readonly missed = this.facade.missed;
 
   clear() {
     this.facade.clear();

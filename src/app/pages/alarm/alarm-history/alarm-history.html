@@ -1,5 +1,18 @@
 <header>
-    <h2>alarm history</h2>
+    <div>
+        <h2>alarm history</h2>
+        <small>
+            {{total()}} events •
+
+            🔔 {{rings()}}
+
+            🛑 {{stops()}}
+
+            😴 {{snoozes()}}
+
+            💀 {{missed()}}
+        </small>
+    </div>
     @if (history().length) {
         <button (click)="clear()">clear</button>
     }

@@ -3,4 +3,5 @@ export enum StorageKey {
     TimerAppSettings = 'timer-app-settings',
     Alarms = 'alarms',
     AlarmHistory = 'alarm-history',
+    Settings = 'settings',
 }
