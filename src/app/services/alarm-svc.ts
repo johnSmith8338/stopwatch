@@ -1,8 +1,9 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { Alarm, AlarmGroup, AlarmGroupView } from '../models/alarm.interface';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AlarmRepository } from '../core/repositories/alarm.repository';
 import { AlarmEngine } from './alarm-engine';
+import { AlarmScheduler } from './alarm-scheduler';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,8 @@ export class AlarmSvc {
   readonly alarms = signal<Alarm[]>([]);
   readonly loading = signal(false);
   readonly groups = signal<AlarmGroup[]>([]);
+
+  private readonly scheduler = new AlarmScheduler();
 
   readonly groupViews = computed<AlarmGroupView[]>(() => {
     const alarms = this.alarms();
@@ -45,6 +48,63 @@ export class AlarmSvc {
     }
 
     return result;
+  })
+
+  private normalize(text: string) {
+    return text.toLowerCase().replace(/\s+/g, '').replace(/:/g, '');
+  }
+
+  private timeVariants(hour: number, minute: number): string[] {
+    const hh = hour.toString().padStart(2, '0');
+    const mm = minute.toString().padStart(2, '0');
+
+    return [
+      `${hh}:${mm}`,
+      `${hour}:${mm}`,
+      `${hh}:${minute}`,
+      `${hour}:${minute}`,
+      `${hh}${mm}`,
+      `${hour}${mm}`,
+      `${hh}${minute}`,
+      `${hour}${minute}`,
+    ].map(v => this.normalize(v));
+
+  }
+
+  private matchesAlarm(alarm: Alarm, group: AlarmGroupView, query: string): boolean {
+    const q = this.normalize(query);
+    if (!q.length) return true;
+
+    const title = this.normalize(alarm.title);
+    const groupTitle = this.normalize(group.title);
+    const repeat = this.normalize(alarm.repeat.join(' '));
+    const timeMatches = this.timeVariants(alarm.hour, alarm.minute).some(time => time.includes(q));
+
+    return (
+      title.includes(q) ||
+      groupTitle.includes(q) ||
+      repeat.includes(q) ||
+      timeMatches
+    );
+
+  }
+
+  filteredGroupViews(search: Signal<string>) {
+    return computed(() => {
+      const query = search().trim();
+      if (!query.length) return this.groupViews();
+
+      return this.groupViews().map(group => ({
+        ...group,
+        alarms: group.alarms.filter(alarm => {
+          return this.matchesAlarm(alarm, group, query)
+        })
+      })).filter(group => group.alarms.length)
+    })
+  }
+
+  readonly nextAlarm = computed(() => {
+    return this.scheduler.nextAlarm(this.alarms());
   })
 
   constructor() {

@@ -1,0 +1,16 @@
+@if (next()) {
+    <div class="next-alarm">
+        <small>next alarm • {{dayText()}}</small>
+        <strong>{{next()!.alarm.title}}</strong>
+        <h3>
+            {{next()!.alarm.hour.toString().padStart(2,'0')}}:
+            {{next()!.alarm.minute.toString().padStart(2,'0')}}
+        </h3>
+        <span>{{remaining()}}</span>
+    </div>
+}@else {
+    <div class="next-alarm">
+        <small>next alarm</small>
+        <strong>no active alarms</strong>
+    </div>
+}

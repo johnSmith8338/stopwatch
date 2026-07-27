@@ -14,11 +14,13 @@ export class AlarmListFacade {
     readonly editorOpened = signal(false);
     readonly deletingAlarm = signal<Alarm | null>(null);
     readonly deletingGroup = signal<AlarmGroupView | null>(null);
+    readonly search = signal('');
+
+    readonly groupViews = this.alarmSvc.filteredGroupViews(this.search);
 
     readonly alarms = computed(() => this.alarmSvc.alarms());
     readonly loading = computed(() => this.alarmSvc.loading());
     readonly groups = computed(() => this.alarmSvc.groups());
-    readonly groupViews = computed(() => this.alarmSvc.groupViews());
 
     openEditor() {
         this.editorOpened.set(true);
@@ -115,5 +117,9 @@ export class AlarmListFacade {
 
     async moveAlarmToGroup(alarm: Alarm, groupId: string | null) {
         await this.alarmSvc.moveAlarmToGroup(alarm, groupId);
+    }
+
+    setSearch(value: string) {
+        this.search.set(value.trim().toLowerCase());
     }
 }

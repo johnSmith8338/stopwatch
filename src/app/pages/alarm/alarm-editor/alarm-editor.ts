@@ -8,6 +8,7 @@ import { AlarmPreview } from "./alarm-preview/alarm-preview";
 import { AlarmTitleEditor } from "./alarm-title-editor/alarm-title-editor";
 import { AlarmGroupPicker } from "./alarm-group-picker/alarm-group-picker";
 import { AlarmSoundPicker } from "./alarm-sound-picker/alarm-sound-picker";
+import { AlarmGroupView } from '../../../models/alarm.interface';
 
 @Component({
   selector: 'app-alarm-editor',
@@ -30,7 +31,8 @@ export class AlarmEditor {
 
   readonly draft = this.workspace.draft;
 
-  readonly groups = computed(() => this.list.groupViews().filter(g => !g.system));
+  readonly groups = computed(() =>
+    this.list.groupViews().filter(g => !g.system));
 
   save() {
     void this.list.saveAlarm();
