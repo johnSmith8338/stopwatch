@@ -16,7 +16,10 @@ export class SettingsRepository {
                 DbStore.Settings,
                 StorageKey.Settings
             )
-        ) ?? { historyRetentionDays: 30 }
+        ) ?? {
+            theme: 'light',
+            historyRetentionDays: 30
+        }
     }
 
     async save(settings: AppSettings) {

@@ -1,15 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { ThemeSvc } from './theme-svc';
+import { SettingsSvc } from './settings-svc';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppInitializerSvc {
-  private readonly themeSvc = inject(ThemeSvc);
+  private readonly settings = inject(SettingsSvc);
 
   async initialize(): Promise<void> {
-    await Promise.all([
-      this.themeSvc.restore(),
-    ])
+    await this.settings.load();
   }
 }

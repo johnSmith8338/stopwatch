@@ -1,31 +1,28 @@
-import { effect, inject, Injectable, signal } from '@angular/core';
-import { ThemeRepository, ThemeTYpe } from '../core/repositories/theme.repository';
+import { computed, effect, inject, Injectable } from '@angular/core';
+import { SettingsSvc } from './settings-svc';
+import { AppTheme } from '../models/settings.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeSvc {
-  private readonly repository = inject(ThemeRepository);
+  private readonly settings = inject(SettingsSvc);
 
-  readonly theme = signal<ThemeTYpe>('light');
+  readonly theme = this.settings.theme;
+
+  readonly isDark = computed(() => this.theme() === 'dark');
 
   constructor() {
     effect(() => {
-      document.documentElement.setAttribute(
-        'data-theme',
-        this.theme()
-      );
+      document.documentElement.setAttribute('data-theme', this.theme());
     })
   }
 
-  async toggle() {
-    const next = this.theme() === 'light' ? 'dark' : 'light';
-    await this.repository.save(next);
-    this.theme.set(next);
+  toggle() {
+    return this.settings.toggleTheme();
   }
 
-  async restore() {
-    const theme = await this.repository.load();
-    if (theme) this.theme.set(theme);
+  set(theme: AppTheme) {
+    return this.settings.setTheme(theme);
   }
 }
