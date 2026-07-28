@@ -62,6 +62,7 @@ export class BackupSvc {
     const settings = backup.settings;
     const validRetention =
       settings.historyRetentionDays === -1 ||
+      settings.historyRetentionDays === 1 ||
       settings.historyRetentionDays === 7 ||
       settings.historyRetentionDays === 30 ||
       settings.historyRetentionDays === 90;

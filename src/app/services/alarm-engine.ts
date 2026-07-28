@@ -7,7 +7,10 @@ import { Subject } from "rxjs";
     providedIn: 'root'
 })
 export class AlarmEngine {
-    readonly fired$ = new Subject<Alarm>();
+    readonly fired$ = new Subject<{
+        alarm: Alarm;
+        resumed: boolean;
+    }>();
 
     private readonly scheduler = new AlarmScheduler();
     private timeoutId: number | null = null;
@@ -33,8 +36,10 @@ export class AlarmEngine {
     private fire() {
         if (!this.current) return;
 
-        const alarm = this.current.alarm;
-        this.fired$.next(alarm);
+        this.fired$.next({
+            alarm: this.current.alarm,
+            resumed: false
+        });
 
         this.current = null;
         this.timeoutId = null;
@@ -43,7 +48,10 @@ export class AlarmEngine {
     snooze(alarm: Alarm, minutes: number) {
         this.stop();
         this.timeoutId = window.setTimeout(() => {
-            this.fired$.next(alarm);
+            this.fired$.next({
+                alarm,
+                resumed: true
+            });
             this.timeoutId = null;
         }, minutes * 60_000)
     }

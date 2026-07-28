@@ -23,11 +23,22 @@ export class AlarmRuntime {
 
         this.engine.fired$.pipe(
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(async alarm => {
-            await this.history.add(alarm, 'ring');
-            await this.ringing.ring(alarm);
-            if (alarm.repeat.length === 0) void this.svc.disableAlarm(alarm.id);
-        })
+        ).subscribe(async ({ alarm, resumed }) => {
+
+            await this.ringing.ring(alarm, resumed);
+
+            if (!resumed) {
+                await this.history.add(
+                    this.ringing.currentSessionId()!,
+                    alarm,
+                    'ring'
+                );
+            }
+
+            if (!alarm.repeat.length) {
+                void this.svc.disableAlarm(alarm.id);
+            }
+        });
 
         effect(() => {
             if (this.ringing.ringing()) {
@@ -39,24 +50,37 @@ export class AlarmRuntime {
 
         this.ringing.stopped$.pipe(
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(async alarm => {
-            await this.history.add(alarm, 'stop');
+        ).subscribe(async ({ alarm, sessionId }) => {
+            await this.history.add(
+                sessionId,
+                alarm,
+                'stop'
+            );
             this.engine.start(this.svc.alarms());
-        })
+        });
 
         this.ringing.snoozed$.pipe(
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(async ({ alarm, minutes }) => {
-            await this.history.add(alarm, 'snooze', minutes);
+        ).subscribe(async ({ alarm, sessionId, minutes }) => {
+            await this.history.add(
+                sessionId,
+                alarm,
+                'snooze',
+                minutes
+            );
             this.engine.snooze(alarm, minutes);
-        })
+        });
 
         this.ringing.missed$.pipe(
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(async alarm => {
-            await this.history.add(alarm, 'missed');
+        ).subscribe(async ({ alarm, sessionId }) => {
+            await this.history.add(
+                sessionId,
+                alarm,
+                'missed'
+            );
             this.ringing.notifyMissedAlarm(alarm);
             this.engine.start(this.svc.alarms());
-        })
+        });
     }
 }

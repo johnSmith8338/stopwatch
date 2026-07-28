@@ -3,13 +3,9 @@
         <h2>alarm history</h2>
         <small>
             {{total()}} events •
-
             🔔 {{rings()}}
-
             🛑 {{stops()}}
-
             😴 {{snoozes()}}
-
             💀 {{missed()}}
         </small>
     </div>
@@ -17,23 +13,36 @@
         <button (click)="clear()">clear</button>
     }
 </header>
-@if (history().length) {
-    @for (item of history(); track item.id) {
-        <div class="history-item">
-            <div class="main">
-                <p>{{statusMap[item.status]}}</p>
-                <strong>{{item.title}}</strong>
-                <small>{{formatTime(item.fireAt)}}</small>
-            </div>
-            <div class="details">
-                <span>{{item.status}}</span>
-                @if (item.snoozeMinutes) {
-                    <span>snooze: {{item.snoozeMinutes}} min</span>
-                }@else {
-                    <span>snooze: -</span>
+@if (groups().length) {
+    @for (group of groups(); track group.title) {
+        <h3 class="group-title">{{group.title}}</h3>
+        @for (session of group.sessions; track session.sessionId) {
+            <!-- @let ringCount=session.events.filter(e=>e.status==='ring').length; -->
+
+            <div class="history-item">
+                <div class="main">
+                    <strong>{{session.snapshot.title}}</strong>
+                    <small>
+                        {{session.snapshot.hour.toString().padStart(2,'0')}}:
+                        {{session.snapshot.minute.toString().padStart(2,'0')}}
+                    </small>
+                    @if (ringCount(session)>1) {
+                        <span>({{ringCount(session)}} rings)</span>
+                    }
+                </div>
+                @for (event of session.events; track event.id) {
+                    <div class="details">
+                        <span>{{statusMap[event.status]}}</span>
+                        @if (event.snoozeMinutes) {
+                            <span>snooze: {{event.snoozeMinutes}} min</span>
+                        }
+                    </div>
+                }
+                @if (session.events.some(e=>e.status==='ring')) {
+                    <button (click)="reuse(session)">reuse</button>
                 }
             </div>
-        </div>
+        }
     }
 }@else {
     <span>no history yet</span>

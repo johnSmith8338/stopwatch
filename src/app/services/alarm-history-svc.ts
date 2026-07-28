@@ -22,14 +22,21 @@ export class AlarmHistorySvc {
     await this.cleanup();
   }
 
-  async add(alarm: Alarm, status: AlarmHistoryStatus, snoozeMinutes?: number) {
+  async add(sessionId: string, alarm: Alarm, status: AlarmHistoryStatus, snoozeMinutes?: number) {
     const item: AlarmHistoryItem = {
       id: crypto.randomUUID(),
+      sessionId,
       alarmId: alarm.id,
-      title: alarm.title,
       fireAt: Date.now(),
       status,
-      snoozeMinutes
+      snoozeMinutes,
+      snapshot: {
+        title: alarm.title,
+        hour: alarm.hour,
+        minute: alarm.minute,
+        sound: alarm.sound,
+        repeat: [...alarm.repeat]
+      }
     }
 
     this.history.update(list => [item, ...list]);

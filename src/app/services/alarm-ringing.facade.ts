@@ -13,17 +13,32 @@ export class AlarmRingingFacade {
     private readonly wakelock = inject(WakeLockSvc);
     private readonly notification = inject(NotificationSvc);
 
-    readonly stopped$ = new Subject<Alarm>();
-    readonly snoozed$ = new Subject<{ alarm: Alarm, minutes: number }>();
-    readonly missed$ = new Subject<Alarm>();
+    readonly stopped$ = new Subject<{
+        alarm: Alarm;
+        sessionId: string;
+    }>();
+    readonly snoozed$ = new Subject<{
+        alarm: Alarm;
+        sessionId: string;
+        minutes: number;
+    }>();
+    readonly missed$ = new Subject<{
+        alarm: Alarm;
+        sessionId: string;
+    }>();
 
     private missedTimer: number | null = null;
 
     readonly ringingAlarm = signal<Alarm | null>(null);
+    readonly currentSessionId = signal<string | null>(null);
 
     readonly ringing = computed(() => this.ringingAlarm() !== null);
 
-    async ring(alarm: Alarm) {
+    async ring(alarm: Alarm, resumed = false) {
+        if (!resumed) this.currentSessionId.set(crypto.randomUUID());
+
+        const sessionId = this.currentSessionId()!;
+
         this.ringingAlarm.set(alarm);
 
         await this.wakelock.acquire();
@@ -45,7 +60,15 @@ export class AlarmRingingFacade {
             this.soundSvc.stop();
             void this.wakelock.release();
             this.ringingAlarm.set(null);
-            this.missed$.next(current);
+
+            const sessionId = this.currentSessionId()!;
+
+            this.missed$.next({
+                alarm: current,
+                sessionId
+            });
+
+            this.currentSessionId.set(null);
             // 2 minutes ringing -> nobody clicked -> missed
         }, 2 * 60_000);
     }
@@ -63,7 +86,13 @@ export class AlarmRingingFacade {
         await this.wakelock.release();
         this.ringingAlarm.set(null);
 
-        this.stopped$.next(alarm);
+        const sessionId = this.currentSessionId()!;
+
+        this.stopped$.next({
+            alarm,
+            sessionId
+        })
+        this.currentSessionId.set(null);
     }
 
     async snooze(minutes: number) {
@@ -78,14 +107,15 @@ export class AlarmRingingFacade {
         this.soundSvc.stop();
         await this.wakelock.release();
 
-        // if (minutes <= 0) return;
-
-        // window.setTimeout(() => {
-        //     this.ring(alarm);
-        // }, minutes * 60_000)
-
         this.ringingAlarm.set(null);
-        this.snoozed$.next({ alarm, minutes });
+
+        const sessionId = this.currentSessionId()!;
+
+        this.snoozed$.next({
+            alarm,
+            sessionId,
+            minutes
+        })
     }
 
     notifyMissedAlarm(alarm: Alarm) {

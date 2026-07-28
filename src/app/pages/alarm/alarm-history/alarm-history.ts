@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AlarmHistoryFacade } from '../../../services/alarm-history.facade';
-import { AlarmHistoryStatus } from '../../../models/alarm-history.interface';
+import { AlarmHistoryItem, AlarmHistorySession, AlarmHistoryStatus } from '../../../models/alarm-history.interface';
 
 @Component({
   selector: 'app-alarm-history',
@@ -13,15 +13,12 @@ export class AlarmHistory {
   readonly facade = inject(AlarmHistoryFacade);
 
   readonly history = this.facade.history;
+  readonly groups = this.facade.groupedHistory;
   readonly total = this.facade.total;
   readonly rings = this.facade.rings;
   readonly stops = this.facade.stops;
   readonly snoozes = this.facade.snoozes;
   readonly missed = this.facade.missed;
-
-  clear() {
-    this.facade.clear();
-  }
 
   formatTime(timesmap: number) {
     return new Date(timesmap).toLocaleString([], {
@@ -39,5 +36,17 @@ export class AlarmHistory {
     stop: '🛑 stopped',
     snooze: '😴 snoozed',
     missed: '💀 missed'
+  }
+
+  ringCount(session: AlarmHistorySession) {
+    return session.events.filter(e => e.status === 'ring').length;
+  }
+
+  clear() {
+    this.facade.clear();
+  }
+
+  reuse(session: AlarmHistorySession) {
+    this.facade.reuse(session);
   }
 }
