@@ -3,6 +3,7 @@ import { AlarmSvc } from "./alarm-svc";
 import { AlarmWorkspaceFacade } from "./alarm-workspace.facade";
 import { Alarm, AlarmGroup, AlarmGroupView } from "../models/alarm.interface";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { SettingsSvc } from "./settings-svc";
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +11,7 @@ import { CdkDragDrop } from "@angular/cdk/drag-drop";
 export class AlarmListFacade {
     readonly alarmSvc = inject(AlarmSvc);
     readonly workspace = inject(AlarmWorkspaceFacade);
+    readonly settings = inject(SettingsSvc);
 
     readonly editorOpened = signal(false);
     readonly deletingAlarm = signal<Alarm | null>(null);
@@ -75,8 +77,12 @@ export class AlarmListFacade {
         await this.alarmSvc.toggleAlarm(alarm);
     }
 
-    async reorderAlarm(event: CdkDragDrop<Alarm[]>) {
-        await this.alarmSvc.reorderAlarm(event);
+    async reorderAlarm(groupId: string | null, event: CdkDragDrop<Alarm[]>) {
+        await this.alarmSvc.reorderAlarm(groupId, event);
+    }
+
+    async reorderAlarmInGroup(groupId: string | null, event: CdkDragDrop<Alarm[]>) {
+        await this.alarmSvc.reorderAlarm(groupId, event);
     }
 
     async duplicateAlarm(alarm: Alarm) {

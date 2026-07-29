@@ -8,8 +8,13 @@
         <span>{{group().title}}</span>
     </header>
     @if (group().expanded) {
-        @for (alarm of group().alarms; track alarm.id) {
-            <app-alarm-card [alarm]="alarm" />
-        }
+        <div cdkDropList
+            [cdkDropListData]="group().alarms"
+            [cdkDropListDisabled]="dragDisabled()"
+            (cdkDropListDropped)="drop($event)">
+            @for (alarm of group().alarms; track alarm.id) {
+                <app-alarm-card cdkDrag [cdkDragDisabled]="dragDisabled()" [alarm]="alarm" />
+            }
+        </div>
     }
 </div>

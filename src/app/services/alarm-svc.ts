@@ -177,21 +177,30 @@ export class AlarmSvc {
     await this.persist();
   }
 
-  async reorderAlarm(event: CdkDragDrop<Alarm[]>) {
-    const alarms = [...this.alarms()];
+  async reorderAlarm(groupId: string | null, event: CdkDragDrop<Alarm[]>) {
+    const groupAlarms = this.alarms()
+      .filter(a => a.groupId === groupId)
+      .sort((a, b) => a.order - b.order);
 
     moveItemInArray(
-      alarms,
+      groupAlarms,
       event.previousIndex,
       event.currentIndex
     )
 
-    alarms.forEach((alarm, index) => {
-      alarm.order = index;
-      alarm.updatedAt = Date.now();
+    const updated = this.alarms().map(alarm => {
+      if (alarm.groupId !== groupId) return alarm;
+
+      const index = groupAlarms.findIndex(a => a.id === alarm.id);
+
+      return {
+        ...alarm,
+        order: index,
+        updatedAt: Date.now()
+      }
     })
 
-    this.alarms.set(alarms);
+    this.alarms.set(updated);
     await this.persist();
   }
 

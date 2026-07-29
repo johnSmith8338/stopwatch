@@ -1,4 +1,5 @@
 <div class="alarm-card">
+    <div class="drag-handle" cdkDragHandle [class.disabled]="dragDisabled()">☰</div>
     <div>
         <h4>{{alarm().title}}</h4>
         <strong>
