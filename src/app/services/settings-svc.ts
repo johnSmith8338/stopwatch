@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { SettingsRepository } from '../core/repositories/settings.repositiry';
-import { AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.model';
+import { DEFAULT_SETTINGS, SettingsRepository } from '../core/repositories/settings.repositiry';
+import { AlarmSortMode, AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.model';
 
 @Injectable({
   providedIn: 'root',
@@ -8,15 +8,12 @@ import { AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.
 export class SettingsSvc {
   private readonly repo = inject(SettingsRepository);
 
-  readonly settings = signal<AppSettings>({
-    theme: 'light',
-    historyRetentionDays: 30,
-    keepScreenAwake: true
-  })
+  readonly settings = signal<AppSettings>(DEFAULT_SETTINGS)
 
   readonly theme = computed(() => this.settings().theme);
   readonly historyRetentionDays = computed(() => this.settings().historyRetentionDays);
   readonly keepScreenAwake = computed(() => this.settings().keepScreenAwake);
+  readonly alarmSortMode = computed(() => this.settings().alarmSortMode);
 
   constructor() {
     void this.load();
@@ -54,6 +51,14 @@ export class SettingsSvc {
     this.settings.update(s => ({
       ...s,
       keepScreenAwake: value
+    }))
+    await this.repo.save(this.settings());
+  }
+
+  async setAlarmSortMode(mode: AlarmSortMode) {
+    this.settings.update(s => ({
+      ...s,
+      alarmSortMode: mode
     }))
     await this.repo.save(this.settings());
   }

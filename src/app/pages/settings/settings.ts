@@ -3,7 +3,7 @@ import { DefaultTimerSettings } from '../timer/timer-workspace/timer-settings/ti
 import { Toggle } from "../../components/toggle/toggle";
 import { ThemeSvc } from '../../services/theme-svc';
 import { SettingsSvc } from '../../services/settings-svc';
-import { HistoryRetentionDays } from '../../models/settings.model';
+import { AlarmSortMode, HistoryRetentionDays } from '../../models/settings.model';
 import { BackupSvc } from '../../services/backup-svc';
 
 @Component({
@@ -34,6 +34,12 @@ export class Settings {
 
   toggleWakeLock(value: boolean) {
     this.settings.setKeepScreenAwake(value);
+  }
+
+  changeAlarmSort(event: Event) {
+    this.settings.setAlarmSortMode(
+      (event.target as HTMLSelectElement).value as AlarmSortMode
+    )
   }
 
   exportBackup() {

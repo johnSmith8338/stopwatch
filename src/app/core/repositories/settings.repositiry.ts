@@ -4,10 +4,11 @@ import { AppSettings } from "../../models/settings.model";
 import { DbStore } from "../storage/database";
 import { StorageKey } from "../storage/storage-keys";
 
-const DEFAULT_SETTINGS: AppSettings = {
+export const DEFAULT_SETTINGS: AppSettings = {
     theme: 'light',
     historyRetentionDays: 30,
-    keepScreenAwake: true
+    keepScreenAwake: true,
+    alarmSortMode: 'manual'
 }
 
 @Injectable({

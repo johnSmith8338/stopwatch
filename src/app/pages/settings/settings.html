@@ -13,6 +13,12 @@
     <span right>wake lock</span>
 </app-toggle>
 
+<h3>alarm sorting</h3>
+<select [value]="settings.alarmSortMode()" (change)="changeAlarmSort($event)">
+    <option value="manual">manual</option>
+    <option value="time">time</option>
+</select>
+
 <h3>clear history</h3>
 <select [value]="settings.historyRetentionDays()" (change)="changeHistory($event)">
     <option value="-1">never</option>

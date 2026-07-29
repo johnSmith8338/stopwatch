@@ -4,12 +4,14 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AlarmRepository } from '../core/repositories/alarm.repository';
 import { AlarmEngine } from './alarm-engine';
 import { AlarmScheduler } from './alarm-scheduler';
+import { SettingsSvc } from './settings-svc';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AlarmSvc {
   private readonly repo = inject(AlarmRepository);
+  private readonly settings = inject(SettingsSvc);
 
   readonly alarms = signal<Alarm[]>([]);
   readonly loading = signal(false);
@@ -21,9 +23,9 @@ export class AlarmSvc {
     const alarms = this.alarms();
     const groups = [...this.groups()].sort((a, b) => a.order - b.order);
     const result: AlarmGroupView[] = [];
-    const ungrouped = alarms
-      .filter(a => a.groupId === null)
-      .sort((a, b) => a.order - b.order)
+    const ungrouped = this.sortAlarms(
+      alarms.filter(a => a.groupId === null)
+    )
 
     if (ungrouped.length) {
       result.push({
@@ -41,9 +43,9 @@ export class AlarmSvc {
         title: group.title,
         expanded: group.expanded,
         system: false,
-        alarms: alarms
-          .filter(a => a.groupId === group.id)
-          .sort((a, b) => a.order - b.order)
+        alarms: this.sortAlarms(
+          alarms.filter(a => a.groupId === group.id)
+        )
       })
     }
 
@@ -109,6 +111,18 @@ export class AlarmSvc {
 
   constructor() {
     void this.load();
+  }
+
+  private sortAlarms(alarms: Alarm[]) {
+    if (this.settings.alarmSortMode() === 'manual') {
+      return [...alarms].sort((a, b) => a.order - b.order);
+    }
+
+    return [...alarms].sort((a, b) => {
+      const ta = a.hour * 60 + a.minute;
+      const tb = b.hour * 60 + b.minute;
+      return ta - tb;
+    })
   }
 
   async load() {
@@ -309,9 +323,10 @@ export class AlarmSvc {
     await this.persist();
   }
 
-  readonly ungroupedAlarms = computed(() => this.alarms()
-    .filter(a => a.groupId === null)
-    .sort((a, b) => a.order - b.order)
+  readonly ungroupedAlarms = computed(() =>
+    this.sortAlarms(
+      this.alarms().filter(a => a.groupId === null)
+    )
   )
 
   readonly groupedAlarms = computed(() => {
@@ -321,9 +336,10 @@ export class AlarmSvc {
       .sort((a, b) => a.order - b.order)
       .map(group => ({
         group,
-        alarm: alarms
-          .filter(a => a.groupId === group.id)
-          .sort((a, b) => a.order - b.order)
-      }))
+        alarm: this.sortAlarms(
+          alarms.filter(a => a.groupId === group.id)
+        )
+      })
+      )
   })
 }
