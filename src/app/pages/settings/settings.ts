@@ -32,6 +32,10 @@ export class Settings {
     );
   }
 
+  toggleWakeLock(value: boolean) {
+    this.settings.setKeepScreenAwake(value);
+  }
+
   exportBackup() {
     this.backup.export();
   }

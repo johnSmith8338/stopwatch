@@ -1,16 +1,20 @@
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { ClockEngine } from '../models/clock-engine.interface';
 import { TIMER_DEFAULT_HOUR, TIMER_DEFAULT_MINUTE, TIMER_DEFAULT_SECOND } from '../constants/timer.constants';
 import { TimerPreset } from '../core/repositories/timer.repository';
+import { WakeLockSvc } from './wake-lock-svc';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimerEngine implements ClockEngine {
+  private readonly wakelock = inject(WakeLockSvc);
+
   readonly defaultHours = TIMER_DEFAULT_HOUR;
   readonly defaultMinutes = TIMER_DEFAULT_MINUTE;
   readonly defaultSeconds = TIMER_DEFAULT_SECOND;
 
+  readonly keepScreenAwake = signal(false);
   readonly running = signal(false);
   readonly totalMs = signal(5 * 60_000);
   readonly remainingMs = signal(5 * 60_000);
@@ -48,6 +52,10 @@ export class TimerEngine implements ClockEngine {
     }
   }
 
+  setKeepScreenAwake(value: boolean) {
+    this.keepScreenAwake.set(value);
+  }
+
   start(): void {
     this.finished.set(false);
     if (this.running()) return;
@@ -57,6 +65,11 @@ export class TimerEngine implements ClockEngine {
     }
 
     this.running.set(true);
+
+    if (this.keepScreenAwake()) {
+      void this.wakelock.acquire();
+    }
+
     this.stopped = false;
     this.remainingAtStart = this.remainingMs();
     this.startTimestamp = performance.now();
@@ -84,11 +97,13 @@ export class TimerEngine implements ClockEngine {
   pause(): void {
     if (!this.running()) return;
     this.running.set(false);
+    void this.wakelock.release();
     cancelAnimationFrame(this.frameId);
   }
 
   stop(): void {
     this.running.set(false);
+    void this.wakelock.release();
     cancelAnimationFrame(this.frameId);
     this.stopped = true;
   }

@@ -10,11 +10,13 @@ export class SettingsSvc {
 
   readonly settings = signal<AppSettings>({
     theme: 'light',
-    historyRetentionDays: 30
+    historyRetentionDays: 30,
+    keepScreenAwake: true
   })
 
   readonly theme = computed(() => this.settings().theme);
   readonly historyRetentionDays = computed(() => this.settings().historyRetentionDays);
+  readonly keepScreenAwake = computed(() => this.settings().keepScreenAwake);
 
   constructor() {
     void this.load();
@@ -46,6 +48,14 @@ export class SettingsSvc {
 
     this.settings.set(settings);
     await this.repo.save(settings);
+  }
+
+  async setKeepScreenAwake(value: boolean) {
+    this.settings.update(s => ({
+      ...s,
+      keepScreenAwake: value
+    }))
+    await this.repo.save(this.settings());
   }
 
   async restore(settings: AppSettings) {

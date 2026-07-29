@@ -7,6 +7,12 @@
 <h3>default timer settings</h3>
 <app-default-timer-settings />
 
+<h3>wake lock</h3>
+<app-toggle [checked]="settings.keepScreenAwake()" (checkedChange)="toggleWakeLock($event)">
+    <span left>sleep</span>
+    <span right>wake lock</span>
+</app-toggle>
+
 <h3>clear history</h3>
 <select [value]="settings.historyRetentionDays()" (change)="changeHistory($event)">
     <option value="-1">never</option>

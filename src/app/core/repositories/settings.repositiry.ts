@@ -4,6 +4,12 @@ import { AppSettings } from "../../models/settings.model";
 import { DbStore } from "../storage/database";
 import { StorageKey } from "../storage/storage-keys";
 
+const DEFAULT_SETTINGS: AppSettings = {
+    theme: 'light',
+    historyRetentionDays: 30,
+    keepScreenAwake: true
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -11,15 +17,18 @@ export class SettingsRepository {
     private readonly storage = inject(StorageEngine);
 
     async load(): Promise<AppSettings> {
-        return (
-            await this.storage.get<AppSettings>(
-                DbStore.Settings,
-                StorageKey.Settings
-            )
-        ) ?? {
-            theme: 'light',
-            historyRetentionDays: 30
+        const stored = await this.storage.get<Partial<AppSettings>>(
+            DbStore.Settings,
+            StorageKey.Settings
+        )
+
+        const settings: AppSettings = {
+            ...DEFAULT_SETTINGS,
+            ...stored
         }
+
+        await this.save(settings);
+        return settings;
     }
 
     async save(settings: AppSettings) {
