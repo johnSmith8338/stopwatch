@@ -3,6 +3,7 @@ import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerInstanceFactory } from "./timer-instance.factory";
 import { TimerInstance } from "./timer-instance";
 import { DEFAULT_TIMER_SOUND, SoundSvc } from "./sound-svc";
+import { TimerHistoryItem } from "../models/timer-history.model";
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +21,10 @@ export class TimerInstanceStore {
 
         timer.loadPreset(preset);
 
-        timer.engine.onFinished = () => {
+        const previousFinished = timer.engine.onFinished;
+
+        timer.engine.onFinished = async () => {
+            await previousFinished?.();
             this.finished.set(timer);
             this.soundSvc.play(timer.activePreset()?.sound ?? DEFAULT_TIMER_SOUND);
         }
@@ -63,5 +67,25 @@ export class TimerInstanceStore {
         this.remove(timer);
         this.finished.set(null);
         this.soundSvc.stop();
+    }
+
+    runFromHistory(item: TimerHistoryItem) {
+        const timer = this.factory.create();
+
+        timer.engine.setDuration(
+            item.snapshot.hours,
+            item.snapshot.minutes,
+            item.snapshot.seconds,
+        )
+
+        if (item.elapsedMs < item.durationMs) {
+            timer.engine.remainingMs.set(item.durationMs - item.elapsedMs);
+        }
+
+        timer.start();
+        this.timers.update(list => [...list, timer]);
+        this.active.set(timer);
+
+        return timer;
     }
 }

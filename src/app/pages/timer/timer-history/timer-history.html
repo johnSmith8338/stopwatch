@@ -1,0 +1,43 @@
+<header>
+    <div>
+        <h2>timer history</h2>
+        <small>
+            {{facade.total()}} • 
+            ✅ {{facade.finished()}}
+            🛑 {{facade.stopped()}}
+            ❌ {{facade.cancelled()}}
+        </small>
+    </div>
+    @if (facade.total()) {
+        <button (click)="clear()">clear</button>
+    }
+</header>
+@if (groups().length) {
+    @for (group of groups(); track group.title) {
+        <h3>{{group.title}}</h3>
+        @for (item of group.items; track item.id) {
+            <div class="history-item">
+                <div>
+                    <strong>{{item.snapshot.title}}</strong>
+                    <span>
+                        {{item.snapshot.hours.toString().padStart(2,'0')}}:
+
+                        {{item.snapshot.minutes.toString().padStart(2,'0')}}:
+
+                        {{item.snapshot.seconds.toString().padStart(2,'0')}}
+                    </span>
+                </div>
+                <div>
+                    <span>{{statusMap[item.status]}}</span>
+                    <button (click)="run(item)">
+                        {{item.elapsedMs >= item.durationMs ? 'reuse' : 'restart'}}
+                    </button>
+                    <!-- TODO: add progress bar using CSS (formatProgress(item) = width of line) -->
+                    <span>{{formatProgress(item)}}</span>
+                </div>
+            </div>
+        }
+    }
+}@else {
+    <span>no timer history yet</span>
+}

@@ -1,6 +1,7 @@
 import { AlarmHistoryItem } from "./alarm-history.interface";
 import { Alarm, AlarmGroup } from "./alarm.interface";
 import { AppSettings } from "./settings.model";
+import { TimerHistoryItem } from "./timer-history.model";
 
 export interface AppBackup {
     version: 1;
@@ -9,5 +10,6 @@ export interface AppBackup {
     alarms: Alarm[];
     groups: AlarmGroup[];
     history: AlarmHistoryItem[];
+    timerHistory?: TimerHistoryItem[];
     settings: AppSettings;
 }

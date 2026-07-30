@@ -43,6 +43,9 @@ export class TimerEngine implements ClockEngine {
   readonly remainingHours = computed(() => Math.floor(this.remainingMs() / 3_600_000));
   readonly remainingMinutes = computed(() => Math.floor(this.remainingMs() / 60_000) % 60);
   readonly remainingSeconds = computed(() => Math.floor(this.remainingMs() / 1000) % 60);
+  readonly totalHours = computed(() => Math.floor(this.totalMs() / 3_600_000));
+  readonly totalMinutes = computed(() => Math.floor(this.totalMs() / 60_000) % 60);
+  readonly totalSeconds = computed(() => Math.floor(this.totalMs() / 1000) % 60);
 
   getDefaults() {
     return {
@@ -84,7 +87,7 @@ export class TimerEngine implements ClockEngine {
       if (remaining === 0) {
         this.finished.set(true);
         this.stop();
-        this.onFinished?.();
+        void this.onFinished?.();
         return;
       }
 

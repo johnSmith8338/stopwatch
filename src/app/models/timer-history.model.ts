@@ -1,0 +1,27 @@
+import { TimerSound } from "../services/sound-svc";
+
+export type TimerHistoryStatus = 'finished' | 'stopped' | 'cancelled';
+
+export interface TimerHistorySnapshot {
+    title: string;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    sound: TimerSound;
+    icon?: string;
+}
+
+export interface TimerHistoryItem {
+    id: string;
+    startedAt: number;
+    finishedAt: number;
+    durationMs: number;
+    elapsedMs: number;
+    status: TimerHistoryStatus;
+    snapshot: TimerHistorySnapshot;
+}
+
+export interface TimerHistoryGroup {
+    title: string;
+    items: TimerHistoryItem[];
+}

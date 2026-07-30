@@ -3,6 +3,7 @@ import { AlarmSvc } from './alarm-svc';
 import { AlarmHistorySvc } from './alarm-history-svc';
 import { SettingsSvc } from './settings-svc';
 import { AppBackup } from '../models/backup.model';
+import { TimerHistorySvc } from './timer-history-svc';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ export class BackupSvc {
   private readonly alarmSvc = inject(AlarmSvc);
   private readonly historySvc = inject(AlarmHistorySvc);
   private readonly settingsSvs = inject(SettingsSvc);
+  private readonly timerHistorySvc = inject(TimerHistorySvc);
 
   async export() {
     const backup: AppBackup = {
@@ -20,6 +22,7 @@ export class BackupSvc {
       alarms: structuredClone(this.alarmSvc.alarms()),
       groups: structuredClone(this.alarmSvc.groups()),
       history: structuredClone(this.historySvc.history()),
+      timerHistory: structuredClone(this.timerHistorySvc.history()),
       settings: structuredClone(this.settingsSvs.settings())
     }
 
@@ -53,6 +56,7 @@ export class BackupSvc {
       !Array.isArray(backup.alarms) ||
       !Array.isArray(backup.groups) ||
       !Array.isArray(backup.history) ||
+      (backup.timerHistory !== undefined && !Array.isArray(backup.timerHistory)) ||
       typeof backup.settings !== 'object' ||
       backup.settings === null
     ) {
@@ -82,6 +86,10 @@ export class BackupSvc {
 
     await this.historySvc.restore(
       backup.history
+    )
+
+    await this.timerHistorySvc.restore(
+      backup.timerHistory ?? []
     )
 
     await this.settingsSvs.restore(
