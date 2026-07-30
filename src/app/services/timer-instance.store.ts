@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerInstanceFactory } from "./timer-instance.factory";
 import { TimerInstance } from "./timer-instance";
@@ -14,7 +14,9 @@ export class TimerInstanceStore {
 
     readonly timers = signal<TimerInstance[]>([]);
     readonly active = signal<TimerInstance | null>(null);
-    readonly finished = signal<TimerInstance | null>(null);
+    readonly finishedQueue = signal<TimerInstance[]>([]);
+
+    readonly finished = computed(() => this.finishedQueue()[0] ?? null);
 
     add(preset: TimerPreset) {
         const timer = this.factory.create();
@@ -25,7 +27,7 @@ export class TimerInstanceStore {
 
         timer.engine.onFinished = async () => {
             await previousFinished?.();
-            this.finished.set(timer);
+            this.finishedQueue.update(list => [...list, timer]);
             this.soundSvc.play(timer.activePreset()?.sound ?? DEFAULT_TIMER_SOUND);
         }
 
@@ -45,7 +47,7 @@ export class TimerInstanceStore {
         timer.stop();
         this.timers.update(list => list.filter(x => x !== timer));
         if (this.active() === timer) this.active.set(null);
-        if (this.finished() === timer) this.finished.set(null);
+        this.finishedQueue.update(list => list.filter(t => t !== timer));
     }
 
     select(timer: TimerInstance) {
@@ -53,19 +55,18 @@ export class TimerInstanceStore {
     }
 
     clearFinished() {
-        this.finished.set(null);
+        this.finishedQueue.update(list => list.slice(1));
     }
 
     repeat(timer: TimerInstance) {
         timer.reset();
         timer.start();
-        this.finished.set(null);
+        this.finishedQueue.update(list => list.filter(t => t !== timer));
     }
 
     stop(timer: TimerInstance) {
         timer.engine.stop();
         this.remove(timer);
-        this.finished.set(null);
         this.soundSvc.stop();
     }
 
