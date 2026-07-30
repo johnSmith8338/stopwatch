@@ -15,9 +15,7 @@ export class TimerHistoryFacade {
     readonly finished = computed(() =>
         this.history().filter(x => x.status === 'finished').length
     )
-    readonly stopped = computed(() =>
-        this.history().filter(x => x.status === 'stopped').length
-    )
+
     readonly cancelled = computed(() =>
         this.history().filter(x => x.status === 'cancelled').length
     )

@@ -16,7 +16,6 @@ export class TimerHistory {
 
   readonly statusMap: Record<TimerHistoryStatus, string> = {
     finished: '✅ finished',
-    stopped: '🛑 stopped',
     cancelled: '❌ cancelled'
   }
 

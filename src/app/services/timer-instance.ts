@@ -13,12 +13,17 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
     override readonly engine = new TimerEngine();
     readonly finished = signal(false);
 
+    private historySaved = false;
+
     constructor() {
         super();
 
         this.engine.onFinished = async () => {
             this.finished.set(true);
-            await this.history.add(this, 'finished');
+            if (!this.historySaved) {
+                this.historySaved = true;
+                await this.history.add(this, 'finished');
+            }
         }
 
         this.destroyRef.onDestroy(() => {
@@ -27,17 +32,15 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
     }
 
     override start() {
+        this.historySaved = false;
         this.startedAt.set(Date.now());
         super.start();
     }
 
-    override async stop() {
-        if (this.engine.running()) await this.history.add(this, 'stopped');
-        super.stop();
-    }
-
-    cancel() {
-        if (this.engine.running()) void this.history.add(this, 'cancelled');
+    async cancel() {
+        if (this.historySaved) return;
+        this.historySaved = true;
+        await this.history.add(this, 'cancelled');
         this.engine.stop();
     }
 

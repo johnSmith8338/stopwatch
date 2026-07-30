@@ -39,4 +39,9 @@ export class RunningTimerCard implements OnInit {
   removeTimer() {
     this.remove.emit(this.timer());
   }
+
+  reset() {
+    this.timer().cancel();
+    this.timer().reset();
+  }
 }

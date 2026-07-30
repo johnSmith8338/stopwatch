@@ -1,6 +1,6 @@
 import { TimerSound } from "../services/sound-svc";
 
-export type TimerHistoryStatus = 'finished' | 'stopped' | 'cancelled';
+export type TimerHistoryStatus = 'finished' | 'cancelled';
 
 export interface TimerHistorySnapshot {
     title: string;

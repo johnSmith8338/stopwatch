@@ -63,7 +63,7 @@ export class TimerInstanceStore {
     }
 
     stop(timer: TimerInstance) {
-        timer.stop();
+        timer.engine.stop();
         this.remove(timer);
         this.finished.set(null);
         this.soundSvc.stop();
