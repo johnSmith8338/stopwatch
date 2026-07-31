@@ -15,6 +15,7 @@ export class TimerWorkspaceFacade {
     readonly sound = inject(SoundSvc);
 
     readonly dialogOpened = signal(false);
+    readonly editorOpened = signal(true);
 
     readonly appSettings = computed(() => this.settings.settings());
 
@@ -37,6 +38,7 @@ export class TimerWorkspaceFacade {
         if (!preset) return;
 
         this.instance.add(preset);
+        this.hideEditor();
     }
 
     stop() {
@@ -64,5 +66,14 @@ export class TimerWorkspaceFacade {
 
     startPreset(timer: TimerPreset) {
         this.instance.add(timer);
+        this.hideEditor();
+    }
+
+    showEditor() {
+        this.editorOpened.set(true);
+    }
+
+    hideEditor() {
+        this.editorOpened.set(false);
     }
 }

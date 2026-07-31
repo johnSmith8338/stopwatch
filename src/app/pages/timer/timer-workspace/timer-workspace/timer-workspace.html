@@ -3,13 +3,14 @@
     <span>{{facade.draft.title()}}</span>
 </h2>
 
-@if (editorOpened()) {
+@if (showEditor()) {
     @if (facade.appSettings(); as settings) {
         <app-duration-picker />
     }
     <button class="start-button" (click)="start()" [disabled]="facade.dialogOpened()">▶ START</button>
+    <button class="default-button" (click)="resetToDefault()" [disabled]="facade.dialogOpened()">default</button>
 }@else {
-    <button class="add-button" (click)="showEditor()">+ ADD TIMER</button>
+    <button class="add-button" (click)="addTimer()">+ ADD TIMER</button>
 }
 
 <app-running-timer-list />

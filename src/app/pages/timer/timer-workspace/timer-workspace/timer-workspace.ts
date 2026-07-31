@@ -18,22 +18,21 @@ import { DurationPicker } from "../duration-picker/duration-picker";
 export class TimerWorkspace {
   readonly facade = inject(TimerWorkspaceFacade);
 
-  readonly editorOpened = signal(true);
-
   readonly hasRunningTimers = computed(() => this.facade.instance.timers().length > 0);
 
-  constructor() {
-    effect(() => {
-      if (this.facade.instance.timers().length === 0) this.editorOpened.set(true);
-    })
-  }
+  readonly showEditor = computed(() => {
+    return this.facade.instance.timers().length === 0 || this.facade.editorOpened();
+  });
 
   start() {
     this.facade.start();
-    this.editorOpened.set(false);
   }
 
-  showEditor() {
-    this.editorOpened.set(true);
+  resetToDefault() {
+    this.facade.resetDefault();
+  }
+
+  addTimer() {
+    this.facade.showEditor();
   }
 }
