@@ -19,8 +19,15 @@ export class StopwatchFacade {
     }
 
     async stop() {
-        this.engine.stop();
+        const lastLap = this.engine.finishLap();
+        if (lastLap) {
+            await this.history.addLap(
+                lastLap.lapTime,
+                lastLap.totalTime
+            )
+        }
         await this.history.finishSession(this.engine.elapsedMs());
+        this.engine.stop();
     }
 
     reset() {

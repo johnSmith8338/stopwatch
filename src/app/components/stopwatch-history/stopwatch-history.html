@@ -10,21 +10,65 @@
     </div>
 }@else {
     @for (session of sessions(); track session.id) {
-        <section class="session">
-            <header>
-                <strong>{{session.startedAt|date:'dd.MM.yyyy HH:mm'}}</strong>
+        <article class="history-card">
+            <div class="history-header">
+                <div>
+                    <span class="history-date">{{session.startedAt|date:'dd.MM.yyyy'}}&nbsp;</span>
+                    <span class="history-time">{{session.startedAt|date:'HH:mm'}}</span>
+                </div>
                 <button (click)="requestDelete(session.id)">delete</button>
-            </header>
-            <ul>
-                @for (lap of session.laps; track lap.id) {
-                    <li>
-                        lap {{lap.index}}: {{format(lap.lapTime)}} | total: {{format(lap.totalTime)}}
-                    </li>
-                }
-            </ul>
-            <div>
-                <p>duration: {{format(session.duration)}}</p>
             </div>
+        </article>
+        <section class="history-duration">
+            <h3 class="label">duration: {{format(session.duration)}}</h3>
+        </section>
+        <section class="history-stats">
+            <div class="state">
+                <span>laps</span>
+                <strong>{{session.laps.length}}</strong>
+            </div>
+            <div class="stat">
+                <span>⚡ fastest</span>
+                <strong>{{format(session.stats.fastestLap)}}</strong>
+            </div>
+            <div class="stat">
+                <span>🐢 slowest</span>
+                <strong>{{format(session.stats.slowestLap)}}</strong>
+            </div>
+            <div class="stat">
+                <span>📊 average</span>
+                <strong>{{format(session.stats.averageLap)}}</strong>
+            </div>
+            <div class="stat consistency">
+                <span>🎯 consistency</span>
+                <strong>{{session.stats.consistency}}%</strong>
+                <small>
+                    <!-- TODO: add colors by class for each case -->
+                    @switch (session.stats.consistencyLabel) {
+                        @case ('excellent') {
+                            <span class="consistency excellent">excellent</span>
+                        }
+                        @case ('good') {
+                            <span class="consistency good">good</span>
+                        }
+                        @case ('average') {
+                            <span class="consistency average">average</span>
+                        }
+                        @case ('needs-work') {
+                            <span class="consistency needs-work">needs-work</span>
+                        }
+                    }
+                </small>
+            </div>
+        </section>
+        <section class="history-laps">
+            <span class="laps-title">laps</span>
+            @for (lap of session.laps; track lap.id) {
+                <div class="lap-row">
+                    <span>#{{lap.index}}&nbsp;</span>
+                    <strong>{{format(lap.lapTime)}}</strong>
+                </div>
+            }
         </section>
     }
 }

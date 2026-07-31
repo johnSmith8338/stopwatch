@@ -8,6 +8,7 @@ export interface LapSession {
     finishedAt: number;
     duration: number;
     laps: Lap[];
+    stats: StopwatchSessionStats;
 }
 
 export interface Lap {
@@ -17,6 +18,24 @@ export interface Lap {
     totalTime: number;
     createdAt: number;
 }
+
+export interface StopwatchSessionStats {
+    fastestLap: number;
+    slowestLap: number;
+    averageLap: number;
+    consistency: number;
+    consistencyLabel: ConsistencyLabel;
+}
+
+export type ConsistencyLabel = 'excellent' | 'good' | 'average' | 'needs-work';
+
+export const EMPTY_STOPWATCH_STATS: StopwatchSessionStats = {
+    fastestLap: 0,
+    slowestLap: 0,
+    averageLap: 0,
+    consistency: 100,
+    consistencyLabel: 'excellent'
+};
 
 @Injectable({
     providedIn: 'root'
@@ -49,5 +68,12 @@ export class StopwatchRepository {
         return this.storage.clear(
             DbStore.Sessions
         )
+    }
+
+    async restore(history: LapSession[]) {
+        await this.clear();
+        for (const session of history) {
+            await this.save(session);
+        }
     }
 }

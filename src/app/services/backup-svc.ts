@@ -4,6 +4,7 @@ import { AlarmHistorySvc } from './alarm-history-svc';
 import { SettingsSvc } from './settings-svc';
 import { AppBackup } from '../models/backup.model';
 import { TimerHistorySvc } from './timer-history-svc';
+import { StopwatchHistorySvc } from './stopwatch-history-svc';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class BackupSvc {
   private readonly historySvc = inject(AlarmHistorySvc);
   private readonly settingsSvs = inject(SettingsSvc);
   private readonly timerHistorySvc = inject(TimerHistorySvc);
+  private readonly stopwatchHistory = inject(StopwatchHistorySvc);
 
   async export() {
     const backup: AppBackup = {
@@ -23,6 +25,7 @@ export class BackupSvc {
       groups: structuredClone(this.alarmSvc.groups()),
       history: structuredClone(this.historySvc.history()),
       timerHistory: structuredClone(this.timerHistorySvc.history()),
+      stopWatchHistory: structuredClone(await this.stopwatchHistory.getHistory()),
       settings: structuredClone(this.settingsSvs.settings())
     }
 
@@ -91,6 +94,10 @@ export class BackupSvc {
     await this.timerHistorySvc.restore(
       backup.timerHistory ?? []
     )
+
+    if (backup.stopWatchHistory) {
+      await this.stopwatchHistory.restore(backup.stopWatchHistory);
+    }
 
     await this.settingsSvs.restore(
       backup.settings

@@ -74,6 +74,28 @@ export class StopwatchEngine implements ClockEngine {
     }
   }
 
+  hasPendingLap(): boolean {
+    return this.elapsedMs() > this.lastLapMs;
+  }
+
+  // finishLap() {
+  //   if (!this.hasPendingLap()) return null;
+  //   return this.lap();
+  // }
+
+  finishLap() {
+    const total = this.elapsedMs();
+    if (total <= this.lastLapMs) return null;
+
+    const lap = total - this.lastLapMs;
+    this.lastLapMs = total;
+
+    return {
+      lapTime: lap,
+      totalTime: total
+    };
+  }
+
   private formatTime(milliseconds: number): string {
     const totalSeconds = Math.floor(milliseconds / 1000);
 

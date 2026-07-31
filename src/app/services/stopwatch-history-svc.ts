@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { LapSession, StopwatchRepository } from '../core/repositories/stopwatch.repository';
+import { EMPTY_STOPWATCH_STATS, LapSession, StopwatchRepository } from '../core/repositories/stopwatch.repository';
+import { calculateSessionStats } from '../utils/stopwatch-session-stats';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,8 @@ export class StopwatchHistorySvc {
       startedAt: Date.now(),
       finishedAt: 0,
       duration: 0,
-      laps: []
+      laps: [],
+      stats: EMPTY_STOPWATCH_STATS
     }
   }
 
@@ -32,6 +34,7 @@ export class StopwatchHistorySvc {
 
     this.current.finishedAt = Date.now();
     this.current.duration = totalTime;
+    this.current.stats = calculateSessionStats(this.current.laps);
 
     await this.repo.save(this.current);
     this.touch();
@@ -39,9 +42,9 @@ export class StopwatchHistorySvc {
   }
 
   async addLap(lapTime: number, totalTime: number) {
-    if (!this.current) {
-      return;
-    };
+    if (!this.current) return;
+
+    this.current.duration = totalTime;
 
     this.current.laps.push({
       id: crypto.randomUUID(),
@@ -66,6 +69,11 @@ export class StopwatchHistorySvc {
 
   async clear() {
     await this.repo.clear();
+    this.touch();
+  }
+
+  async restore(history: LapSession[]) {
+    await this.repo.restore(history);
     this.touch();
   }
 }

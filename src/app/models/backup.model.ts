@@ -1,3 +1,4 @@
+import { LapSession } from "../core/repositories/stopwatch.repository";
 import { AlarmHistoryItem } from "./alarm-history.interface";
 import { Alarm, AlarmGroup } from "./alarm.interface";
 import { AppSettings } from "./settings.model";
@@ -11,5 +12,6 @@ export interface AppBackup {
     groups: AlarmGroup[];
     history: AlarmHistoryItem[];
     timerHistory?: TimerHistoryItem[];
+    stopWatchHistory?: LapSession[];
     settings: AppSettings;
 }
