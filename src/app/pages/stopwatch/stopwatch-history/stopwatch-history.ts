@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import { StopwatchHistorySvc } from '../../services/stopwatch-history-svc';
-import { LapSession } from '../../core/repositories/stopwatch.repository';
 import { DatePipe } from '@angular/common';
-import { ConfirmDialog } from "../confirm-dialog/confirm-dialog";
+import { StopwatchHistorySvc } from '../../../services/stopwatch-history-svc';
+import { LapSession } from '../../../core/repositories/stopwatch.repository';
+import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-stopwatch-history',

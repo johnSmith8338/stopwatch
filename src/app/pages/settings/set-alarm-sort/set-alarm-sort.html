@@ -1,0 +1,4 @@
+<div class="button-group">
+    <button [class.active]="settings.alarmSortMode()==='manual'" (click)="settings.setAlarmSortMode('manual')">manual</button>
+    <button [class.active]="settings.alarmSortMode()==='time'" (click)="settings.setAlarmSortMode('time')">time</button>
+</div>

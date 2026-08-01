@@ -1,0 +1,7 @@
+<div class="button-group">
+    <button [class.active]="settings.alarmAutoStopMinutes()===1" (click)="settings.setAlarmAutoStopMinutes(1)">1 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===2" (click)="settings.setAlarmAutoStopMinutes(2)">2 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===3" (click)="settings.setAlarmAutoStopMinutes(3)">3 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===5" (click)="settings.setAlarmAutoStopMinutes(5)">5 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===10" (click)="settings.setAlarmAutoStopMinutes(10)">10 min</button>
+</div>

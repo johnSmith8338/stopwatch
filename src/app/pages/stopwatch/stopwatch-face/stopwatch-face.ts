@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { StopwatchEngine } from '../../services/stopwatch-engine';
-import { SCALE_CENTER, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../constants/scale.constants';
-import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../utils/clock-face.util';
+import { StopwatchEngine } from '../../../services/stopwatch-engine';
+import { SCALE_CENTER, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../../constants/scale.constants';
+import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../utils/clock-face.util';
 
 @Component({
   selector: 'app-stopwatch-face',

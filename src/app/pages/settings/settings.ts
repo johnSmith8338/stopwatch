@@ -1,30 +1,26 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Toggle } from "../../components/toggle/toggle";
-import { ThemeSvc } from '../../services/theme-svc';
-import { SettingsSvc } from '../../services/settings-svc';
 import { BackupSvc } from '../../services/backup-svc';
+import { SetHistoryRemove } from "./set-history-remove/set-history-remove";
+import { SetAlarmDuration } from "./set-alarm-duration/set-alarm-duration";
+import { SetAlarmSort } from "./set-alarm-sort/set-alarm-sort";
+import { SetWakelock } from "./set-wakelock/set-wakelock";
+import { SetTheme } from "./set-theme/set-theme";
 
 @Component({
   selector: 'app-settings',
-  imports: [Toggle],
+  imports: [
+    SetHistoryRemove,
+    SetAlarmDuration,
+    SetAlarmSort,
+    SetWakelock,
+    SetTheme
+  ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings {
-  readonly settings = inject(SettingsSvc);
-  readonly themeSvc = inject(ThemeSvc);
   readonly backup = inject(BackupSvc);
-
-  checked = this.themeSvc.theme() === 'dark';
-
-  changeTheme() {
-    this.themeSvc.toggle();
-  }
-
-  toggleWakeLock(value: boolean) {
-    this.settings.setKeepScreenAwake(value);
-  }
 
   exportBackup() {
     this.backup.export();
