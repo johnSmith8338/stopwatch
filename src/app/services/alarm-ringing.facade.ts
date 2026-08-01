@@ -4,6 +4,7 @@ import { Alarm } from "../models/alarm.interface";
 import { WakeLockSvc } from "./wake-lock-svc";
 import { NotificationSvc } from "./notification-svc";
 import { Subject } from "rxjs";
+import { SettingsSvc } from "./settings-svc";
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,7 @@ export class AlarmRingingFacade {
     private readonly soundSvc = inject(SoundSvc);
     private readonly wakelock = inject(WakeLockSvc);
     private readonly notification = inject(NotificationSvc);
+    private readonly settings = inject(SettingsSvc);
 
     readonly stopped$ = new Subject<{
         alarm: Alarm;
@@ -53,6 +55,9 @@ export class AlarmRingingFacade {
 
         this.soundSvc.play(alarm.sound);
 
+        const autoStopMinutes = this.settings.alarmAutoStopMinutes();
+        const autoStopMs = autoStopMinutes * 60_000;
+
         this.missedTimer = window.setTimeout(() => {
             const current = this.ringingAlarm();
             if (!current) return;
@@ -69,8 +74,7 @@ export class AlarmRingingFacade {
             });
 
             this.currentSessionId.set(null);
-            // 2 minutes ringing -> nobody clicked -> missed
-        }, 2 * 60_000);
+        }, autoStopMs);
     }
 
     async stop() {

@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DefaultTimerSettings } from '../timer/timer-workspace/timer-settings/timer-settings';
 import { Toggle } from "../../components/toggle/toggle";
 import { ThemeSvc } from '../../services/theme-svc';
 import { SettingsSvc } from '../../services/settings-svc';
-import { AlarmSortMode, HistoryRetentionDays } from '../../models/settings.model';
 import { BackupSvc } from '../../services/backup-svc';
 
 @Component({
   selector: 'app-settings',
-  imports: [DefaultTimerSettings, Toggle],
+  imports: [Toggle],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

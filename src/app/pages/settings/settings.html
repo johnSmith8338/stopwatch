@@ -4,9 +4,6 @@
     <span right>dark</span>
 </app-toggle>
 
-<h3>default timer settings</h3>
-<app-default-timer-settings />
-
 <h3>wake lock</h3>
 <app-toggle [checked]="settings.keepScreenAwake()" (checkedChange)="toggleWakeLock($event)">
     <span left>sleep</span>
@@ -17,6 +14,15 @@
 <div class="button-group">
     <button [class.active]="settings.alarmSortMode()==='manual'" (click)="settings.setAlarmSortMode('manual')">manual</button>
     <button [class.active]="settings.alarmSortMode()==='time'" (click)="settings.setAlarmSortMode('time')">time</button>
+</div>
+
+<h3>Auto stop after</h3>
+<div class="button-group">
+    <button [class.active]="settings.alarmAutoStopMinutes()===1" (click)="settings.setAlarmAutoStopMinutes(1)">1 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===2" (click)="settings.setAlarmAutoStopMinutes(2)">2 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===3" (click)="settings.setAlarmAutoStopMinutes(3)">3 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===5" (click)="settings.setAlarmAutoStopMinutes(5)">5 min</button>
+    <button [class.active]="settings.alarmAutoStopMinutes()===10" (click)="settings.setAlarmAutoStopMinutes(10)">10 min</button>
 </div>
 
 <h3>clear history</h3>

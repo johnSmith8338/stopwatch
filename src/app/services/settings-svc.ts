@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { DEFAULT_SETTINGS, SettingsRepository } from '../core/repositories/settings.repositiry';
-import { AlarmSortMode, AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.model';
+import { AlarmAutoStopMinutes, AlarmSortMode, AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,7 @@ export class SettingsSvc {
   readonly historyRetentionDays = computed(() => this.settings().historyRetentionDays);
   readonly keepScreenAwake = computed(() => this.settings().keepScreenAwake);
   readonly alarmSortMode = computed(() => this.settings().alarmSortMode);
+  readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
 
   constructor() {
     void this.load();
@@ -59,6 +60,14 @@ export class SettingsSvc {
     this.settings.update(s => ({
       ...s,
       alarmSortMode: mode
+    }))
+    await this.repo.save(this.settings());
+  }
+
+  async setAlarmAutoStopMinutes(minutes: AlarmAutoStopMinutes) {
+    this.settings.update(s => ({
+      ...s,
+      alarmAutoStopMinutes: minutes
     }))
     await this.repo.save(this.settings());
   }

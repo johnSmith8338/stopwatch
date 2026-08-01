@@ -8,7 +8,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
     theme: 'light',
     historyRetentionDays: 30,
     keepScreenAwake: true,
-    alarmSortMode: 'manual'
+    alarmSortMode: 'manual',
+    alarmAutoStopMinutes: 2
 }
 
 @Injectable({
