@@ -1,3 +1,7 @@
 :host {
   display: block;
 }
+
+.day.active {
+  border-color: red;
+}

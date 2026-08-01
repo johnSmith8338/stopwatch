@@ -1,16 +1,23 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { EMPTY_STOPWATCH_STATS, LapSession, StopwatchRepository } from '../core/repositories/stopwatch.repository';
 import { calculateSessionStats } from '../utils/stopwatch-session-stats';
+import { SettingsSvc } from './settings-svc';
+import { cleanupHistory } from '../utils/history-cleanup';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StopwatchHistorySvc {
   private readonly repo = inject(StopwatchRepository);
+  private readonly settings = inject(SettingsSvc);
 
   private current: LapSession | null = null;
 
   readonly changed = signal(0);
+
+  constructor() {
+    void this.cleanup();
+  }
 
   private touch() {
     this.changed.update(v => v + 1);
@@ -30,6 +37,7 @@ export class StopwatchHistorySvc {
   }
 
   async finishSession(totalTime: number) {
+    await this.cleanup();
     if (!this.current) return;
 
     this.current.finishedAt = Date.now();
@@ -70,6 +78,20 @@ export class StopwatchHistorySvc {
   async clear() {
     await this.repo.clear();
     this.touch();
+  }
+
+  private async cleanup() {
+    const history = await this.repo.getAll();
+    const cleaned = cleanupHistory(
+      history,
+      this.settings.historyRetentionDays(),
+      session => session.finishedAt
+    )
+
+    if (cleaned.length !== history.length) {
+      await this.repo.restore(cleaned);
+      this.touch();
+    }
   }
 
   async restore(history: LapSession[]) {

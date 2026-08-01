@@ -3,12 +3,15 @@ import { TimerHistoryRepository } from '../core/repositories/timer-history.repos
 import { TimerHistoryItem, TimerHistorySnapshot, TimerHistoryStatus } from '../models/timer-history.model';
 import { TimerEngine } from './timer-engine';
 import { TimerInstance } from './timer-instance';
+import { SettingsSvc } from './settings-svc';
+import { cleanupHistory } from '../utils/history-cleanup';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimerHistorySvc {
   private readonly repo = inject(TimerHistoryRepository);
+  private readonly settings = inject(SettingsSvc);
 
   readonly history = signal<TimerHistoryItem[]>([]);
 
@@ -19,9 +22,12 @@ export class TimerHistorySvc {
   async load() {
     const history = await this.repo.load();
     this.history.set(history);
+    await this.cleanup();
   }
 
   async add(timer: TimerInstance, status: TimerHistoryStatus) {
+    await this.cleanup();
+
     const snapshot: TimerHistorySnapshot = {
       title: timer.title(),
       hours: timer.engine.totalHours(),
@@ -48,6 +54,15 @@ export class TimerHistorySvc {
   async clear() {
     this.history.set([]);
     await this.repo.clear();
+  }
+
+  private async cleanup() {
+    this.history.update(list => cleanupHistory(
+      list,
+      this.settings.historyRetentionDays(),
+      item => item.finishedAt
+    ))
+    await this.repo.save(this.history());
   }
 
   async restore(history: TimerHistoryItem[]) {

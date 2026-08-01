@@ -2,7 +2,7 @@ import { ConsistencyLabel, EMPTY_STOPWATCH_STATS, Lap, StopwatchSessionStats } f
 
 export function calculateSessionStats(laps: Lap[]): StopwatchSessionStats {
     if (!laps.length) {
-        return EMPTY_STOPWATCH_STATS;
+        return structuredClone(EMPTY_STOPWATCH_STATS);
     }
 
     const values = laps.map(x => x.lapTime);

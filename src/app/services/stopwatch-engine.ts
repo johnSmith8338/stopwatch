@@ -78,11 +78,6 @@ export class StopwatchEngine implements ClockEngine {
     return this.elapsedMs() > this.lastLapMs;
   }
 
-  // finishLap() {
-  //   if (!this.hasPendingLap()) return null;
-  //   return this.lap();
-  // }
-
   finishLap() {
     const total = this.elapsedMs();
     if (total <= this.lastLapMs) return null;

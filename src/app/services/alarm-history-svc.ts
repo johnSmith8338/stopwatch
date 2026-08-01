@@ -3,6 +3,7 @@ import { AlarmHistoryRepository } from '../core/repositories/alarm-history.repos
 import { AlarmHistoryItem, AlarmHistoryStatus } from '../models/alarm-history.interface';
 import { Alarm } from '../models/alarm.interface';
 import { SettingsSvc } from './settings-svc';
+import { cleanupHistory } from '../utils/history-cleanup';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,8 @@ export class AlarmHistorySvc {
   }
 
   async add(sessionId: string, alarm: Alarm, status: AlarmHistoryStatus, snoozeMinutes?: number) {
+    await this.cleanup();
+
     const item: AlarmHistoryItem = {
       id: crypto.randomUUID(),
       sessionId,
@@ -49,11 +52,11 @@ export class AlarmHistorySvc {
   }
 
   private async cleanup() {
-    const days = this.settings.historyRetentionDays();
-    if (days === -1) return;
-
-    const limit = Date.now() - days * 86_400_000;
-    this.history.update(list => list.filter(item => item.fireAt >= limit));
+    this.history.update(list => cleanupHistory(
+      list,
+      this.settings.historyRetentionDays(),
+      item => item.fireAt
+    ))
     await this.repo.save(this.history());
   }
 

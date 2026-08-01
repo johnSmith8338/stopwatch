@@ -1,3 +1,9 @@
 :host {
   display: block;
 }
+
+.button-group {
+  button.active {
+    border-color: red;
+  }
+}

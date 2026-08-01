@@ -24,22 +24,8 @@ export class Settings {
     this.themeSvc.toggle();
   }
 
-  changeHistory(event: Event) {
-    this.settings.setHistoryRetentionDays(
-      Number(
-        (event.target as HTMLSelectElement).value
-      ) as HistoryRetentionDays
-    );
-  }
-
   toggleWakeLock(value: boolean) {
     this.settings.setKeepScreenAwake(value);
-  }
-
-  changeAlarmSort(event: Event) {
-    this.settings.setAlarmSortMode(
-      (event.target as HTMLSelectElement).value as AlarmSortMode
-    )
   }
 
   exportBackup() {
