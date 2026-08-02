@@ -1,0 +1,38 @@
+<div class="stepper" appStepTracker [stepLabels]="steps()" #stepper="stepper">
+    <header>
+        <p>step {{stepper.stepIndex()+1}} / {{stepper.totalSteps()}}</p>
+        <h2>{{stepper.totalSteps()}}</h2>
+    </header>
+    <section>
+        @switch (stepper.stepIndex()) {
+            @case (0) {
+                welcome screen
+            }
+            @case (1) {
+                <app-set-theme />
+            }
+            @case (2) {
+                <app-set-wakelock />
+            }
+            @case (3) {
+                <app-set-alarm-duration />
+                <app-set-alarm-sort />
+            }
+            @case (4) {
+                <app-set-history-remove />
+            }
+            @case (5) {
+                finish screen
+            }
+        }
+    </section>
+    <footer>
+        <button (click)="stepper.prev()" [disabled]="stepper.isFirstStep()">back</button>
+        @if (!stepper.isLastStep()) {
+            <button (click)="stepper.next()">next</button>
+        }@else {
+            <button (click)="finish()">finish</button>
+        }
+        <button (click)="skip()">skip</button>
+    </footer>
+</div>

@@ -1,23 +1,26 @@
 import { Routes } from '@angular/router';
 import { Stopwatch } from './pages/stopwatch/stopwatch';
 import { Timer } from './pages/timer/timer';
-import { Home } from './pages/home/home';
+import { Welcome } from './pages/welcome/welcome';
 import { NotFound } from './pages/not-found/not-found';
 import { Settings } from './pages/settings/settings';
 import { AlarmPage } from './pages/alarm/alarm';
+import { appInitGuard } from './utils/app-init.guard';
 
 export const routes: Routes = [
     {
         path: '',
-        component: Home,
+        component: Welcome,
+        canMatch: [appInitGuard],
         data: {
-            title: 'home-page',
+            title: 'welcome-page',
             showInMenu: false,
         }
     },
     {
         path: 'stopwatch',
         component: Stopwatch,
+        canMatch: [appInitGuard],
         data: {
             title: 'stopwatch',
             showInMenu: true,
@@ -28,6 +31,7 @@ export const routes: Routes = [
     {
         path: 'timer',
         component: Timer,
+        canMatch: [appInitGuard],
         data: {
             title: 'timer',
             showInMenu: true,
@@ -38,6 +42,7 @@ export const routes: Routes = [
     {
         path: 'alarm',
         component: AlarmPage,
+        canMatch: [appInitGuard],
         data: {
             title: 'alarm',
             showInMenu: true,
@@ -48,6 +53,7 @@ export const routes: Routes = [
     {
         path: 'settings',
         component: Settings,
+        canMatch: [appInitGuard],
         data: {
             title: 'settings',
             showInMenu: true,
@@ -63,4 +69,8 @@ export const routes: Routes = [
             showInMenu: false,
         }
     },
+    {
+        path: '**',
+        redirectTo: '404'
+    }
 ];

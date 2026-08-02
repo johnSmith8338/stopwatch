@@ -12,4 +12,5 @@ export interface AppSettings {
     keepScreenAwake: boolean;
     alarmSortMode: AlarmSortMode;
     alarmAutoStopMinutes: AlarmAutoStopMinutes;
+    firstRunCompleted: boolean;
 }

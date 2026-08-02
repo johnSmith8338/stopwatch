@@ -15,10 +15,7 @@ export class SettingsSvc {
   readonly keepScreenAwake = computed(() => this.settings().keepScreenAwake);
   readonly alarmSortMode = computed(() => this.settings().alarmSortMode);
   readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
-
-  constructor() {
-    void this.load();
-  }
+  readonly firstRunCompleted = computed(() => this.settings().firstRunCompleted);
 
   async load() {
     this.settings.set(await this.repo.load());
@@ -68,6 +65,14 @@ export class SettingsSvc {
     this.settings.update(s => ({
       ...s,
       alarmAutoStopMinutes: minutes
+    }))
+    await this.repo.save(this.settings());
+  }
+
+  async finishFirstRun() {
+    this.settings.update(s => ({
+      ...s,
+      firstRunCompleted: true
     }))
     await this.repo.save(this.settings());
   }
