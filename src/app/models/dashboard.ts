@@ -6,3 +6,15 @@ export interface DashboardLastActivity {
     title: string;
     subtitle: string;
 }
+
+export interface ActivityDay {
+    day: number;
+    date: number;
+    count: number;
+    level: 0 | 1 | 2 | 3 | 4;
+}
+
+export interface ActivityWeek {
+    label: string;
+    days: ActivityDay[];
+}

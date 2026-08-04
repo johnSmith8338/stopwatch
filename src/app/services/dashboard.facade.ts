@@ -6,6 +6,7 @@ import { getConsistencyLabel } from "../utils/stopwatch-session-stats";
 import { DashboardLastActivity } from "../models/dashboard";
 import { calculateStreak } from "../utils/calculate-streak";
 import { getStreakLabel } from "../utils/get-steak-label";
+import { buildActivityMap, groupActivityWeeks } from "../utils/build-activity-map";
 
 @Injectable({
     providedIn: 'root'
@@ -131,6 +132,21 @@ export class DashboardFacade {
     })
 
     readonly streakLabel = computed(() => getStreakLabel(this.streak()));
+
+    readonly activity = computed(() => {
+        const timestamps: number[] = [];
+
+        for (const alarm of this.alarmHistory.history()) timestamps.push(alarm.fireAt);
+        for (const timer of this.timerHistory.history()) timestamps.push(timer.finishedAt);
+        for (const session of this.stopwatchHistory.history()) timestamps.push(session.finishedAt);
+
+        /**
+         * @param 84 - how many days to show
+         */
+        return buildActivityMap(timestamps, 84);
+    })
+
+    readonly activityWeeks = computed(() => groupActivityWeeks(this.activity()));
 
     format(ms: number): string {
         const totalSeconds = Math.floor(ms / 1000);

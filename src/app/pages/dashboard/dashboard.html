@@ -26,3 +26,23 @@
     <span class="value">🔥{{facade.streak()}}</span>
     <small>{{facade.streakLabel()}}</small>
 </section>
+<section class="card">
+    <h3>activity heatmap</h3>
+    <div class="heatmap">
+        @for (week of facade.activityWeeks(); track $index) {
+            <div class="week">
+                <small class="month">{{week.label}}</small>
+                @for (day of week.days; track day.day) {
+                    <div class="cell"
+                        [class.zero]="day.level===0"
+                        [class.one]="day.level===1"
+                        [class.two]="day.level===2"
+                        [class.three]="day.level===3"
+                        [class.four]="day.level===4"
+                        [title]="(day.date|date:'dd.MM.yyyy')+' • '+day.count+' activities'">
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
