@@ -14,19 +14,7 @@ export function calculateSessionStats(laps: Lap[]): StopwatchSessionStats {
     ) / values.length;
     const deviation = Math.sqrt(variance);
     const consistency = Math.max(0, Math.min(100, Math.round(100 - deviation / average * 100)));
-
-    const consistencyLabel: ConsistencyLabel = (() => {
-        switch (true) {
-            case consistency >= 95:
-                return 'excellent';
-            case consistency >= 85:
-                return 'good';
-            case consistency >= 70:
-                return 'average';
-            default:
-                return 'needs-work';
-        }
-    })()
+    const consistencyLabel = getConsistencyLabel(consistency);
 
     return {
         fastestLap: fastest,
@@ -34,5 +22,18 @@ export function calculateSessionStats(laps: Lap[]): StopwatchSessionStats {
         averageLap: Math.round(average),
         consistency,
         consistencyLabel: consistencyLabel
+    }
+}
+
+export function getConsistencyLabel(consistency: number): ConsistencyLabel {
+    switch (true) {
+        case consistency >= 95:
+            return 'excellent';
+        case consistency >= 85:
+            return 'good';
+        case consistency >= 70:
+            return 'average';
+        default:
+            return 'needs-work';
     }
 }

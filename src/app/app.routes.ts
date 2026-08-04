@@ -5,16 +5,27 @@ import { Welcome } from './pages/welcome/welcome';
 import { NotFound } from './pages/not-found/not-found';
 import { Settings } from './pages/settings/settings';
 import { AlarmPage } from './pages/alarm/alarm';
-import { appInitGuard } from './utils/app-init.guard';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { appInitGuard } from './utils/app.guard';
 
 export const routes: Routes = [
     {
         path: '',
         component: Welcome,
+        data: {
+            title: 'welcome',
+            showInMenu: false,
+        }
+    },
+    {
+        path: 'dashboard',
+        component: Dashboard,
         canMatch: [appInitGuard],
         data: {
-            title: 'welcome-page',
-            showInMenu: false,
+            title: 'dashboard',
+            showInMenu: true,
+            icon: '',
+            order: 1
         }
     },
     {
@@ -25,7 +36,7 @@ export const routes: Routes = [
             title: 'stopwatch',
             showInMenu: true,
             icon: '',
-            order: 1
+            order: 4
         }
     },
     {
@@ -36,7 +47,7 @@ export const routes: Routes = [
             title: 'timer',
             showInMenu: true,
             icon: '',
-            order: 2
+            order: 3
         }
     },
     {
@@ -47,7 +58,7 @@ export const routes: Routes = [
             title: 'alarm',
             showInMenu: true,
             icon: '',
-            order: 3
+            order: 2
         }
     },
     {
@@ -58,7 +69,7 @@ export const routes: Routes = [
             title: 'settings',
             showInMenu: true,
             icon: '',
-            order: 4
+            order: 5
         }
     },
     {

@@ -17,6 +17,10 @@ export class SettingsSvc {
   readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
   readonly firstRunCompleted = computed(() => this.settings().firstRunCompleted);
 
+  // constructor() {
+  //   void this.load();
+  // }
+
   async load() {
     this.settings.set(await this.repo.load());
   }

@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { EMPTY_STOPWATCH_STATS, LapSession, StopwatchRepository } from '../core/repositories/stopwatch.repository';
+import { EMPTY_STOPWATCH_STATS, Lap, LapSession, StopwatchRepository } from '../core/repositories/stopwatch.repository';
 import { calculateSessionStats } from '../utils/stopwatch-session-stats';
 import { SettingsSvc } from './settings-svc';
 import { cleanupHistory } from '../utils/history-cleanup';
@@ -11,76 +11,19 @@ export class StopwatchHistorySvc {
   private readonly repo = inject(StopwatchRepository);
   private readonly settings = inject(SettingsSvc);
 
-  private current: LapSession | null = null;
-
+  readonly current = signal<LapSession | null>(null);
   readonly changed = signal(0);
+  readonly history = signal<LapSession[]>([]);
 
   constructor() {
-    void this.cleanup();
+    void this.load();
   }
 
   private touch() {
     this.changed.update(v => v + 1);
   }
 
-  startSession() {
-    if (this.current) return;
-
-    this.current = {
-      id: crypto.randomUUID(),
-      startedAt: Date.now(),
-      finishedAt: 0,
-      duration: 0,
-      laps: [],
-      stats: EMPTY_STOPWATCH_STATS
-    }
-  }
-
-  async finishSession(totalTime: number) {
-    await this.cleanup();
-    if (!this.current) return;
-
-    this.current.finishedAt = Date.now();
-    this.current.duration = totalTime;
-    this.current.stats = calculateSessionStats(this.current.laps);
-
-    await this.repo.save(this.current);
-    this.touch();
-    this.current = null;
-  }
-
-  async addLap(lapTime: number, totalTime: number) {
-    if (!this.current) return;
-
-    this.current.duration = totalTime;
-
-    this.current.laps.push({
-      id: crypto.randomUUID(),
-      index: this.current.laps.length + 1,
-      lapTime,
-      totalTime,
-      createdAt: Date.now()
-    })
-
-    await this.repo.save(this.current);
-    this.touch();
-  }
-
-  getHistory() {
-    return this.repo.getAll();
-  }
-
-  async deleteSession(id: string) {
-    await this.repo.delete(id);
-    this.touch();
-  }
-
-  async clear() {
-    await this.repo.clear();
-    this.touch();
-  }
-
-  private async cleanup() {
+  async load() {
     const history = await this.repo.getAll();
     const cleaned = cleanupHistory(
       history,
@@ -90,12 +33,89 @@ export class StopwatchHistorySvc {
 
     if (cleaned.length !== history.length) {
       await this.repo.restore(cleaned);
-      this.touch();
     }
+
+    this.history.set(cleaned);
+    this.touch();
+  }
+
+  startSession() {
+    if (this.current()) return;
+
+    this.current.set({
+      id: crypto.randomUUID(),
+      startedAt: Date.now(),
+      finishedAt: 0,
+      duration: 0,
+      laps: [],
+      stats: EMPTY_STOPWATCH_STATS
+    })
+  }
+
+  async finishSession(totalTime: number) {
+    const current = this.current();
+    if (!current) return;
+
+    const stats = calculateSessionStats(current.laps);
+
+    const finished: LapSession = {
+      ...current,
+      finishedAt: Date.now(),
+      duration: totalTime,
+      stats
+    }
+
+    await this.repo.save(finished);
+    this.history.update(list => [finished, ...list]);
+    this.current.set(null);
+    this.touch();
+  }
+
+  async addLap(lapTime: number, totalTime: number) {
+    const current = this.current();
+    if (!current) return;
+
+    const laps: Lap[] = [
+      ...current.laps,
+      {
+        id: crypto.randomUUID(),
+        index: current.laps.length + 1,
+        lapTime,
+        totalTime,
+        createdAt: Date.now()
+      }
+    ]
+
+    const updated: LapSession = {
+      ...current,
+      duration: totalTime,
+      laps,
+      stats: calculateSessionStats(laps)
+    }
+
+    this.current.set(updated);
+    this.touch();
+  }
+
+  getHistory() {
+    return this.history();
+  }
+
+  async deleteSession(id: string) {
+    await this.repo.delete(id);
+    this.history.update(list => list.filter(x => x.id !== id));
+    this.touch();
+  }
+
+  async clear() {
+    await this.repo.clear();
+    this.history.set([]);
+    this.touch();
   }
 
   async restore(history: LapSession[]) {
     await this.repo.restore(history);
+    this.history.set(structuredClone(history));
     this.touch();
   }
 }

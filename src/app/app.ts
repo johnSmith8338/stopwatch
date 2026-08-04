@@ -33,7 +33,7 @@ export class App {
   updHasHeader() {
     const url = this.currentPath();
     this.hasHeader.set(
-      url !== '/'
+      url !== '/welcome'
     )
   }
 

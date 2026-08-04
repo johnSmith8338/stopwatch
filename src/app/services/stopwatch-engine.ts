@@ -35,7 +35,7 @@ export class StopwatchEngine implements ClockEngine {
 
     const tick = () => {
       if (!this.running()) return;
-      this.elapsedMs.set(performance.now() - this.startTimestamp);
+      this.elapsedMs.set(Math.round(performance.now() - this.startTimestamp));
       this.frameId = requestAnimationFrame(tick);
     }
     tick();

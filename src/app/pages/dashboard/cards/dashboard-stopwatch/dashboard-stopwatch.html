@@ -1,0 +1,31 @@
+<div class="stat">
+    <span>sessions</span>
+    <strong>{{facade.stopwatchStats().totalSessions}}</strong>
+</div>
+<div class="stat">
+    <span>laps</span>
+    <strong>{{facade.stopwatchStats().totalLaps}}</strong>
+</div>
+<div class="stat">
+    <span>average laps</span>
+    <strong>{{facade.stopwatchStats().averageLaps}}</strong>
+</div>
+<div class="stat">
+    <span>longest session</span>
+    <strong>{{format(facade.stopwatchStats().longestSession)}}</strong>
+</div>
+<div class="stat">
+    <span>longest lap</span>
+    <strong>{{format(facade.stopwatchStats().longestLap)}}</strong>
+</div>
+<div class="stat">
+    <span>average consistency</span>
+    <strong>{{facade.stopwatchStats().averageConsistency}}</strong>
+    <small class="consistency"
+        [class.excellent]="facade.stopwatchStats().consistencyLabel==='excellent'"
+        [class.good]="facade.stopwatchStats().consistencyLabel==='good'"
+        [class.average]="facade.stopwatchStats().consistencyLabel==='average'"
+        [class.needs-work]="facade.stopwatchStats().consistencyLabel==='needs-work'">
+        {{facade.stopwatchStats().consistencyLabel}}
+    </small>
+</div>

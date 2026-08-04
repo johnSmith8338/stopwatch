@@ -4,7 +4,68 @@
     <button (click)="requestClear()">clear history</button>
 }
 
-@if (sessions().length===0) {
+@if (current(); as session) {
+    <article class="history-card current">
+        <div class="history-header">
+            <span>current session</span>
+            <span class="live-pill">● LIVE</span>
+        </div>
+        <section class="history-duration">
+            <h3 class="label">duration: {{format(session.duration)}}</h3>
+        </section>
+        <section class="history-stats">
+            <div class="stat">
+                <span>laps</span>
+                <strong>{{session.laps.length}}</strong>
+            </div>
+            @if (session.laps.length>0) {
+                <div class="stat">
+                    <span>⚡fastest</span>
+                    <strong>{{format(session.stats.fastestLap)}}</strong>
+                </div>
+                <div class="stat">
+                    <span>🐢 slowest</span>
+                    <strong>{{format(session.stats.slowestLap)}}</strong>
+                </div>
+                <div class="stat">
+                    <span>📊 average</span>
+                    <strong>{{format(session.stats.averageLap)}}</strong>
+                </div>
+                <div class="stat consistency">
+                    <span>🎯 consistency</span>
+                    <strong>{{session.stats.consistency}}</strong>
+                    <small>
+                        @switch (session.stats.consistencyLabel) {
+                            @case ('excellent') {
+                                <span class="consistency excellent">excellent</span>
+                            }
+                            @case ('good') {
+                                <span class="consistency good">good</span>
+                            }
+                            @case ('average') {
+                                <span class="consistency average">average</span>
+                            }
+                            @case ('needs-work') {
+                                <span class="consistency needs-work">needs-work</span>
+                            }
+                        }
+                    </small>
+                </div>
+            }
+        </section>
+        <section class="history-laps">
+            <span class="laps-title">laps</span>
+            @for (lap of session.laps; track lap.id) {
+                <div class="lap-row">
+                    <span>#{{lap.index}}</span>
+                    <span>{{format(lap.lapTime)}}</span>
+                </div>
+            }
+        </section>
+    </article>
+}
+
+@if (!current() && sessions().length===0) {
     <div class="empty-history">
         <p>No recorded sessions yet</p>
     </div>

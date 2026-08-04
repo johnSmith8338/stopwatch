@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { StepTracker } from '../../directives/step-tracker';
 import { Router } from '@angular/router';
 import { SettingsSvc } from '../../services/settings-svc';
@@ -28,9 +28,17 @@ export class Welcome {
     'finish'
   ])
 
+  constructor() {
+    effect(() => {
+      if (this.settings.settings().firstRunCompleted) {
+        void this.router.navigate(['dashboard']);
+      }
+    })
+  }
+
   private async completeFirstRun() {
     await this.settings.finishFirstRun();
-    await this.router.navigate(['/timer']);
+    await this.router.createUrlTree(['/dashboard']);
   }
 
   finish() {

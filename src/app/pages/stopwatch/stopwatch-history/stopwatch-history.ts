@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { StopwatchHistorySvc } from '../../../services/stopwatch-history-svc';
 import { LapSession } from '../../../core/repositories/stopwatch.repository';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-stopwatch-history',
-  imports: [DatePipe, ConfirmDialog],
+  imports: [ConfirmDialog, DatePipe],
   templateUrl: './stopwatch-history.html',
   styleUrl: './stopwatch-history.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,20 +18,17 @@ export class StopwatchHistory {
   readonly deletingSession = signal<string | null>(null);
   readonly clearing = signal(false);
 
+  readonly current = computed(() => this.historySvc.current());
+
   constructor() {
     effect(() => {
       this.historySvc.changed();
-      void this.reload();
+      this.sessions.set(this.historySvc.history());
     })
-  }
-
-  async reload() {
-    this.sessions.set(await this.historySvc.getHistory());
   }
 
   async delete(id: string) {
     await this.historySvc.deleteSession(id);
-    await this.reload();
   }
 
   async clear() {
@@ -53,7 +50,6 @@ export class StopwatchHistory {
 
     await this.historySvc.deleteSession(id);
     this.deletingSession.set(null);
-    await this.reload();
   }
 
   requestClear() {
@@ -66,7 +62,6 @@ export class StopwatchHistory {
 
   async confirmClear() {
     await this.historySvc.clear();
-    this.sessions.set([]);
     this.clearing.set(false);
   }
 
