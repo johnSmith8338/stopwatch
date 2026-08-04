@@ -46,3 +46,55 @@
         }
     </div>
 </section>
+<section class="card">
+    <h3>favorite timers</h3>
+    @if (facade.favoriteTimers().length) {
+        @for (timer of facade.favoriteTimers(); track timer.name;let i=$index) {
+            <div class="favorite-row">
+                <span class="place">
+                    @switch (i) {
+                        @case (0) {🥇}
+                        @case (0) {🥈}
+                        @case (0) {🥉}
+                    }
+                </span>
+                <span class="title">{{timer.name}}</span>
+                <span class="usage">
+                    <strong>{{timer.count}}</strong>
+                    <span class="favorite-progress">
+                        <span [style.--progress.%]="timer.percent"></span>
+                    </span>
+                    <small>{{timer.percent}}%</small>
+                </span>
+            </div>
+        }
+    }@else {
+        <small>no timer history</small>
+    }
+</section>
+<section class="card">
+    <h3>favorite alarms</h3>
+    @if (facade.favoriteAlarms().length) {
+        @for (alarm of facade.favoriteAlarms(); track alarm.name;let i=$index) {
+            <div class="favorite-row">
+                <span class="place">
+                    @switch (i) {
+                        @case (0) {🥇}
+                        @case (0) {🥈}
+                        @case (0) {🥉}
+                    }
+                </span>
+                <span class="title">{{alarm.name}}</span>
+                <span class="usage">
+                    <strong>{{alarm.count}}</strong>
+                    <span class="favorite-progress">
+                        <span [style.--progress.%]="alarm.percent"></span>
+                    </span>
+                    <small>{{alarm.percent}}%</small>
+                </span>
+            </div>
+        }
+    }@else {
+        <small>no alarm history</small>
+    }
+</section>

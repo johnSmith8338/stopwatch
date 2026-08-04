@@ -51,3 +51,19 @@
     background: #ef6c3c;
   }
 }
+
+.favorite-progress {
+  display: grid;
+  block-size: 4px;
+  inline-size: 100%;
+  min-inline-size: 200px;
+  max-inline-size: 300px;
+  border: 1px solid green;
+  overflow: hidden;
+}
+
+.favorite-progress>span {
+  block-size: 100%;
+  inline-size: var(--progress);
+  background: green;
+}

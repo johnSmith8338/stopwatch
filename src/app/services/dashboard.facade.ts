@@ -148,6 +148,18 @@ export class DashboardFacade {
 
     readonly activityWeeks = computed(() => groupActivityWeeks(this.activity()));
 
+    readonly favoriteTimers = computed(() => {
+        return this.getTopItems(
+            this.timerHistory.history().map(x => x.snapshot.title)
+        )
+    })
+
+    readonly favoriteAlarms = computed(() => {
+        return this.getTopItems(
+            this.alarmHistory.history().map(x => x.snapshot.title)
+        )
+    })
+
     format(ms: number): string {
         const totalSeconds = Math.floor(ms / 1000);
         const hours = Math.floor(totalSeconds / 3600);
@@ -167,5 +179,30 @@ export class DashboardFacade {
 
     private dayId(timestamp: number): number {
         return Math.floor(timestamp / 86_400_000);
+    }
+
+    private getTopItems(items: string[], limit = 3): Array<{
+        name: string;
+        count: number;
+        percent: number;
+    }> {
+        if (!items.length) return [];
+
+        const map = new Map<string, number>();
+
+        for (const item of items) {
+            map.set(item, (map.get(item) ?? 0) + 1);
+        }
+
+        const total = items.length;
+
+        return [...map.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, limit)
+            .map(([name, count]) => ({
+                name,
+                count,
+                percent: Math.round(count / total * 100)
+            }))
     }
 }
