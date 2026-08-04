@@ -13,3 +13,16 @@
         <app-dashboard-stopwatch />
     </div>
 </section>
+@if (facade.lastActivity(); as activity) {
+    <section class="card">
+        <h3>activity</h3>
+        <p class="activity-type">{{activity.title}}</p>
+        <p class="activity-subtitle">{{activity.subtitle}}</p>
+        <small>{{activity.timestamp|date:'dd.MM.yyyy HH:mm'}}</small>
+    </section>
+}
+<section class="card">
+    <h3>current streak</h3>
+    <span class="value">🔥{{facade.streak()}}</span>
+    <small>{{facade.streakLabel()}}</small>
+</section>

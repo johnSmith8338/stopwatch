@@ -3,6 +3,9 @@ import { AlarmHistorySvc } from "./alarm-history-svc";
 import { TimerHistorySvc } from "./timer-history-svc";
 import { StopwatchHistorySvc } from "./stopwatch-history-svc";
 import { getConsistencyLabel } from "../utils/stopwatch-session-stats";
+import { DashboardLastActivity } from "../models/dashboard";
+import { calculateStreak } from "../utils/calculate-streak";
+import { getStreakLabel } from "../utils/get-steak-label";
 
 @Injectable({
     providedIn: 'root'
@@ -71,4 +74,82 @@ export class DashboardFacade {
             consistencyLabel
         }
     })
+
+    readonly lastActivity = computed<DashboardLastActivity | null>(() => {
+        const candidates: DashboardLastActivity[] = [];
+
+        const stopwatch = this.stopwatchHistory.history()[0];
+        if (stopwatch) {
+            candidates.push({
+                type: 'stopwatch',
+                timestamp: stopwatch.finishedAt,
+                title: 'stopwatch',
+                subtitle: this.format(stopwatch.duration)
+            })
+        }
+
+        const timer = this.timerHistory.history()[0];
+        if (timer) {
+            candidates.push({
+                type: 'timer',
+                timestamp: timer.finishedAt,
+                title: timer.snapshot.title,
+                subtitle: this.format(timer.elapsedMs)
+            })
+        }
+
+        const alarm = this.alarmHistory.history()[0];
+        if (alarm) {
+            candidates.push({
+                type: 'alarm',
+                timestamp: alarm.fireAt,
+                title: alarm.snapshot.title,
+                subtitle:
+                    `${alarm.snapshot.hour.toString().padStart(2, '0')}` +
+                    `${alarm.snapshot.minute.toString().padStart(2, '0')}`
+            })
+        }
+
+        if (!candidates.length) return null;
+        return candidates.sort((a, b) => b.timestamp - a.timestamp)[0];
+    })
+
+    readonly streak = computed(() => {
+        const days: number[] = [];
+
+        for (const session of this.stopwatchHistory.history()) {
+            days.push(this.dayId(session.finishedAt));
+        }
+        for (const timer of this.timerHistory.history()) {
+            days.push(this.dayId(timer.finishedAt));
+        }
+        for (const alarm of this.alarmHistory.history()) {
+            days.push(this.dayId(alarm.fireAt));
+        }
+
+        return calculateStreak(days);
+    })
+
+    readonly streakLabel = computed(() => getStreakLabel(this.streak()));
+
+    format(ms: number): string {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = hours > 0 ?
+            Math.floor((totalSeconds % 3600) / 60) :
+            Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        const centiseconds = Math.floor((ms % 1000) / 10);
+
+        const short =
+            `${minutes.toString().padStart(2, '0')}:` +
+            `${seconds.toString().padStart(2, '0')}:` +
+            `${centiseconds.toString().padStart(2, '0')}`;
+
+        return hours ? `${hours.toString().padStart(2, '0')}:${short}` : short;
+    }
+
+    private dayId(timestamp: number): number {
+        return Math.floor(timestamp / 86_400_000);
+    }
 }
