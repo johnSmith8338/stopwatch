@@ -1,5 +1,7 @@
-import { hidden } from "@angular/forms/signals";
-import { ChartPoint, SvgPoint } from "./chart-point";
+import { ChartPoint, DonutArc, SvgPoint } from "./chart-point";
+import { polarToCartession } from "./geometry-utils";
+
+const FULL = Math.PI * 2;
 
 export function minValue(points: ChartPoint[]): number {
     return Math.min(...points.map(p => p.value));
@@ -20,14 +22,8 @@ export function normalizeValues(points: ChartPoint[]): number[] {
     return points.map(point => (point.value - min) / (max - min));
 }
 
-export function buildPolyline(
-    points: ChartPoint[],
-    width: number,
-    height: number,
-    padding = 8
-): string {
-    return buildPoints(points, width, height, padding)
-        .map(p => `${p.x},${p.y}`).join(' ');
+export function buildPolyline(points: SvgPoint[]): string {
+    return points.map(p => `${p.x},${p.y}`).join(' ');
 }
 
 export function normalizeToPercent(points: ChartPoint[]): number[] {
@@ -50,12 +46,27 @@ export function buildPoints(
 
     const normalized = normalizeValues(points);
     const step = points.length === 1 ? 0 : (width - padding * 2) / (points.length - 1);
-    return normalized.map((value, index) => ({
-        x: padding + index * step,
-        y: height - padding - value * (height - padding * 2),
-        label: points[index].label,
-        value: points[index].value
-    }))
+    const result: SvgPoint[] = [];
+    let accumulated = 0;
+
+    for (let i = 0; i < points.length; i++) {
+        const x = padding + i * step;
+        const y = height - padding - normalized[i] * (height - padding * 2);
+
+        if (i > 0) {
+            const prev = result[i - 1];
+            accumulated += Math.hypot(x - prev.x, y - prev.y);
+        }
+
+        result.push({
+            ...points[i],
+            x,
+            y,
+            length: accumulated
+        })
+    }
+
+    return result;
 }
 
 export function buildArea(
@@ -69,11 +80,57 @@ export function buildArea(
     if (!svgPoints.length) return '';
 
     const start = `${padding},${height - padding}`;
-    const end = `${width - padding},${height - padding}`;
+    const last = svgPoints.at(-1)!;
 
     return [
         start,
         ...svgPoints.map(p => `${p.x},${p.y}`),
-        end
+        `${last.x},${height - padding}`
     ].join(' ');
+}
+
+// DONUT
+export function buildDonut(slices: ChartPoint[]): DonutArc[] {
+    if (!slices.length) return [];
+
+    const total = slices.reduce((a, b) => a + b.value, 0);
+    let current = -Math.PI / 2;
+    return slices.map(slice => {
+        const percent = slice.value / total;
+        const angle = FULL * percent;
+        const start = current;
+        const end = current + angle;
+
+        current = end;
+
+        return {
+            label: slice.label,
+            value: slice.value,
+            percent,
+            startAngle: start,
+            endAngle: end
+        }
+    })
+}
+
+export function buildArcPath(
+    cx: number,
+    cy: number,
+    radius: number,
+    start: number,
+    end: number
+): string {
+    const p1 = polarToCartession(cx, cy, radius, start);
+    const p2 = polarToCartession(cx, cy, radius, end);
+    const large = end - start > Math.PI ? 1 : 0;
+
+    return `
+    M ${p1.x} ${p1.y}
+    A ${radius} ${radius}
+    0
+    ${large}
+    1
+    ${p2.x}
+    ${p2.y}
+    `;
 }

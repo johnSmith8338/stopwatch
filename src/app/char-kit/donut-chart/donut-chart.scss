@@ -1,3 +1,49 @@
 :host {
   display: block;
+  min-width: 200px;
+}
+
+.background {
+  fill: none;
+  stroke: #222;
+  stroke-width: 18;
+  opacity: .15;
+}
+
+.arc {
+  fill: none;
+  stroke-width: 18;
+  stroke-linecap: round;
+  transition: stroke-width 0.2s, filter 0.2s, transform 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    stroke-width: 22;
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+}
+
+.total {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtitle {
+  text-anchor: middle;
+  fill: #888;
+  font-size: 10px;
+}
+
+.dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes drawArc {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

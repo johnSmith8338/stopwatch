@@ -99,5 +99,8 @@
     }
 </section>
 
-<app-line-chart [points]="activity()" />
-<app-bar-chart [points]="bars()" />
+<div class="graths">
+    <app-line-chart [points]="activity()" />
+    <app-bar-chart [points]="bars()" />
+    <app-donut-chart [slices]="donut()" />
+</div>

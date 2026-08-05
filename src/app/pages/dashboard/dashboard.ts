@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 import { ChartPoint } from '../../char-kit/chart-point';
 import { LineChart } from "../../char-kit/line-chart/line-chart";
 import { BarChart } from "../../char-kit/bar-chart/bar-chart";
+import { DonutChart } from "../../char-kit/donut-chart/donut-chart";
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,8 @@ import { BarChart } from "../../char-kit/bar-chart/bar-chart";
     DashboardStopwatch,
     DatePipe,
     LineChart,
-    BarChart
+    BarChart,
+    DonutChart
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -43,5 +45,20 @@ export class Dashboard {
     { label: 'Fri', value: 8 },
     { label: 'Sat', value: 2 },
     { label: 'Sun', value: 6 },
+  ]);
+
+  readonly donut = signal([
+    {
+      label: 'finished',
+      value: 17
+    },
+    {
+      label: 'cancelled',
+      value: 3
+    },
+    {
+      label: 'missed',
+      value: 2
+    }
   ]);
 }

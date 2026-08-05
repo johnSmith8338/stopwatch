@@ -1,7 +1,7 @@
 <svg class="chart" [attr.viewBox]="'0 0 ' + width() + ' ' + height()">
     <polygon class="area" [attr.fill]="'url(#'+gradientId+')'" [attr.points]="area()" />
     <polyline class="line-shadow" [attr.points]="polyline()" />
-    <polyline class="line"  fill="none" [attr.points]="polyline()" />
+    <polyline #line class="line"  fill="none" [attr.points]="polyline()" />
     @for (line of [0,25,50,75,100]; track line) {
         <line class="grid"
             x1="8"
@@ -16,17 +16,15 @@
             [attr.x2]="point.x"
             [attr.y2]="height()-8" />
     }
-    <!-- @for (point of svgPoints(); track point.label) {
-        <circle class="point" [style.--delay]="($index*80)+'ms'" [attr.cx]="point.x" [attr.cy]="point.y" r="4" />
-    } -->
-    
     @for (point of svgPoints(); track point.label) {
         <text class="label" [attr.x]="point.x" [attr.y]="height()-2">{{point.label}}</text>
     }
     @for (point of svgPoints(); track point.label) {
         <g class="hover-group">
             <circle class="hover" [attr.cx]="point.x" [attr.cy]="point.y" r="14" />
-            <circle class="point" [style.--delay]="($index*80)+'ms'" [attr.cx]="point.x" [attr.cy]="point.y" r="4" />
+            @if (visiblePoints()[$index]) {
+                <circle class="point" [attr.cx]="point.x" [attr.cy]="point.y" r="4" />
+            }
             <text class="tooltip" [attr.x]="point.x" [attr.y]="point.y-12">{{point.value}}</text>
         </g>
     }
