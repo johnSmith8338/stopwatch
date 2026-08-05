@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: .5rem;
+  height: 220px;
+}
+
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar {
+  position: relative;
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(to top,
+      #2f7d32,
+      #66bb6a);
+  min-height: 4px;
+  animation: grow .45s ease forwards;
+  animation-delay: calc(var(--delay)*50ms);
+  transform-origin: bottom;
+  scale: 1 0;
+  transition: .2s;
+
+  &:hover {
+    filter: brightness(1.15);
+
+    .tooltip {
+      opacity: 1;
+      transform: translateY(-4px);
+    }
+  }
+}
+
+.tooltip {
+  position: absolute;
+  top: -1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: .2s;
+  padding: .15rem .35rem;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+.label {
+  font-size: .75rem;
+  color: #888;
+}
+
+@keyframes grow {
+  to {
+    scale: 1;
+  }
+}
