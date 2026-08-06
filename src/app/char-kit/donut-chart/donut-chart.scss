@@ -10,16 +10,36 @@
   opacity: .15;
 }
 
+.hover-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 36px;
+  pointer-events: stroke;
+}
+
 .arc {
   fill: none;
   stroke-width: 18;
-  stroke-linecap: round;
-  transition: stroke-width 0.2s, filter 0.2s, transform 0.2s;
+  transition: stroke-width 0.4s ease, filter 0.2s ease, transform 0.2s cubic-bezier(.2, .8, .2, 1), d 0.2s ease;
   cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeArc .35s ease forwards;
 
-  &:hover {
-    stroke-width: 22;
-    filter: drop-shadow(0 0 6px currentColor);
+  &.active {
+    stroke-width: 20;
+  }
+}
+
+@keyframes fadeArc {
+  from {
+    opacity: 0;
+    transform: scale(.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -28,9 +48,13 @@
   dominant-baseline: middle;
   font-size: 28px;
   font-weight: 700;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.2s ease;
 }
 
 .subtitle {
+  dominant-baseline: hanging;
   text-anchor: middle;
   fill: #888;
   font-size: 10px;
@@ -40,10 +64,47 @@
   display: block;
   width: 16px;
   height: 16px;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
 @keyframes drawArc {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+.legend {
+  display: grid;
+  gap: .35rem;
+}
+
+.legend-item {
+  display: flex;
+  gap: .5rem;
+  align-items: flex-end;
+  padding: .35rem .5rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: transform .22s ease, background .22s ease, opacity .22s ease;
+  opacity: .7;
+}
+
+.legend-item:hover,
+.legend-item.active {
+  opacity: 1;
+  transform: translateX(6px);
+  background: rgba(255, 255, 255, .05);
+}
+
+.legend-item strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.legend-item small {
+  opacity: .6;
+}
+
+.legend-item.active .dot {
+  transform: scale(1.35);
+  box-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
 }

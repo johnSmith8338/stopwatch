@@ -1,22 +1,44 @@
-<svg [attr.viewBox]="'0 0 '+size()+' '+size()">
+<svg [attr.viewBox]="
+    (-padding)+' '+
+    (-padding)+' '+
+    (size()+padding*2)+' '+
+    (size()+padding*2)
+">
     <circle class="background"
         [attr.cx]="size()/2"
         [attr.cy]="size()/2"
         [attr.r]="radius()" />
-        @for (arc of renderArcs(); track arc.label) {
+        @for (arc of renderArcs().slice(0,visibleCount()); track arc.label) {
+            <path #arc class="hover-hit" 
+                [attr.d]="buildPath(arc)" 
+                (pointerenter)="hoverEnter(arc.label)"
+                (pointerleave)="hoverLeave()" />
             <path #arc class="arc" 
-                [attr.d]="buildPath(arc.startAngle,arc.endAngle)" 
-                [style.stroke]="colors()[$index%colors().length]" />
+                [class.active]="hovered()===arc.label"
+                [attr.d]="buildPath(arc)" 
+                [style.stroke]="colors()[$index%colors().length]"
+                [style.--arc-color]="colors()[$index%colors().length]"
+                [style.color]="colors()[$index]"
+                [attr.filter]="hovered()===arc.label ? 'url(#arcGlow)' : null" />
         }
-        <text class="total" x="50%" y="50%">{{total()}}</text>
-        <text class="subtitle" x="50%" y="62%">total</text>
+        <text class="total" [attr.x]="size()/2" [attr.y]="size()/2" [style.transform]="`scale(${totalScale()})`">{{animatedTotal()}}</text>
+        <text class="subtitle" [attr.x]="size()/2" [attr.y]="size()/2+16">{{centerLabel()}}</text>
+        <defs>
+            <filter id="arcGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="0" stdDeviation="4" flood-opacity="0.45" fllod-color="currentColor" />
+            </filter>
+        </defs>
 </svg>
 <div class="legend">
-    @for (arc of renderArcs(); track arc.label) {
-        <div class="legend-item">
+    @for (arc of renderArcs().slice(0,visibleCount()); track arc.label) {
+        <div class="legend-item"
+            [class.active]="hovered()===arc.label"
+            (pointerenter)="hoverEnter(arc.label)"
+            (pointerleave)="hoverLeave()">
             <span class="dot" [style.background]="colors()[$index%colors().length]"></span>
             <span>{{arc.label}}</span>
             <strong>{{arc.value}}</strong>
+            <small>{{arc.percent|percent:'1.0-0'}}</small>
         </div>
     }
 </div>

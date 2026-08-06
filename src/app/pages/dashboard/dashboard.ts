@@ -50,15 +50,15 @@ export class Dashboard {
   readonly donut = signal([
     {
       label: 'finished',
-      value: 17
+      value: 19
     },
     {
       label: 'cancelled',
-      value: 3
+      value: 8
     },
     {
       label: 'missed',
-      value: 2
+      value: 4
     }
   ]);
 }
