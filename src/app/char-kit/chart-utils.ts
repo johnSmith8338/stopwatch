@@ -90,6 +90,23 @@ export function buildArea(
     ].join(' ');
 }
 
+export function buildAnimatedArea(
+    points: MorphPoint[],
+    height: number,
+    padding = 8
+): string {
+    if (points.length) return '';
+
+    const start = `${padding},${height - padding}`;
+    const last = points.at(-1)!;
+
+    return [
+        start,
+        ...points.map(p => `${p.currentX},${p.currentY}`),
+        `${last.currentX},${height - padding}`
+    ].join(' ')
+}
+
 // DONUT
 export function buildDonut(slices: ChartPoint[]): DonutArc[] {
     if (!slices.length) return [];

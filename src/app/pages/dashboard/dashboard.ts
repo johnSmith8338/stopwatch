@@ -9,6 +9,7 @@ import { LineChart } from "../../char-kit/line-chart/line-chart";
 import { BarChart } from "../../char-kit/bar-chart/bar-chart";
 import { DonutChart } from "../../char-kit/donut-chart/donut-chart";
 import { MiniSparkline } from "../../char-kit/mini-sparkline/mini-sparkline";
+import { AreaChart } from "../../char-kit/area-chart/area-chart";
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,8 @@ import { MiniSparkline } from "../../char-kit/mini-sparkline/mini-sparkline";
     LineChart,
     BarChart,
     DonutChart,
-    MiniSparkline
+    MiniSparkline,
+    AreaChart
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',

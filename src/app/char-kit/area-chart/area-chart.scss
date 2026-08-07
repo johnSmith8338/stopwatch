@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+svg {
+  overflow: visible;
+}
+
+.area {
+  transition: fill .3s;
+}
+
+.line {
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
