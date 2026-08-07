@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { ChartPoint } from '../chart-point';
 import { normalizeToPercent } from '../chart-utils';
+import { ChartBase } from '../chart-base';
 
 @Component({
   selector: 'app-bar-chart',
@@ -9,7 +10,7 @@ import { normalizeToPercent } from '../chart-utils';
   styleUrl: './bar-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BarChart {
+export class BarChart extends ChartBase {
   readonly points = input.required<ChartPoint[]>();
 
   readonly values = computed(() => normalizeToPercent(this.points()));

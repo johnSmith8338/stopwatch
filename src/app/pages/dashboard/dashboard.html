@@ -1,4 +1,29 @@
 <h2>dashboard</h2>
+<section class="stats-grid">
+    @for (card of facade.statCards(); track card.title) {
+        <app-dashboard-stats [card]="card" />
+    }
+</section>
+
+<section class="dashboard-grid">
+    <div class="card">
+        <h3>activity over time</h3>
+        <app-line-chart [points]="facade.activityOverTime()" [height]="180" />
+    </div>
+    <div class="card">
+        <h3>usage distribution</h3>
+        <app-donut-chart [slices]="facade.usageDistribution()" [size]="180" />
+    </div>
+    <div class="card">
+        <h3>hour of day</h3>
+        <app-bar-chart [points]="facade.hourDistribution()" [style.height.px]="180" />
+    </div>
+    <div class="card">
+        <h3>success ratio</h3>
+        <app-donut-chart [slices]="facade.successRatioChart()" [size]="180" />
+    </div>
+</section>
+
 <section class="cards">
     <div class="card">
         <h3>alarms</h3>
@@ -13,6 +38,7 @@
         <app-dashboard-stopwatch />
     </div>
 </section>
+
 @if (facade.lastActivity(); as activity) {
     <section class="card">
         <h3>activity</h3>
@@ -21,11 +47,13 @@
         <small>{{activity.timestamp|date:'dd.MM.yyyy HH:mm'}}</small>
     </section>
 }
+
 <section class="card">
     <h3>current streak</h3>
     <span class="value">🔥{{facade.streak()}}</span>
     <small>{{facade.streakLabel()}}</small>
 </section>
+
 <section class="card">
     <h3>activity heatmap</h3>
     <div class="heatmap">
@@ -46,6 +74,7 @@
         }
     </div>
 </section>
+
 <section class="card">
     <h3>favorite timers</h3>
     @if (facade.favoriteTimers().length) {
@@ -72,6 +101,7 @@
         <small>no timer history</small>
     }
 </section>
+
 <section class="card">
     <h3>favorite alarms</h3>
     @if (facade.favoriteAlarms().length) {
@@ -98,11 +128,3 @@
         <small>no alarm history</small>
     }
 </section>
-
-<div class="graths">
-    <app-line-chart [points]="activity()" />
-    <app-bar-chart [points]="bars()" />
-    <app-donut-chart [slices]="donut()" />
-    <app-mini-sparkline [points]="activity()" />
-    <app-area-chart [points]="activity()" />
-</div>

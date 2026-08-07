@@ -18,3 +18,15 @@ export interface ActivityWeek {
     label: string;
     days: ActivityDay[];
 }
+
+export interface DashboardStatCard {
+    title: string;
+    value: string | number;
+    subtitle?: string;
+    icon?: string;
+    color?: 'green' | 'blue' | 'orange' | 'red' | 'purple';
+    trend?: {
+        value: number;
+        direction: 'up' | 'down' | 'flat';
+    };
+}

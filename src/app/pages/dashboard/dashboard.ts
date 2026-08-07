@@ -1,15 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DashboardFacade } from '../../services/dashboard.facade';
 import { DashboardAlarm } from "./cards/dashboard-alarm/dashboard-alarm";
 import { DashboardTimer } from "./cards/dashboard-timer/dashboard-timer";
 import { DashboardStopwatch } from "./cards/dashboard-stopwatch/dashboard-stopwatch";
 import { DatePipe } from '@angular/common';
-import { ChartPoint } from '../../char-kit/chart-point';
+import { DashboardStats } from "./cards/dashboard-stats/dashboard-stats";
 import { LineChart } from "../../char-kit/line-chart/line-chart";
-import { BarChart } from "../../char-kit/bar-chart/bar-chart";
 import { DonutChart } from "../../char-kit/donut-chart/donut-chart";
-import { MiniSparkline } from "../../char-kit/mini-sparkline/mini-sparkline";
-import { AreaChart } from "../../char-kit/area-chart/area-chart";
+import { BarChart } from "../../char-kit/bar-chart/bar-chart";
 
 @Component({
   selector: 'app-dashboard',
@@ -18,11 +16,10 @@ import { AreaChart } from "../../char-kit/area-chart/area-chart";
     DashboardTimer,
     DashboardStopwatch,
     DatePipe,
+    DashboardStats,
     LineChart,
-    BarChart,
     DonutChart,
-    MiniSparkline,
-    AreaChart
+    BarChart
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -30,39 +27,4 @@ import { AreaChart } from "../../char-kit/area-chart/area-chart";
 })
 export class Dashboard {
   readonly facade = inject(DashboardFacade);
-
-  activity = signal<ChartPoint[]>([
-    { label: 'Mon', value: 4 },
-    { label: 'Tue', value: 7 },
-    { label: 'Wed', value: 2 },
-    { label: 'Thu', value: 9 },
-    { label: 'Fri', value: 6 },
-    { label: 'Sat', value: 12 },
-    { label: 'Sun', value: 8 }
-  ]);
-
-  bars = signal([
-    { label: 'Mon', value: 3 },
-    { label: 'Tue', value: 7 },
-    { label: 'Wed', value: 5 },
-    { label: 'Thu', value: 10 },
-    { label: 'Fri', value: 8 },
-    { label: 'Sat', value: 2 },
-    { label: 'Sun', value: 6 },
-  ]);
-
-  readonly donut = signal([
-    {
-      label: 'finished',
-      value: 12
-    },
-    {
-      label: 'cancelled',
-      value: 8
-    },
-    {
-      label: 'missed',
-      value: 6
-    }
-  ]);
 }

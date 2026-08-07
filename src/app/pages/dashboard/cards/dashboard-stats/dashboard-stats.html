@@ -1,0 +1,19 @@
+<div class="stat-card">
+    <div class="icon">{{card().icon}}</div>
+    <div class="content">
+        <div class="title">{{card().title}}</div>
+        <div class="value">{{card().value}}</div>
+        @if(card().subtitle){
+            <div class="subtitle">
+                {{card().subtitle}}
+            </div>
+        }
+        @if(card().trend; as trend){
+            <div class="trend"
+                 [class.up]="trend.direction==='up'"
+                 [class.down]="trend.direction==='down'">
+                {{trend.value}}%
+            </div>
+        }
+    </div>
+</div>

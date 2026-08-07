@@ -3,10 +3,11 @@ import { AlarmHistorySvc } from "./alarm-history-svc";
 import { TimerHistorySvc } from "./timer-history-svc";
 import { StopwatchHistorySvc } from "./stopwatch-history-svc";
 import { getConsistencyLabel } from "../utils/stopwatch-session-stats";
-import { DashboardLastActivity } from "../models/dashboard";
+import { DashboardLastActivity, DashboardStatCard } from "../models/dashboard";
 import { calculateStreak } from "../utils/calculate-streak";
 import { getStreakLabel } from "../utils/get-steak-label";
 import { buildActivityMap, groupActivityWeeks } from "../utils/build-activity-map";
+import { ChartPoint } from "../char-kit/chart-point";
 
 @Injectable({
     providedIn: 'root'
@@ -159,6 +160,133 @@ export class DashboardFacade {
             this.alarmHistory.history().map(x => x.snapshot.title)
         )
     })
+
+    readonly activityOverTime = computed<ChartPoint[]>(() => {
+        const map = new Map<number, number>();
+        const add = (timestamp: number) => {
+            const d = new Date(timestamp);
+            d.setHours(0, 0, 0, 0);
+
+            const key = d.getTime();
+            map.set(key, (map.get(key) ?? 0) + 1);
+        }
+
+        this.alarms().forEach(a => add(a.fireAt));
+        this.timers().forEach(t => add(t.finishedAt));
+        this.stopwatchSessions().forEach(s => add(s.finishedAt));
+
+        const result: ChartPoint[] = [];
+
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() - i);
+
+            result.push({
+                label: d.toLocaleDateString('en', { weekday: 'short' }),
+                value: map.get(d.getTime()) ?? 0
+            })
+        }
+        return result;
+    })
+
+    readonly usageDistribution = computed<ChartPoint[]>(() => [
+        {
+            label: 'timers',
+            value: this.totalTimerRuns()
+        },
+        {
+            label: 'alarms',
+            value: this.totalAlarmRuns()
+        },
+        {
+            label: 'stopwatch',
+            value: this.totalStopwatchSessions()
+        }
+    ])
+
+    readonly hourDistribution = computed<ChartPoint[]>(() => {
+        const buckets = Array(24).fill(0);
+        const add = (time: number) => {
+            buckets[new Date(time).getHours()]++;
+        }
+
+        this.alarms().forEach(x => add(x.fireAt));
+        this.timers().forEach(x => add(x.finishedAt));
+        this.stopwatchSessions().forEach(x => add(x.finishedAt));
+
+        return buckets.map((count, h) => ({
+            label: h.toString(),
+            value: count
+        }));
+    })
+
+    readonly successRatioChart = computed<ChartPoint[]>(() => {
+        const success =
+            this.alarmStats().stopped +
+            this.timerStats().finished +
+            this.stopwatchStats().totalSessions;
+
+        const failed =
+            this.alarmStats().missed +
+            this.timerStats().cancelled;
+
+        return [
+            {
+                label: 'Success',
+                value: success
+            },
+            {
+                label: 'Failed',
+                value: failed
+            }
+        ];
+    });
+
+    readonly successRatio = computed(() => {
+        const success = this.successRatioChart()[0].value;
+        const failed = this.successRatioChart()[1].value;
+
+        const total = success + failed;
+
+        return total ? Math.round(success / total * 100) : 100;
+    });
+
+    readonly statCards = computed<DashboardStatCard[]>(() => [
+        {
+            title: 'Activities',
+            value: this.totalActivities(),
+            subtitle: 'all time',
+            icon: '📊',
+            color: 'blue'
+        },
+        {
+            title: 'Current streak',
+            value: this.streak(),
+            subtitle: this.streakLabel(),
+            icon: '🔥',
+            color: 'orange'
+        },
+        {
+            title: 'Success',
+            value: `${this.successRatio()}%`,
+            icon: '🎯',
+            color: 'green'
+        },
+        {
+            title: 'Sessions',
+            value: this.stopwatchStats().totalSessions,
+            subtitle: `${this.stopwatchStats().totalLaps} laps`,
+            icon: '⏱️',
+            color: 'purple'
+        }
+    ]);
+
+    readonly totalActivities = computed(() =>
+        this.totalAlarmRuns() +
+        this.totalTimerRuns() +
+        this.totalStopwatchSessions()
+    );
 
     format(ms: number): string {
         const totalSeconds = Math.floor(ms / 1000);
