@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
-import { AnimatedPoint, ChartPoint, SvgPoint } from '../chart-point';
+import { ChartPoint, SvgPoint } from '../chart-point';
 import { buildPoints, buildPolyline } from '../chart-utils';
-import { animate, lerp, morphPoints } from '../chart-animation';
+import { ChartBase } from '../chart-base';
+import { MorphPoint, morphPoints } from '../chart-morph';
 
 @Component({
   selector: 'app-mini-sparkline',
@@ -10,15 +11,15 @@ import { animate, lerp, morphPoints } from '../chart-animation';
   styleUrl: './mini-sparkline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MiniSparkline {
+export class MiniSparkline extends ChartBase {
   readonly points = input.required<ChartPoint[]>();
   readonly width = input(120);
   readonly height = input(48);
 
   readonly gradientId = `spark-${crypto.randomUUID()}`;
 
-  readonly hovered = signal<AnimatedPoint | null>(null);
-  readonly renderPoints = signal<AnimatedPoint[]>([]);
+  readonly hovered = signal<MorphPoint | null>(null);
+  readonly renderPoints = signal<MorphPoint[]>([]);
 
   readonly isGrowing = computed(() => {
     const points = this.points();
@@ -26,17 +27,9 @@ export class MiniSparkline {
     return points.at(-1)!.value >= points[0].value;
   });
 
-  readonly gradientStart = computed(() =>
-    this.isGrowing()
-      ? '#16a34a'
-      : '#dc2626'
-  );
+  readonly gradientStart = computed(() => this.colors()[0]);
 
-  readonly gradientEnd = computed(() =>
-    this.isGrowing()
-      ? '#4ade80'
-      : '#fb7185'
-  );
+  readonly gradientEnd = computed(() => this.colors()[1] ?? this.colors()[0]);
 
   readonly hoveredPercent = computed(() => {
     const point = this.hovered();
@@ -46,7 +39,7 @@ export class MiniSparkline {
     return Math.round(point.value / total * 100);
   });
 
-  readonly targetPoints = computed(() => buildPoints(
+  readonly geometry = computed(() => buildPoints(
     this.points(),
     this.width(),
     this.height()
@@ -75,13 +68,23 @@ export class MiniSparkline {
   })
 
   constructor() {
+    super();
+
     effect(() => {
-      const target = this.targetPoints();
       morphPoints(
         this.renderPoints(),
-        target,
-        points => this.renderPoints.set(points)
+        this.geometry(),
+        points => this.renderPoints.set(points),
+        this.duration()
       )
     })
+  }
+
+  hover(point: MorphPoint) {
+    this.hovered.set(point);
+  }
+
+  leave() {
+    this.hovered.set(null);
   }
 }

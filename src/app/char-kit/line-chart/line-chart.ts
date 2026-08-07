@@ -1,7 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, signal, viewChild } from '@angular/core';
-import { AnimatedPoint, ChartPoint } from '../chart-point';
+import { ChartPoint } from '../chart-point';
 import { buildArea, buildPoints, buildPolyline } from '../chart-utils';
-import { animate, lerp } from '../chart-animation';
+import { MorphPoint, morphPoints } from '../chart-morph';
+import { ChartBase } from '../chart-base';
 
 @Component({
   selector: 'app-line-chart',
@@ -10,34 +11,25 @@ import { animate, lerp } from '../chart-animation';
   styleUrl: './line-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LineChart implements AfterViewInit {
+export class LineChart extends ChartBase implements AfterViewInit {
   readonly points = input.required<ChartPoint[]>();
   readonly width = input(320);
   readonly height = input(320);
 
   readonly lineRef = viewChild<ElementRef<SVGPolylineElement>>('line');
 
-  private previous: AnimatedPoint[] = [];
-
   readonly visiblePoints = signal<boolean[]>([]);
-  readonly renderPoints = signal<AnimatedPoint[]>([]);
+  readonly renderPoints = signal<MorphPoint[]>([]);
 
   readonly gradientId = `gradient-${crypto.randomUUID()}`;
-
-  readonly polyline = computed(() => buildPolyline(
-    this.renderPoints().map(p => ({
-      ...p,
-      x: p.currentX,
-      y: p.currentY
-    }))
-  )
-  );
 
   readonly svgPoints = computed(() => buildPoints(
     this.points(),
     this.width(),
     this.height()
   ))
+
+  readonly polyline = computed(() => buildPolyline(this.renderPoints()));
 
   readonly area = computed(() =>
     buildArea(
@@ -54,43 +46,16 @@ export class LineChart implements AfterViewInit {
   })
 
   constructor() {
+    super();
+
     effect(() => {
-      const next = this.svgPoints();
-
-      if (!this.previous.length) {
-        const initial = next.map(p => ({
-          ...p,
-          currentX: p.x,
-          currentY: p.y
-        }));
-
-        this.previous = structuredClone(initial);
-        this.renderPoints.set(initial);
-        return;
-      }
-
-      const old = structuredClone(this.previous);
-
-      animate(700, progress => {
-        const animated = next.map((point, i) => {
-          const prev = old[i] ?? {
-            ...point,
-            currentX: point.x,
-            currentY: point.y
-          };
-
-          return {
-            ...point,
-            currentX: lerp(prev.currentX, point.x, progress),
-            currentY: lerp(prev.currentY, point.y, progress)
-          };
-        });
-
-        this.renderPoints.set(animated);
-      }, () => {
-        this.previous = structuredClone(this.renderPoints());
-      });
-    });
+      morphPoints(
+        this.renderPoints(),
+        this.svgPoints(),
+        points => this.renderPoints.set(points),
+        this.duration()
+      )
+    })
   }
 
   ngAfterViewInit(): void {
@@ -101,7 +66,7 @@ export class LineChart implements AfterViewInit {
     const points = this.svgPoints();
     const total = this.totalLength();
     const start = performance.now();
-    const duration = 800;
+    const duration = this.duration();
     const tick = (time: number) => {
       const progress = Math.min(1, (time - start) / duration);
       const currentLength = total * progress;

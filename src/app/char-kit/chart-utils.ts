@@ -1,3 +1,4 @@
+import { MorphPoint } from "./chart-morph";
 import { ChartPoint, DonutArc, SvgPoint } from "./chart-point";
 import { polarToCartession } from "./geometry-utils";
 
@@ -22,8 +23,8 @@ export function normalizeValues(points: ChartPoint[]): number[] {
     return points.map(point => (point.value - min) / (max - min));
 }
 
-export function buildPolyline(points: SvgPoint[]): string {
-    return points.map(p => `${p.x},${p.y}`).join(' ');
+export function buildPolyline(points: MorphPoint[]): string {
+    return points.map(p => `${p.currentX},${p.currentY}`).join(' ');
 }
 
 export function normalizeToPercent(points: ChartPoint[]): number[] {

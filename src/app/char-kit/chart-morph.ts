@@ -1,0 +1,91 @@
+import { animate, lerp } from "./chart-animation";
+import { DonutArc, SvgPoint } from "./chart-point";
+
+export interface MorphPoint extends SvgPoint {
+    currentX: number;
+    currentY: number;
+}
+
+export interface MorphArc extends DonutArc {
+    currentStart: number;
+    currentEnd: number;
+}
+
+export function morphArray<T>(
+    current: T[],
+    target: T[],
+    interpolate: (from: T, to: T, progress: number) => T,
+    update: (value: T[]) => void,
+    duration = 600
+) {
+    const previous = structuredClone(current.length ? current : target);
+
+    animate(duration, progress => {
+        update(
+            target.map((item, index) =>
+                interpolate(
+                    previous[index] ?? item,
+                    item,
+                    progress
+                )
+            )
+        );
+    });
+}
+
+export function morphPoints(
+    current: MorphPoint[],
+    target: SvgPoint[],
+    update: (points: MorphPoint[]) => void,
+    duration = 600
+) {
+
+    morphArray(
+        current,
+        target.map(p => ({
+            ...p,
+            currentX: p.x,
+            currentY: p.y
+        })),
+        (from, to, progress) => ({
+            ...to,
+            currentX: lerp(from.currentX, to.x, progress),
+            currentY: lerp(from.currentY, to.y, progress)
+        }),
+        update,
+        duration
+    );
+}
+
+export function morphArcs(
+    current: MorphArc[],
+    target: DonutArc[],
+    update: (arcs: MorphArc[]) => void,
+    duration = 600
+) {
+
+    morphArray(
+        current,
+        target.map(a => ({
+            ...a,
+            currentStart: a.startAngle,
+            currentEnd: a.endAngle
+        })),
+        (from, to, progress) => ({
+            ...to,
+            currentStart: lerp(from.currentStart, to.startAngle, progress),
+            currentEnd: lerp(from.currentEnd, to.endAngle, progress)
+        }),
+        update,
+        duration
+    );
+}
+
+export function morphNumber(
+    from: number,
+    to: number,
+    update: (value: number) => void,
+    duration = 500
+) {
+    animate(duration, p => update(Math.round(lerp(from, to, p))));
+}

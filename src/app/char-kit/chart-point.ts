@@ -1,3 +1,5 @@
+import { MorphArc, MorphPoint } from "./chart-morph";
+
 export interface ChartPoint {
     label: string;
     value: number;
@@ -17,14 +19,4 @@ export interface DonutArc {
     startAngle: number;
     endAngle: number;
     percent: number;
-}
-
-export interface DonutRenderArc extends DonutArc {
-    currentStart: number;
-    currentEnd: number;
-}
-
-export interface AnimatedPoint extends SvgPoint {
-    currentX: number;
-    currentY: number;
 }

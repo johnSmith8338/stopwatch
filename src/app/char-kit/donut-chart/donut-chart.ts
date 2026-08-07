@@ -1,18 +1,11 @@
-import { afterRenderEffect, AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, signal, untracked, viewChildren } from '@angular/core';
-import { ChartPoint, DonutArc, DonutRenderArc } from '../chart-point';
+import { ChangeDetectionStrategy, Component, computed, effect, input, signal, untracked } from '@angular/core';
+import { ChartPoint } from '../chart-point';
 import { buildArcPath, buildDonut } from '../chart-utils';
-import { animate, interpolateDonut, lerp } from '../chart-animation';
+import { animate, lerp } from '../chart-animation';
 import { PercentPipe } from '@angular/common';
-
-const DEFAULT_COLORS = [
-  '#22c55e',
-  '#3b82f6',
-  '#f59e0b',
-  '#ef4444',
-  '#a855f7',
-  '#14b8a6',
-  '#ec4899'
-]
+import { MorphArc, morphArcs, morphNumber } from '../chart-morph';
+import { DEFAULT_COLORS } from '../chart-config';
+import { ChartBase } from '../chart-base';
 
 @Component({
   selector: 'app-donut-chart',
@@ -21,22 +14,27 @@ const DEFAULT_COLORS = [
   styleUrl: './donut-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DonutChart {
+export class DonutChart extends ChartBase {
   readonly slices = input.required<ChartPoint[]>();
   readonly size = input(180);
   readonly stroke = input(18);
-  readonly colors = input<string[]>(DEFAULT_COLORS);
 
   private hoverJob = 0;
-  readonly padding = 16;
   private currentAnimatedValue = 0;
 
-  readonly renderArcs = signal<DonutRenderArc[]>([]);
+  readonly renderArcs = signal<MorphArc[]>([]);
   readonly visibleCount = signal(0);
   readonly animatedTotal = signal(0);
   readonly totalScale = signal(1);
   readonly hovered = signal<string | null>(null);
   readonly hoverProgress = signal(0);
+
+  readonly viewBox = computed(() => {
+    const p = this.padding();
+    const s = this.size();
+
+    return `${-p} ${-p} ${s + p * 2} ${s + p * 2}`;
+  });
 
   readonly radius = computed(() => (this.size() - this.stroke()) / 2);
 
@@ -60,36 +58,16 @@ export class DonutChart {
   })
 
   constructor() {
-    effect(() => {
-      const target = this.arcs();
-      if (!this.renderArcs().length) {
-        this.renderArcs.set(
-          target.map(arc => ({
-            ...arc,
-            currentStart: arc.startAngle,
-            currentEnd: arc.endAngle
-          }))
-        )
-        return;
-      }
+    super();
 
-      const previous = structuredClone(this.renderArcs());
-      animate(800, progress => {
-        this.renderArcs.set(
-          target.map((arc, i) => {
-            const old = previous[i] ?? {
-              currentStart: arc.startAngle,
-              currentEnd: arc.endAngle
-            }
-            return {
-              ...arc,
-              currentStart: lerp(old.currentStart, arc.startAngle, progress),
-              currentEnd: lerp(old.currentEnd, arc.endAngle, progress)
-            }
-          })
-        )
-      })
-    });
+    effect(() => {
+      morphArcs(
+        this.renderArcs(),
+        this.arcs(),
+        arcs => this.renderArcs.set(arcs),
+        this.duration()
+      )
+    })
 
     effect(() => {
       const arcs = this.arcs();
@@ -111,16 +89,15 @@ export class DonutChart {
     });
 
     effect(() => {
-      const target = this.centerValue();
-      const start = this.currentAnimatedValue;
-
-      animate(400, progress => {
-        const value = Math.round(lerp(start, target, progress));
-        this.currentAnimatedValue = value;
-        untracked(() => {
-          this.animatedTotal.set(value);
-        })
-      })
+      morphNumber(
+        this.currentAnimatedValue,
+        this.centerValue(),
+        value => {
+          this.currentAnimatedValue = value;
+          untracked(() => this.animatedTotal.set(value))
+        },
+        this.duration()
+      )
     })
 
     effect(() => {
@@ -134,10 +111,10 @@ export class DonutChart {
     });
   }
 
-  buildPath(arc: DonutRenderArc) {
+  buildPath(arc: MorphArc) {
     const active = this.hovered() === arc.label;
     const offset = active ? this.hoverProgress() * 4 : 0;
-    const middle = (arc.startAngle + arc.endAngle) / 2;
+    const middle = (arc.currentStart + arc.currentEnd) / 2;
     const dx = Math.cos(middle) * offset;
     const dy = Math.sin(middle) * offset;
 
@@ -150,7 +127,7 @@ export class DonutChart {
     )
   }
 
-  buildTransform(arc: DonutRenderArc) {
+  buildTransform(arc: MorphArc) {
     if (this.hovered() !== arc.label) return '';
     const offset = this.hoverProgress() * 8;
     const middle = (arc.currentStart + arc.currentEnd) / 2;
@@ -167,7 +144,7 @@ export class DonutChart {
     this.hovered.set(id);
     const job = ++this.hoverJob;
 
-    animate(200, progress => {
+    animate(this.duration() / 2, progress => {
       if (job !== this.hoverJob) return;
       this.hoverProgress.set(progress);
     })

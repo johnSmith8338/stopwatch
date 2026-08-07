@@ -27,18 +27,20 @@
             [attr.cx]="point.currentX"
             [attr.cy]="point.currentY"
             r="10"
-            (pointerenter)="hovered.set(point)"
-            (pointerleave)="hovered.set(null)"/>
+            (pointerenter)="hover(point)"
+            (pointerleave)="leave()"/>
     }
 
-    @if(hovered(); as point){
+    @if(showTooltip() && hovered(); as point){
         <g class="tooltip-card" [attr.transform]="'translate('+(point.currentX+12)+' '+(point.currentY-42)+')'">
             <rect class="card" width="74" height="34" rx="10" />
             <text class="card-value" x="37" y="14">{{point.value}}</text>
-            <text class="card-trend" x="37" y="28">
-                {{trend()==='up'?'▲':trend()==='down'?'▼':'•'}}
-                {{hoveredPercent()}}%
-            </text>
+            @if (showLabels()) {
+                <text class="card-trend" x="37" y="28">
+                    {{trend()==='up'?'▲':trend()==='down'?'▼':'•'}}
+                    {{hoveredPercent()}}%
+                </text>
+            }
         </g>
     }
 </svg>
