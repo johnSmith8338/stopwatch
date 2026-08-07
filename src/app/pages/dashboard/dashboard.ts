@@ -8,6 +8,7 @@ import { ChartPoint } from '../../char-kit/chart-point';
 import { LineChart } from "../../char-kit/line-chart/line-chart";
 import { BarChart } from "../../char-kit/bar-chart/bar-chart";
 import { DonutChart } from "../../char-kit/donut-chart/donut-chart";
+import { MiniSparkline } from "../../char-kit/mini-sparkline/mini-sparkline";
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,8 @@ import { DonutChart } from "../../char-kit/donut-chart/donut-chart";
     DatePipe,
     LineChart,
     BarChart,
-    DonutChart
+    DonutChart,
+    MiniSparkline
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -50,7 +52,7 @@ export class Dashboard {
   readonly donut = signal([
     {
       label: 'finished',
-      value: 19
+      value: 12
     },
     {
       label: 'cancelled',
@@ -58,7 +60,7 @@ export class Dashboard {
     },
     {
       label: 'missed',
-      value: 4
+      value: 6
     }
   ]);
 }

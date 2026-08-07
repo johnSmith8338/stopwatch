@@ -1,3 +1,85 @@
 :host {
   display: block;
 }
+
+.sparkline {
+  inline-size: 100%;
+  overflow: visible;
+}
+
+.line {
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .15));
+}
+
+.line-glow {
+  fill: none;
+  stroke-width: 8;
+  opacity: .18;
+  filter: blur(5px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hover {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.last-point {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.18);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tooltip-card {
+  pointer-events: none;
+  animation: tooltipShow .18s ease;
+}
+
+.card {
+  fill: white;
+  rx: 10;
+  filter: drop-shadow(0 3px 10px rgb(0 0 0 /.18));
+}
+
+.card-value {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.card-trend {
+  font-size: 10px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: #22c55e;
+}
+
+@keyframes tooltipShow {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

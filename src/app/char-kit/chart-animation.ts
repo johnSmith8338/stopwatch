@@ -1,4 +1,4 @@
-import { DonutArc } from "./chart-point";
+import { AnimatedPoint, DonutArc, SvgPoint } from "./chart-point";
 
 export type AnimationCallback = (progress: number) => void;
 
@@ -64,4 +64,36 @@ export function interpolateDonut(
             )
         };
     });
+}
+
+export function morphPoints(
+    current: AnimatedPoint[],
+    target: SvgPoint[],
+    update: (points: AnimatedPoint[]) => void
+) {
+    if (!current.length) {
+        update(target.map(p => ({
+            ...p,
+            currentX: p.x,
+            currentY: p.y
+        })))
+        return;
+    }
+
+    const start = structuredClone(current);
+
+    animate(800, progress => {
+        update(target.map((point, i) => {
+            const old = start[i] ?? {
+                currentX: point.x,
+                currentY: point.y
+            }
+
+            return {
+                ...point,
+                currentX: lerp(old.currentX, point.x, progress),
+                currentY: lerp(old.currentY, point.y, progress),
+            }
+        }))
+    })
 }

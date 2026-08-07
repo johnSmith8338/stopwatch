@@ -16,8 +16,9 @@
             <path #arc class="arc" 
                 [class.active]="hovered()===arc.label"
                 [attr.d]="buildPath(arc)" 
-                [style.stroke]="colors()[$index%colors().length]"
-                [style.--arc-color]="colors()[$index%colors().length]"
+                [attr.transform]="buildTransform(arc)"
+                [style.stroke]="colors()[$index]"
+                [style.--arc-color]="colors()[$index]"
                 [style.color]="colors()[$index]"
                 [attr.filter]="hovered()===arc.label ? 'url(#arcGlow)' : null" />
         }

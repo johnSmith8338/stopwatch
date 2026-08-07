@@ -18,3 +18,13 @@ export interface DonutArc {
     endAngle: number;
     percent: number;
 }
+
+export interface DonutRenderArc extends DonutArc {
+    currentStart: number;
+    currentEnd: number;
+}
+
+export interface AnimatedPoint extends SvgPoint {
+    currentX: number;
+    currentY: number;
+}

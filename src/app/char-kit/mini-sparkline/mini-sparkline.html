@@ -1,1 +1,44 @@
-<p>mini-sparkline works!</p>,
+<svg class="sparkline" [attr.viewBox]="'0 0 '+width()+' '+height()">
+    <defs>
+        <linearGradient [attr.id]="gradientId" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" [attr.stop-color]="gradientStart()"/>
+            <stop offset="100%" [attr.stop-color]="gradientEnd()"/>
+        </linearGradient>
+        <filter id="sparkGlow">
+            <feDropShadow dx="0" dy="0" stdDeviation="3" flood-opacity=".45" flood-color="currentColor" />
+        </filter>
+    </defs>
+
+    <polyline class="line-glow" [attr.points]="polyline()" [attr.stroke]="'url(#'+gradientId+')'" />
+    <polyline class="line" fill="none" [attr.points]="polyline()" [style.stroke]="'url(#'+gradientId+')'" />
+
+    @if (lastPoint(); as point) {
+        <circle class="last-point" 
+            [attr.cx]="point.currentX" 
+            [attr.cy]="point.currentY" 
+            r="4" 
+            [attr.fill]="lineColor()"
+            filter="url(#sparkGlow)" />
+    }
+
+    @for(point of renderPoints(); track point.label){
+        <circle
+            class="hover"
+            [attr.cx]="point.currentX"
+            [attr.cy]="point.currentY"
+            r="10"
+            (pointerenter)="hovered.set(point)"
+            (pointerleave)="hovered.set(null)"/>
+    }
+
+    @if(hovered(); as point){
+        <g class="tooltip-card" [attr.transform]="'translate('+(point.currentX+12)+' '+(point.currentY-42)+')'">
+            <rect class="card" width="74" height="34" rx="10" />
+            <text class="card-value" x="37" y="14">{{point.value}}</text>
+            <text class="card-trend" x="37" y="28">
+                {{trend()==='up'?'▲':trend()==='down'?'▼':'•'}}
+                {{hoveredPercent()}}%
+            </text>
+        </g>
+    }
+</svg>

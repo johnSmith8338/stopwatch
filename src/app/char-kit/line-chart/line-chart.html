@@ -9,23 +9,23 @@
             [attr.x2]="width()-8"
             [attr.y2]="height()-8-(height()-16)*(line/100)" />
     }
-    @for (point of svgPoints(); track point.label) {
+    @for (point of renderPoints(); track point.label) {
         <line class="grid"
-            [attr.x1]="point.x"
+            [attr.x1]="point.currentX"
             y1="8"
-            [attr.x2]="point.x"
+            [attr.x2]="point.currentX"
             [attr.y2]="height()-8" />
     }
-    @for (point of svgPoints(); track point.label) {
-        <text class="label" [attr.x]="point.x" [attr.y]="height()-2">{{point.label}}</text>
+    @for (point of renderPoints(); track point.label) {
+        <text class="label" [attr.x]="point.currentX" [attr.y]="height()-2">{{point.label}}</text>
     }
-    @for (point of svgPoints(); track point.label) {
+    @for (point of renderPoints(); track point.label) {
         <g class="hover-group">
-            <circle class="hover" [attr.cx]="point.x" [attr.cy]="point.y" r="14" />
+            <circle class="hover" [attr.cx]="point.currentX" [attr.cy]="point.currentY" r="14" />
             @if (visiblePoints()[$index]) {
-                <circle class="point" [attr.cx]="point.x" [attr.cy]="point.y" r="4" />
+                <circle class="point" [attr.cx]="point.currentX" [attr.cy]="point.currentY" r="4" />
             }
-            <text class="tooltip" [attr.x]="point.x" [attr.y]="point.y-12">{{point.value}}</text>
+            <text class="tooltip" [attr.x]="point.currentX" [attr.y]="point.currentY-8">{{point.value}}</text>
         </g>
     }
     <defs>

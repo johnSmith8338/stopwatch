@@ -1,5 +1,5 @@
 import { afterRenderEffect, AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, signal, untracked, viewChildren } from '@angular/core';
-import { ChartPoint, DonutArc } from '../chart-point';
+import { ChartPoint, DonutArc, DonutRenderArc } from '../chart-point';
 import { buildArcPath, buildDonut } from '../chart-utils';
 import { animate, interpolateDonut, lerp } from '../chart-animation';
 import { PercentPipe } from '@angular/common';
@@ -27,12 +27,11 @@ export class DonutChart {
   readonly stroke = input(18);
   readonly colors = input<string[]>(DEFAULT_COLORS);
 
-  private previous: DonutArc[] = [];
   private hoverJob = 0;
   readonly padding = 16;
   private currentAnimatedValue = 0;
 
-  readonly renderArcs = signal<DonutArc[]>([]);
+  readonly renderArcs = signal<DonutRenderArc[]>([]);
   readonly visibleCount = signal(0);
   readonly animatedTotal = signal(0);
   readonly totalScale = signal(1);
@@ -62,28 +61,34 @@ export class DonutChart {
 
   constructor() {
     effect(() => {
-      const next = this.arcs();
-
-      if (!this.previous.length) {
-        this.previous = structuredClone(next);
-        this.renderArcs.set(next);
+      const target = this.arcs();
+      if (!this.renderArcs().length) {
+        this.renderArcs.set(
+          target.map(arc => ({
+            ...arc,
+            currentStart: arc.startAngle,
+            currentEnd: arc.endAngle
+          }))
+        )
         return;
       }
 
-      const old = structuredClone(this.previous);
-      this.previous = structuredClone(next);
-
-      animate(700, progress => {
-        untracked(() => {
-          this.renderArcs.set(
-            interpolateDonut(
-              old,
-              next,
-              progress
-            )
-          );
-        });
-      });
+      const previous = structuredClone(this.renderArcs());
+      animate(800, progress => {
+        this.renderArcs.set(
+          target.map((arc, i) => {
+            const old = previous[i] ?? {
+              currentStart: arc.startAngle,
+              currentEnd: arc.endAngle
+            }
+            return {
+              ...arc,
+              currentStart: lerp(old.currentStart, arc.startAngle, progress),
+              currentEnd: lerp(old.currentEnd, arc.endAngle, progress)
+            }
+          })
+        )
+      })
     });
 
     effect(() => {
@@ -129,7 +134,7 @@ export class DonutChart {
     });
   }
 
-  buildPath(arc: DonutArc) {
+  buildPath(arc: DonutRenderArc) {
     const active = this.hovered() === arc.label;
     const offset = active ? this.hoverProgress() * 4 : 0;
     const middle = (arc.startAngle + arc.endAngle) / 2;
@@ -140,9 +145,22 @@ export class DonutChart {
       this.size() / 2 + dx,
       this.size() / 2 + dy,
       this.radius(),
-      arc.startAngle,
-      arc.endAngle
+      arc.currentStart,
+      arc.currentEnd
     )
+  }
+
+  buildTransform(arc: DonutRenderArc) {
+    if (this.hovered() !== arc.label) return '';
+    const offset = this.hoverProgress() * 8;
+    const middle = (arc.currentStart + arc.currentEnd) / 2;
+
+    return `
+    translate(
+      ${Math.cos(middle) * offset}
+      ${Math.sin(middle) * offset}
+    )
+  `;
   }
 
   hoverEnter(id: string) {
